@@ -1,16 +1,42 @@
-# React + Vite
+# bank-app
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Mini Digital Banking System (Fintech Project)
 
-Currently, two official plugins are available:
+A full-stack fintech-style banking application that simulates core digital banking operations. Users can create accounts, perform mock deposits and withdrawals, transfer funds, and view transaction history through a clean dashboard interface.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### Features
 
-## React Compiler
+- User authentication (JWT-based)
+- Wallet balance management
+- Deposit & withdrawal (mock transactions)
+- Secure money transfer between users
+- Transaction history with status tracking (pending, success, failed)
+- Interactive React dashboard UI
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Tech Stack
 
-## Expanding the ESLint configuration
+- **Backend:** Java, Spring Boot, Spring Security, JPA
+- **Frontend:** React, TailwindCSS
+- **Database:** SQL / Postgres
+- **DevOps:** CI/CD ready (GitHub Actions), deployable to AWS / Render / Vercel
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Key Concepts Implemented
+
+- Layered architecture (Controller → Service → Repository)
+- RESTful API design
+- Transaction consistency & validation (e.g., preventing negative balance)
+- JWT authentication & request filtering
+- API integration (client ↔ server communication)
+
+### User Flow
+
+Login → Dashboard → Perform Transactions → View History
+
+### Notes
+
+- This is a **mock fintech system** (no real payments involved)
+- Focused on **clean architecture, correctness, and learning best practices**
+
+---
+
+A solid foundation for building real-world fintech applications.

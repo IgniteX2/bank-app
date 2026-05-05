@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getBalance } from "../services/accountService";
+import { getBalance } from "../services/authService";
 
 function Dashboard() {
   const [balance, setBalance] = useState(0);

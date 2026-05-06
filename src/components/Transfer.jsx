@@ -57,7 +57,6 @@ function Transfer() {
 
       setForm({ toAccount: "", amount: "" });
 
-      // ✅ Delay modal close (better UX)
       setTimeout(() => {
         setShowPinModal(false);
       }, 1200);

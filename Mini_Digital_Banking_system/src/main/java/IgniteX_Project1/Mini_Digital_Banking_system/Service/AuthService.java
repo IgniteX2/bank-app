@@ -30,8 +30,7 @@ public class AuthService {
     @Transactional
     public String signup(AccountCreationRequest req) {
 
-        String fullName = req.getFirstName() + " " + req.getLastName();
-        if (repo.findByFullName(fullName).isPresent() || repo.findByEmail(req.getEmail()).isPresent()) {
+        if (repo.findByEmail(req.getEmail()).isPresent()) {
             throw new UserAlreadyExistsException("user already exist");
         }
 
@@ -53,13 +52,13 @@ public class AuthService {
 
     public String login(LogInRequest req) {
 
-        UserInfo user = repo.findByFullName(req.getFullName())
+        UserInfo user = repo.findByEmail(req.getEmail())
                 .orElseThrow(() ->
                         new InvalidCredentialException("invalid username or password"));
         if (!encoder.matches(req.getPassword(), user.getUserPassword())) {
              throw new InvalidCredentialException("invalid username or password");
         }
-        return  jwtUtil.generateToken(user.getFullName());
+        return  jwtUtil.generateToken(user.getEmail());
     }
 
 }

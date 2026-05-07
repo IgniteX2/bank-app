@@ -4,17 +4,30 @@ package IgniteX_Project1.Mini_Digital_Banking_system.Controller;
 import IgniteX_Project1.Mini_Digital_Banking_system.Model.Request.AccountCreationRequest;
 import IgniteX_Project1.Mini_Digital_Banking_system.Model.Request.LogInRequest;
 import IgniteX_Project1.Mini_Digital_Banking_system.Service.AuthService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
+//import jakarta.servlet.http.Cookie;
+//import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
+@CrossOrigin(
+        origins = {
+                "http://localhost:8083",
+                "http://localhost:5173"
+        },
+        allowedHeaders = "*",
+        methods = {
+                RequestMethod.GET,
+                RequestMethod.POST,
+                RequestMethod.PUT,
+                RequestMethod.DELETE,
+                RequestMethod.OPTIONS
+        },
+        allowCredentials = "true"
+)
+
 public class AuthController {
 
     private final AuthService authService;
@@ -30,17 +43,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LogInRequest req, HttpServletResponse response) {
+    public ResponseEntity<String> login(@Valid @RequestBody LogInRequest req) {
+        return ResponseEntity.ok(authService.login(req));
 
-        String token = authService.login(req);
-        Cookie cookie = new Cookie("jwt", token);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(false);
-        cookie.setPath("/");
-        cookie.setMaxAge(24 * 60 * 60);
-
-        response.addCookie(cookie);
-
-        return ResponseEntity.ok("Login Successfully");
     }
 }

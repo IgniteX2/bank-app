@@ -1,13 +1,13 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./components/Login";
-import Dashboard from "./components/Dashboard";
-import Transfer from "./components/Transfer";
-import Register from "./components/Register";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Transfer from "./pages/Transfer";
+import Register from "./pages/Register";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import TransactionHistory from "./components/TransactionHistory";
-import ResetPassword from "./components/ResetPassword";
+import TransactionHistory from "./pages/TransactionHistory";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -16,13 +16,14 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route
-            path="/"
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <Dashboard />
               </ProtectedRoute>
             }
           />
+
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/resetPassword" element={<ResetPassword />} />

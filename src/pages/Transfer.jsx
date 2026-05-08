@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { transferMoney } from "../services/transactionService";
 import { toast } from "react-toastify";
-import PinModal from "./PinModal";
+import PinModal from "../components/cards/PinModal";
 
 function Transfer() {
   const [form, setForm] = useState({

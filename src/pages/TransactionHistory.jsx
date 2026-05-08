@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getTransactions } from "../services/transactionService";
-import TransactionCard from "./TransactionCard";
+import TransactionCard from "../components/cards/TransactionCard";
 
 function TransactionHistory() {
   const [transactions, setTransactions] = useState([]);

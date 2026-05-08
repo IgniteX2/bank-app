@@ -1,8 +1,8 @@
-import { useState, useContext} from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
 import { loginUser } from "../services/authService";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../context/useAuth";
 import { toast } from "react-toastify";
 import { FaEnvelope } from "react-icons/fa6";
 import { GiPadlock } from "react-icons/gi";
@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import { TbWorld } from "react-icons/tb";
 import { IoMoonOutline } from "react-icons/io5";
 import { MdOutlineWbSunny } from "react-icons/md";
-import Loading from "./Loading";
+import Loading from "../components/cards/Loading";
 
 function Login() {
   const [form, setForm] = useState({ email: "", password: "" });
@@ -25,27 +25,28 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log("SUBMIT FIRED");
+
     setSubmitting(true);
 
     try {
       const res = await loginUser(form);
 
-      login(res.data.token);
+      login(res.data);
 
       toast.success("Login successful");
       navigate("/dashboard");
     } catch (err) {
+      console.log("LOGIN ERROR:", err?.response);
+
       const status = err?.response?.status;
 
       let message = "Something went wrong";
 
-      if (status === 401) {
-        message = "Invalid email or password";
-      } else if (status === 404) {
-        message = "User not found";
-      } else if (err?.response?.data?.message) {
+      if (status === 401) message = "Invalid email or password";
+      else if (status === 404) message = "User not found";
+      else if (err?.response?.data?.message)
         message = err.response.data.message;
-      }
 
       toast.error(message);
       setError(message);
@@ -107,7 +108,7 @@ function Login() {
                     style={{ marginLeft: "5px" }}
                   >
                     <button
-                      style={{ paddingLeft: "5px" }}
+                      style={{ paddingLeft: "5px", cursor: "pointer" }}
                       onClick={toggleTheme}
                       aria-label="toggle theme"
                       className={`w-14 h-7 flex items-center rounded-full p-1 transition-colors duration-300 

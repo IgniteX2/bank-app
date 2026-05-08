@@ -1,9 +1,21 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:8080/api",
+  baseURL: "https://schedule-tall-throwback.ngrok-free.dev",
 });
 
+// Attach token to every request
+API.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
+
+// Handle unauthorized responses
 API.interceptors.response.use(
   (res) => res,
   (err) => {
@@ -11,6 +23,7 @@ API.interceptors.response.use(
       localStorage.removeItem("token");
       window.location.href = "/login";
     }
+
     return Promise.reject(err);
   },
 );

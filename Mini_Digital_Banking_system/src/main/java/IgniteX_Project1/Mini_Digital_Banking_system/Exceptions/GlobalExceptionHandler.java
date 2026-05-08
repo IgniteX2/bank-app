@@ -11,11 +11,18 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(InvalidCredentialException.class)
     public ResponseEntity<String> handleInvalid(InvalidCredentialException ex) {
-        return  ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+        return  ResponseEntity.status(401).body(ex.getMessage());
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
     public ResponseEntity<String> handleUserExist(UserAlreadyExistsException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRunTime(RuntimeException ex) {
+        return  ResponseEntity
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(ex.getMessage());
     }
 }

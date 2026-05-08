@@ -1,6 +1,7 @@
 package IgniteX_Project1.Mini_Digital_Banking_system.Controller;
 
 
+import IgniteX_Project1.Mini_Digital_Banking_system.DTO.TokenResponseDTO;
 import IgniteX_Project1.Mini_Digital_Banking_system.Model.Request.AccountCreationRequest;
 import IgniteX_Project1.Mini_Digital_Banking_system.Model.Request.LogInRequest;
 import IgniteX_Project1.Mini_Digital_Banking_system.Service.AuthService;
@@ -14,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 @CrossOrigin(
         origins = {
-                "http://localhost:8083",
+//                "http://localhost:8083",
                 "http://localhost:5173"
         },
         allowedHeaders = "*",
@@ -43,8 +44,11 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@Valid @RequestBody LogInRequest req) {
-        return ResponseEntity.ok(authService.login(req));
+    public ResponseEntity<TokenResponseDTO> login(@Valid @RequestBody LogInRequest req) {
+
+        String token = authService.login(req);
+
+        return ResponseEntity.ok(new TokenResponseDTO(token));
 
     }
 }

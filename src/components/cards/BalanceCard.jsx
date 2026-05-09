@@ -1,13 +1,20 @@
+import { useContext } from "react";
+import { ThemeContext } from "../../context/ThemeContext";
 import { FaLongArrowAltUp, FaLongArrowAltDown } from "react-icons/fa";
 
 export default function BalanceCard({ balance }) {
+  const { theme } = useContext(ThemeContext);
   return (
     <div
       style={{
         width: "100%",
         height: "250px",
-        background: "#ffffff",
-        border: "1px solid #EBEBEB",
+        background: theme === "dark" ? "#354151" : "#ffffff",
+        boxShadow:
+          theme === "dark"
+            ? "0 0px 20px 4px inset rgba(230, 230, 230, 0.2)"
+            : "",
+        border: theme === "dark" ? "none" : "1px solid #EBEBEB",
       }}
       className=" p-4 rounded-xl "
     >
@@ -23,13 +30,25 @@ export default function BalanceCard({ balance }) {
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <p className="text-gray-500">My Balance</p>
-          <p className="text-gray-500">NGN Naira</p>
+          <p
+            className={`${theme === "dark" ? "text-[#f5f5f5]" : "text-gray-500"}`}
+          >
+            My Balance
+          </p>
+          <p
+            className={`${theme === "dark" ? "text-[#f5f5f5]" : "text-gray-500"}`}
+          >
+            NGN Naira
+          </p>
         </div>
 
         <div>
           <p className="text-gray-500 text-sm">Available balance</p>
-          <h1 className="text-3xl font-semibold">₦{balance}</h1>
+          <h1
+            className={`text-3xl font-semibold ${theme === "dark" ? "text-[#f5f5f5]" : "text-gray-500"}`}
+          >
+            ₦{balance}
+          </h1>
         </div>
 
         <div className="flex gap-3 mt-3">

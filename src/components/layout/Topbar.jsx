@@ -8,18 +8,32 @@ export default function Topbar() {
   const { theme, toggleTheme } = useContext(ThemeContext);
 
   return (
-    <div style={{ width: "100%", marginTop: "40px" }}>
+    <div
+      style={{
+        width: "100%",
+        marginTop: "40px",
+      }}
+    >
       <div
         style={{ width: "94%", marginLeft: "3%" }}
         className="topbar flex justify-between items-center p-4 "
       >
         <div>
-          <h2 className="text-2xl font-medium">Your Financial Dashboard</h2>
+          <h2
+            className={`text-2xl font-medium ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]"}`}
+          >
+            Your Financial Dashboard
+          </h2>
           <p className="text-sm text-gray-500">Welcome back, Max Verstappen!</p>
         </div>
 
         <div className="flex items-center gap-3">
-          <FiBell />
+          <FiBell
+            style={{
+              color: theme === "dark" ? "#f5f5f5" : "#0d1b2e",
+              fontSize: "17px",
+            }}
+          />
 
           <div className="tog self-center">
             <div

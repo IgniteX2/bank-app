@@ -63,7 +63,7 @@ body {
 
 .bodyDark {
   box-shadow: 0 0 0px 0px transparent;
-  background-color: #0d1b2e;
+  background-color: rgb(13, 27, 46);
   color: #fff;
 }
 

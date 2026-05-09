@@ -68,10 +68,10 @@ export default function Topbar({ isOpen, setIsOpen, isMobile }) {
               Dashboard
             </h2>
             <p
-              className="text-sm text-gray-500"
+              className={`text-sm ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
               style={{
                 alignSelf: isMobile ? "center" : "",
-                color: isMobile ? "#f5f5f5" : "",
+                color: isMobile && theme === "dark" ? "#f5f5f5" : "#0d1b2e",
               }}
             >
               Hi, Max Verstappen!

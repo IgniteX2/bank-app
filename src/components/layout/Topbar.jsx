@@ -3,8 +3,9 @@ import { ThemeContext } from "../../context/ThemeContext";
 import { FiBell } from "react-icons/fi";
 import { IoMoonOutline } from "react-icons/io5";
 import { MdOutlineWbSunny } from "react-icons/md";
+import { FaAngleRight } from "react-icons/fa6";
 
-export default function Topbar() {
+export default function Topbar({ isOpen, setIsOpen }) {
   const { theme, toggleTheme } = useContext(ThemeContext);
 
   return (
@@ -18,13 +19,35 @@ export default function Topbar() {
         style={{ width: "94%", marginLeft: "3%" }}
         className="topbar flex justify-between items-center p-4 "
       >
-        <div>
-          <h2
-            className={`text-2xl font-medium ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]"}`}
-          >
-            Your Financial Dashboard
-          </h2>
-          <p className="text-sm text-gray-500">Welcome back, Max Verstappen!</p>
+        <div style={{ display: "flex", gap: "10px" }}>
+          {isOpen ? null : (
+            <button
+              style={{
+                width: "40px",
+                height: "40px",
+                borderRadius: "50px",
+                background: "#ffffff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                cursor: "pointer",
+              }}
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              <FaAngleRight />
+            </button>
+          )}
+          <div>
+            <h2
+              className={`text-2xl font-medium ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]"}`}
+            >
+              Your Financial Dashboard
+            </h2>
+            <p className="text-sm text-gray-500">
+              Welcome back, Max Verstappen!
+            </p>
+          </div>
         </div>
 
         <div className="flex items-center gap-3">

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 import { NavLink } from "react-router-dom";
 import userImg from "../../assets/user.jpg";
@@ -25,9 +25,9 @@ const otherItems = [
   { label: "Logout", icon: <FiLogOut />, href: "/logout" },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({ isOpen, setIsOpen }) {
   const { theme } = useContext(ThemeContext);
-  const [isOpen, setIsOpen] = useState(true);
+  //   const [isOpen, setIsOpen] = useState(true);
 
   return (
     <>

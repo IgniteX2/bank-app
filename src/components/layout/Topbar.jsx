@@ -3,9 +3,10 @@ import { ThemeContext } from "../../context/ThemeContext";
 import { FiBell } from "react-icons/fi";
 import { IoMoonOutline } from "react-icons/io5";
 import { MdOutlineWbSunny } from "react-icons/md";
-import { FaAngleRight } from "react-icons/fa6";
+import { LuPanelLeftOpen } from "react-icons/lu";
+import userImg from "../../assets/user.jpg";
 
-export default function Topbar({ isOpen, setIsOpen }) {
+export default function Topbar({ isOpen, setIsOpen, isMobile }) {
   const { theme, toggleTheme } = useContext(ThemeContext);
 
   return (
@@ -21,31 +22,59 @@ export default function Topbar({ isOpen, setIsOpen }) {
       >
         <div style={{ display: "flex", gap: "10px" }}>
           {isOpen ? null : (
-            <button
-              style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "50px",
-                background: "#ffffff",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                cursor: "pointer",
-              }}
-              onClick={() => setIsOpen(!isOpen)}
-            >
-              <FaAngleRight />
-            </button>
+            <div style={{ display: isMobile ? "none" : "block" }}>
+              <button
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50px",
+                  background: "#ffffff",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
+                  cursor: "pointer",
+                }}
+                onClick={() => setIsOpen(!isOpen)}
+              >
+                <LuPanelLeftOpen style={{ fontSize: "25px" }} />
+              </button>
+            </div>
           )}
-          <div>
+
+          <div
+            style={{
+              display: isMobile ? "flex" : "block",
+              gap: isMobile ? "10px" : "",
+            }}
+          >
+            <div
+              style={{
+                width: "30px",
+                height: "30px",
+                borderRadius: "50%",
+                background: "transparent",
+                backgroundImage: `url(${userImg})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                display: isMobile ? "block" : "none",
+              }}
+              className="text-sm font-semibold"
+            ></div>
             <h2
-              className={`text-2xl font-medium ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]"}`}
+              style={{ display: isMobile ? "none" : "block" }}
+              className={`${isMobile ? "text-base" : "text-2xl"} font-medium ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]"}`}
             >
-              Your Financial Dashboard
+              Dashboard
             </h2>
-            <p className="text-sm text-gray-500">
-              Welcome back, Max Verstappen!
+            <p
+              className="text-sm text-gray-500"
+              style={{
+                alignSelf: isMobile ? "center" : "",
+                color: isMobile ? "#f5f5f5" : "",
+              }}
+            >
+              Hi, Max Verstappen!
             </p>
           </div>
         </div>
@@ -84,11 +113,11 @@ export default function Topbar({ isOpen, setIsOpen }) {
 
               {theme === "dark" ? (
                 <span className="themeState font-semibold dark:text-white">
-                  &nbsp; &nbsp;Dark Mode
+                  {isMobile ? "" : <span>&nbsp; &nbsp;Dark Mode</span>}
                 </span>
               ) : (
                 <span className="themeState font-semibold">
-                  &nbsp; &nbsp;Light Mode
+                  {isMobile ? "" : <span>&nbsp; &nbsp;Light Mode</span>}
                 </span>
               )}
             </div>

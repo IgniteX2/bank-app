@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import DashboardLayout from "../components/layout/Dashboard";
 import Sidebar from "../components/layout/Sidebar";
 import Topbar from "../components/layout/Topbar";
@@ -7,25 +7,54 @@ import TransactionCard from "../components/cards/TransactionCard";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { ThemeContext } from ".././context/ThemeContext";
+import MobileNav from "../components/layout/MobileNav";
+import Button from "../components/ui/Button";
 
 export default function Dashboard() {
   const { theme } = useContext(ThemeContext);
   const [isOpen, setIsOpen] = useState(true);
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
   const handleSidebarToggle = () => {
     setIsOpen((prev) => !prev);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <div
       style={{
         background: theme === "dark" ? "rgb(13, 27, 46)" : "#ffffff",
-        height: "100vh",
+        minHeight: "100vh",
       }}
     >
       <DashboardLayout
-        sidebar={<Sidebar setIsOpen={handleSidebarToggle} isOpen={isOpen} />}
-        topbar={<Topbar isOpen={isOpen} setIsOpen={handleSidebarToggle} />}
+        sidebar={
+          <Sidebar
+            setIsOpen={handleSidebarToggle}
+            isOpen={isOpen}
+            isMobile={isMobile}
+          />
+        }
+        topbar={
+          <Topbar
+            isOpen={isOpen}
+            setIsOpen={handleSidebarToggle}
+            isMobile={isMobile}
+          />
+        }
+        mobilebar={<MobileNav isMobile={isMobile} />}
       >
         <div
           style={{
@@ -35,11 +64,17 @@ export default function Dashboard() {
           }}
         >
           <div
-            style={{ marginTop: "80px", marginLeft: "3%" }}
-            className="grid grid-cols-3 gap-4 "
+            style={{ marginTop: isMobile ? "20px" : "80px", marginLeft: "3%" }}
+            className={`${!isMobile ? "grid grid-cols-3 gap-4" : ""}`}
           >
-            <BalanceCard balance="67,480,100" />
+            <BalanceCard balance="67,480,100" isMobile={isMobile} />
           </div>
+
+          {isMobile ? (
+            <div>
+              <Button isMobile={isMobile} />
+            </div>
+          ) : null}
 
           <div
             className={`mt-6 ${theme === "dark" ? "bg-[#354151]" : "bg-white"}`}
@@ -54,6 +89,8 @@ export default function Dashboard() {
               flexDirection: "column",
               // alignItems: "center",
               justifyContent: "space-between",
+              marginBottom: isMobile ? "85px" : "",
+              background: isMobile ? "transparent" : " ",
             }}
           >
             <div style={{ width: "96%", marginLeft: "2%" }}>
@@ -67,90 +104,19 @@ export default function Dashboard() {
                 Recent Transactions
               </h3>
 
-              <div
-                style={{
-                  marginTop: "20px",
-                  marginBottom: "20px",
-                  borderBottom:
-                    theme === "dark"
-                      ? "1px solid #5e6774"
-                      : "1px solid #EBEBEB",
-                  background: "transparent",
-                  width: "100%",
-                }}
-                className="flex items-center justify-between"
-              >
-                <div
-                  style={{
-                    padding: "3px 25px",
-                    columnGap: "15px",
-                    marginBottom: "25px",
-                  }}
-                  className="flex items-center bg-[#F4F2EE] rounded-lg p-1 gap-1"
-                >
-                  <button
-                    className={`
-            px-12 py-4
-            rounded-lg
-            ${theme === "dark" ? "text-[#8B8B8B]" : ""}
-            font-medium
-            transition
-            cursor-pointer
-          `}
-                  >
-                    Successful
-                  </button>
-
-                  <button
-                    style={{ padding: " 10px 10px" }}
-                    className="
-            rounded-lg
-            bg-white
-            text-[#1A1A1A]
-            font-semibold
-            
-            border border-[#E7E5E4]
-            transition
-            cursor-pointer
-          "
-                  >
-                    Failed
-                  </button>
-
-                  <button
-                    className="
-            px-12 py-4
-            rounded-2xl
-            text-[#8B8B8B]
-            font-medium
-            transition
-            cursor-pointer
-          "
-                  >
-                    Pending
-                  </button>
-                </div>
-
-                {/* DROPDOWN */}
-                <button
-                  className="
-          flex items-center gap-2
-          text-[#8B8B8B]
-          font-medium
-          cursor-pointer
-        "
-                >
-                  Last Week
-                  <span className="text-[10px]">▼</span>
-                </button>
-              </div>
-
               <div style={{ marginTop: "20px" }}>
                 <TransactionCard
                   title="Netflix Monthly"
                   type="Subscription"
                   amount="₦3,839.91"
                   date="06/27"
+                />
+
+                <TransactionCard
+                  title="Spotify Premium"
+                  type="Subscription"
+                  amount="₦1,200"
+                  date="06/26"
                 />
 
                 <TransactionCard

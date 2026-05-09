@@ -33,7 +33,7 @@ export default function Sidebar() {
     <>
       {isOpen && (
         <aside
-          className={`sidebar w-84 h-screen ${theme === "light" ? "bg-[#F6F8FA]" : "bg-[#0d1b2e]"} shadow-md flex flex-col justify-between`}
+          className={`sidebar w-84 h-screen ${theme === "light" ? "bg-[#F6F8FA]" : "bg-[#0a1628]"} shadow-md flex flex-col justify-between`}
         >
           {/* TOP */}
           <div
@@ -133,7 +133,7 @@ export default function Sidebar() {
               </div>
 
               <div
-                className={`p-4 ${theme === "light" ? "bg-[#F6F8FA]" : "bg-[#0d1b2e]"} `}
+                className={`p-4 ${theme === "light" ? "bg-[#F6F8FA]" : "bg-[#0a1628]"} `}
                 style={{ marginTop: "20px" }}
               >
                 <p className="text-sm text-gray-400 mb-2">OTHER</p>
@@ -191,8 +191,11 @@ export default function Sidebar() {
               style={{
                 width: "100%",
                 height: "200px",
-                background: "#ffffff",
-                boxShadow: "0 0px 2px 4px rgba(230, 230, 230, 0.1)",
+                background: theme === "dark" ? "#354151" : "#ffffff",
+                boxShadow:
+                  theme === "dark"
+                    ? "none"
+                    : "0 0px 2px 4px rgba(230, 230, 230, 0.1)",
                 borderRadius: "10px",
                 display: "flex",
                 flexDirection: "column",
@@ -202,30 +205,39 @@ export default function Sidebar() {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-2">
-                  <LiaHeadsetSolid className="text-[25px] text-[#0D0D12]" />
+                  <LiaHeadsetSolid
+                    className={`text-[25px] ${theme === "dark" ? "text-white" : "text-[#0D0D12]"}`}
+                  />
 
-                  <h2 className="text-lg leading-none font-semibold text-[#0D0D12]">
+                  <h2
+                    className={`text-lg leading-none font-semibold ${theme === "dark" ? "text-[#ffffff]" : "text-[#0D0D12]"} `}
+                  >
                     Need Support?
                   </h2>
                 </div>
 
                 <button
-                  className="text-[#0D0D12] hover:opacity-70 transition"
+                  className={`${theme === "dark" ? "text-white" : "text-[#0D0D12]"} hover:opacity-70 transition`}
                   style={{ cursor: "pointer" }}
                 >
                   <FiX className="text-[20px]" />
                 </button>
               </div>
 
-              <p className="mt-10 max-w-4xl text-[16px] leading-[1.2] font-normal text-[#818898]">
+              <p
+                className={`mt-10 max-w-4xl text-[14px] leading-[1.2] font-normal ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#818898]"}`}
+              >
                 Connect with one of our experts to get support.
               </p>
 
               <button
                 style={{
-                  backgroundColor: "#ffffff",
-                  color: "#0D0D12",
-                  boxShadow: "0 0px 2px 4px rgba(230, 230, 230, 0.2)",
+                  backgroundColor: theme === "dark" ? "#354151" : "#ffffff",
+                  color: theme === "dark" ? "#ffffff" : "#0D0D12",
+                  boxShadow:
+                    theme === "dark"
+                      ? "0 0px 8px 4px inset rgba(230, 230, 230, 0.2)"
+                      : "0 0px 2px 4px rgba(230, 230, 230, 0.2)",
                   padding: "10px 20px",
                   border: "2px solid #f5f5f5",
                   borderRadius: "10px",
@@ -259,7 +271,9 @@ export default function Sidebar() {
                 className="text-sm font-semibold"
               ></div>
               <div className="text-xs  self-center">
-                <p className="text-lg font-medium text-[#0D0D12]">
+                <p
+                  className={`text-lg font-medium ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0D0D12]"}`}
+                >
                   Alice Bourne
                 </p>
                 <p className="text-sm text-gray-500">Alice@mail.com</p>

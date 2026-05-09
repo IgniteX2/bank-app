@@ -4,34 +4,77 @@ CREATE TABLE USERS(
 user_id SERIAL PRIMARY KEY,
  first_name VARCHAR(50) NOT NULL,
  last_name VARCHAR(50) NOT NULL,
- full_name VARCHAR(100) GENERATED ALWAYS AS (first_name || ' ' || last_name),
+ full_name VARCHAR(100) GENERATED ALWAYS AS (first_name || ' ' || last_name) STORED,
  email VARCHAR(100) UNIQUE NOT NULL,
  phone_number  VARCHAR(50) UNIQUE NOT NULL,
  bvn VARCHAR(50) UNIQUE NOT NULL,
- user_password VARCHAR(50) NOT NULL,
+ user_password VARCHAR(255) NOT NULL,
  user_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
  user_modified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
  NIN_num VARCHAR(50) UNIQUE NULL,
  proof_of_address VARCHAR(100) UNIQUE NULL,
+ address VARCHAR(100),
+ next_of_kin VARCHAR(100),
+ next_of_kin_contact VARCHAR(50),
+ nationality VARCHAR(50),
+ source_of_income VARCHAR(50)
+ 
  pin AUTO GENERATED NOT NULL
 ); 
 
 SELECT *
 FROM USERS;
 
+--CREATING THE FUNCTION THAT WOULD AUTO GENERATE THE ACCOUNT NUMBER
+CREATE OR REPLACE FUNCTION GENERATE_ACCOUNT_NUMBER()
+RETURNS VARCHAR(10)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    v_account_number VARCHAR(10);
+BEGIN
+    LOOP
+        -- 67 + 8 random digits
+        v_account_number := '67' ||
+            FLOOR(10000000 + RANDOM() * 90000000)::TEXT;
+
+        -- Ensure uniqueness
+        IF NOT EXISTS (
+            SELECT 1
+            FROM accounts
+            WHERE account_number = v_account_number
+        ) THEN
+            EXIT;
+        END IF;
+    END LOOP;
+
+    RETURN v_account_number;
+END;
+$$;
+
+
 --CREATING THE ACCOUNT TABLE TO STORE THE ACCOUNT INFORMATION OF GIVEN USERS
 
 CREATE TABLE ACCOUNT(
 	account_id SERIAL PRIMARY KEY,
 	user_id INT NOT NULL REFERENCES USERS(user_id) ON DELETE CASCADE,
-	account_number VARCHAR(50) UNIQUE NOT NULL,
+	account_number VARCHAR(10) UNIQUE NOT NULL DEFAULT GENERATE_ACCOUNT_NUMBER(),
+	account_type VARCHAR(100),
 	balance DECIMAL(15,2) DEFAULT 0.00 CHECK (balance>=0),
-	
+	pin INT NOT NULL,
+	tier VARCHAR(50),
 	account_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 SELECT *
 FROM ACCOUNT;
+
+
+--CREATING THE SEQUENCE THAT GENERATES A 9-DIGIT TRANSACTION ID
+CREATE SEQUENCE transaction_id_seq
+START WITH 100000001
+INCREMENT BY 1;
+
 
 --CREATING THE TRANSACTIONS TABLE THAT WOULD STORE ALL KINDS OF TRANSACTIONS(WITHDRAWALS, DEPOSITS, TRANSFER)
 
@@ -49,10 +92,7 @@ CREATE TABLE TRANSACTION(
 SELECT *
 FROM TRANSACTION;
 
---CREATING THE SEQUENCE THAT GENERATES A 9-DIGIT TRANSACTION ID
-CREATE SEQUENCE transaction_id_seq
-START WITH 100000001
-INCREMENT BY 1;
+
 
 --CREATING THE BENEFICIARIES TABLE THAT STORES THE FULLNAME, ACCOUNT NUMBER, 
 CREATE TABLE BENEFICIARIES(
@@ -202,23 +242,49 @@ $$;
 			--UPDATE THE BALANCE IN THE ACCOUNT TABLE FOR BOTH PARTIES
 			--AND INSERT A ROW IN THE TRANSACTIONS TABLE AS A TRANSFER
 
-CREATE OR REPLACE PROCEDURE TRANSFER(
-	sender_account_number VARCHAR(50),
-	receiver_account_number VARCHAR(50),
-	amount DECIMAL(15,2)
+
+CREATE OR REPLACE PROCEDURE TRANSFER_MONEY(
+    sender_account_number VARCHAR(50),
+    receiver_account_number VARCHAR(50),
+    amount DECIMAL(15,2)
 )
 LANGUAGE plpgsql
 AS $$
+DECLARE
+    v_sender_id   INT;
+    v_receiver_id INT;
 BEGIN
-	--ENSURES THAT USER SENDS TO ANOTHER PERSON
-	IF sender_account_number = receiver_account_number
-	THEN RAISE EXCEPTION 'USER MUST SEND TO ANOTHER PERSON';
-	END IF;
-	--CALLING THE WITHDRAW FUNCTION 
-	PERFORM WITHDRAW(sender_account_number, amount);
-	--CALLING THE DEPOSIT FUNCTION
-	PERFORM DEPOSIT(receiver_account_number, amount);
-END;
-$$
+    IF sender_account_number = receiver_account_number THEN
+        RAISE EXCEPTION 'USER MUST SEND TO ANOTHER PERSON';
+    END IF;
 
-			
+    -- DEADLOCK PREVENTION: Fetch both account IDs first,
+    -- then lock them in a consistent order (lowest ID first).
+    -- This ensures two concurrent transfers never lock in opposite orders.
+    SELECT account_id INTO v_sender_id
+    FROM ACCOUNT WHERE account_number = sender_account_number;
+
+    SELECT account_id INTO v_receiver_id
+    FROM ACCOUNT WHERE account_number = receiver_account_number;
+
+    IF v_sender_id IS NULL   THEN RAISE EXCEPTION 'SENDER ACCOUNT NOT FOUND'; END IF;
+    IF v_receiver_id IS NULL THEN RAISE EXCEPTION 'RECEIVER ACCOUNT NOT FOUND'; END IF;
+
+    -- Lock in consistent order to prevent deadlocks
+    IF v_sender_id < v_receiver_id THEN
+        PERFORM pg_advisory_xact_lock(v_sender_id);
+        PERFORM pg_advisory_xact_lock(v_receiver_id);
+    ELSE
+        PERFORM pg_advisory_xact_lock(v_receiver_id);
+        PERFORM pg_advisory_xact_lock(v_sender_id);
+    END IF;
+
+    --ATOMICITY: Both operations succeed or both roll back
+    PERFORM WITHDRAW(sender_account_number, amount);
+    PERFORM DEPOSIT(receiver_account_number, amount);
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE; -- Rolls back the entire transaction automatically
+END;
+$$;

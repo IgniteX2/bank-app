@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import DashboardLayout from "../components/layout/Dashboard";
 import Sidebar from "../components/layout/Sidebar";
 import Topbar from "../components/layout/Topbar";
@@ -10,6 +10,12 @@ import { ThemeContext } from ".././context/ThemeContext";
 
 export default function Dashboard() {
   const { theme } = useContext(ThemeContext);
+  const [isOpen, setIsOpen] = useState(true);
+
+  const handleSidebarToggle = () => {
+    setIsOpen((prev) => !prev);
+  };
+
   return (
     <div
       style={{
@@ -17,7 +23,10 @@ export default function Dashboard() {
         height: "100vh",
       }}
     >
-      <DashboardLayout sidebar={<Sidebar />} topbar={<Topbar />}>
+      <DashboardLayout
+        sidebar={<Sidebar setIsOpen={handleSidebarToggle} isOpen={isOpen} />}
+        topbar={<Topbar isOpen={isOpen} setIsOpen={handleSidebarToggle} />}
+      >
         <div
           style={{
             display: "flex",

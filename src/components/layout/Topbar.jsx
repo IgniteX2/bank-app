@@ -61,14 +61,14 @@ export default function Topbar({ isOpen, setIsOpen, isMobile }) {
               }}
               className="text-sm font-semibold"
             ></div>
-            <h2
+            {/* <h2
               style={{ display: isMobile ? "none" : "block" }}
               className={`${isMobile ? "text-base" : "text-2xl"} font-medium ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]"}`}
             >
               Dashboard
-            </h2>
+            </h2> */}
             <p
-              className={`text-sm ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
+              className={`text-xl ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
               style={{
                 alignSelf: isMobile ? "center" : "",
                 color: isMobile && theme === "dark" ? "#f5f5f5" : "#0d1b2e",

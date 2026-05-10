@@ -9,6 +9,7 @@ import { NavLink } from "react-router-dom";
 import { ThemeContext } from ".././context/ThemeContext";
 import MobileNav from "../components/layout/MobileNav";
 import Button from "../components/ui/Button";
+import backgroundImage from "../assets/Background.png";
 
 export default function Dashboard() {
   const { theme } = useContext(ThemeContext);
@@ -35,7 +36,7 @@ export default function Dashboard() {
   return (
     <div
       style={{
-        background: theme === "dark" ? "rgb(13, 27, 46)" : "#ffffff",
+        background: theme === "dark" ? "rgb(13, 27, 46)" : "#F6F8FA",
         minHeight: "100vh",
       }}
     >
@@ -61,6 +62,10 @@ export default function Dashboard() {
             display: "flex",
             flexDirection: "column",
             gap: "20px",
+            backgroundImage: `url(${backgroundImage})`,
+            backgroundPosition: "center",
+            backgroundSize: "1000px",
+            backgroundRepeat: "no-repeat",
           }}
         >
           <div

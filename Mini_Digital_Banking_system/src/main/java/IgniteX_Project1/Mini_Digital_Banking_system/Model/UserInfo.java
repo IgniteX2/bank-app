@@ -22,8 +22,6 @@ public class UserInfo {
     @Column(name = "last_name", length = 50, nullable = false)
     private String lastName;
 
-//    @Column(name = "username", nullable = false)
-//    private String username;
 
     @Column(name = "full_name", insertable = false, updatable = false, length = 101)
     @GeneratedColumn("first_name || '  ' || last_name")
@@ -58,7 +56,7 @@ public class UserInfo {
     }
 
     @Column(name = "NIN_number", unique = true, nullable = false)
-    private String NINum;
+    private String NInNum;
 
 
 

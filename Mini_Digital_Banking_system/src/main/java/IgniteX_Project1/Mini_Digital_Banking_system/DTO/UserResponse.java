@@ -6,11 +6,11 @@ import java.time.LocalDateTime;
 
 @Data
 public class UserResponse {
-    private Long id;
+    private Long userId;
     private String fullName;
     private String email;
     private Long bvn;
-    private String ninNum;
-    private LocalDateTime createdAt;
-    private LocalDateTime modifiedAt;
+    private String NInNum;
+    private LocalDateTime UserCreatedAt;
+    private LocalDateTime UserModifiedAt;
 }

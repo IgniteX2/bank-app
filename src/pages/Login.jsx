@@ -33,7 +33,9 @@ function Login() {
       const res = await loginUser(form);
 
       login(res.data);
+
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("userId", res.data.userId);
 
       toast.success("Login successful");
       navigate("/dashboard");

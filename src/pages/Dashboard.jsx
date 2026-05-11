@@ -10,7 +10,7 @@ import { ThemeContext } from ".././context/ThemeContext";
 import MobileNav from "../components/layout/MobileNav";
 import Button from "../components/ui/Button";
 import backgroundImage from "../assets/Background.png";
-import { getCurrentUser } from "../services/authService";
+import { getUser } from "../services/authService";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -26,9 +26,13 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await getCurrentUser();
+        const userId = Number(localStorage.getItem("userId"));
 
-        console.log(res.data);
+        if (!userId) return;
+
+        const res = await getUser(userId);
+
+        console.log(`loggedUser: ${res.data}`);
         setUser(res.data);
       } catch (error) {
         console.log(error);
@@ -63,7 +67,7 @@ export default function Dashboard() {
             setIsOpen={handleSidebarToggle}
             isOpen={isOpen}
             isMobile={isMobile}
-            userName={user?.fullName || "Name"}
+            userName={user?.userId || "Name"}
             userEmail={user?.email || "Email"}
           />
         }

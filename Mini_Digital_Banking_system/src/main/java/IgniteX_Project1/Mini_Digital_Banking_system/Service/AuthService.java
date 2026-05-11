@@ -16,13 +16,16 @@ public class AuthService {
     private final UserRepository repo;
     private final BCryptPasswordEncoder encoder;
     private  final JwtUtil jwtUtil;
+    private final OtpService otpService;
 
     public AuthService(UserRepository repo,
                        BCryptPasswordEncoder encoder,
-                       JwtUtil jwtUtil) {
+                       JwtUtil jwtUtil,
+                       OtpService otpService) {
         this.repo = repo;
         this.encoder = encoder;
         this.jwtUtil = jwtUtil;
+        this.otpService = otpService;
     }
 
 
@@ -34,8 +37,19 @@ public class AuthService {
             throw new UserAlreadyExistsException("user already exist");
         }
 
+        boolean isOtpValid =
+                otpService.verifyOtp(
+                        req.getEmail(),
+                        req.getOtp()
+                );
+
+        if (!isOtpValid) {
+            throw new RuntimeException(
+                    "Invalid or expired OTP"
+            );
+        }
+
         UserInfo userInfo = new UserInfo();
-//        userInfo.setUser_id(req.getId());
         userInfo.setFirstName(req.getFirstName());
         userInfo.setLastName(req.getLastName());
 //        userInfo.setUsername(req.getUsername());
@@ -43,7 +57,7 @@ public class AuthService {
         userInfo.setPhoneNumber(req.getPhoneNumber());
         userInfo.setBvn(req.getBvn());
         userInfo.setUserPassword(encoder.encode(req.getUserPassword()));
-        userInfo.setNINum(req.getNInNum());
+        userInfo.setNInNum(req.getNInNum());
 
         repo.save(userInfo);
 

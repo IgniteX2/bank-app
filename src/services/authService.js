@@ -13,9 +13,5 @@ export const getBalance = async () => {
 };
 
 export const getUser = async (id) => {
-  return await API.get(`users/${id}`);
-};
-
-export const getCurrentUser = async () => {
-  return await API.get("/me");
+  return await API.get(`/api/users/${id}`);
 };

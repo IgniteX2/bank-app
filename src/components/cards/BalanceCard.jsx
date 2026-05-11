@@ -65,12 +65,12 @@ export default function BalanceCard({ balance, isMobile }) {
           >
             Available balance &nbsp;{" "}
             {viewBalance ? (
-              <LuEyeOff
+              <LuEye
                 style={{ alignSelf: "center" }}
                 onClick={handleViewBalance}
               />
             ) : (
-              <LuEye
+              <LuEyeOff
                 style={{ alignSelf: "center" }}
                 onClick={handleViewBalance}
               />

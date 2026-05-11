@@ -6,8 +6,6 @@ import lombok.Data;
 @Data
 public class AccountCreationRequest {
 
-//    @NotNull(message = "Id required")
-//    private Integer id;
 
     @NotBlank(message = "first_name is required")
     private String firstName;
@@ -38,5 +36,8 @@ public class AccountCreationRequest {
 
     @NotBlank(message = "NIN is required")
     private String NInNum;
+
+    @NotBlank(message = "otp required")
+    private String otp;
 
 }

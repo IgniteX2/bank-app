@@ -13,7 +13,7 @@ function App() {
   return (
     <>
       <ToastContainer position="top-right" />
-      <BrowserRouter>
+      {/* <BrowserRouter>
         <Routes>
           <Route
             path="/"
@@ -45,7 +45,8 @@ function App() {
             }
           />
         </Routes>
-      </BrowserRouter>
+      </BrowserRouter> */}
+      <Register />
     </>
   );
 }

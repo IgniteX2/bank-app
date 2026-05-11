@@ -143,7 +143,7 @@ public class PinServiceImpl implements PinService {
     public String resetPin(ResetPinRequest request) {
 
         UserInfo user = userRepository
-                .findByPinResetToken(request.getToken())
+                .findByPinResetToken((String) request.getToken())
                 .orElseThrow(() ->
                         new RuntimeException("Invalid token"));
 

@@ -66,9 +66,7 @@ function Settings() {
             backgroundSize: "1000px",
             backgroundRepeat: "no-repeat",
           }}
-        >
-          <h3 className="text-2xl font-bold">Settings</h3>
-        </div>
+        ></div>
       </DashboardLayout>
     </div>
   );

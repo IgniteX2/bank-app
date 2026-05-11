@@ -1,4 +1,4 @@
-import { useContext, useState, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import DashboardLayout from "../components/layout/Dashboard";
 import Sidebar from "../components/layout/Sidebar";
 import Topbar from "../components/layout/Topbar";
@@ -10,8 +10,10 @@ import { ThemeContext } from ".././context/ThemeContext";
 import MobileNav from "../components/layout/MobileNav";
 import Button from "../components/ui/Button";
 import backgroundImage from "../assets/Background.png";
+import { getUser } from "../services/authService";
 
 export default function Dashboard() {
+  const [user, setUser] = useState(null);
   const { theme } = useContext(ThemeContext);
   const [isOpen, setIsOpen] = useState(true);
 
@@ -20,6 +22,25 @@ export default function Dashboard() {
   const handleSidebarToggle = () => {
     setIsOpen((prev) => !prev);
   };
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const userId = Number(localStorage.getItem("userId"));
+
+        if (!userId) return;
+
+        const res = await getUser(userId);
+
+        console.log(`loggedUser: ${res.data}`);
+        setUser(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchUser();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -46,6 +67,8 @@ export default function Dashboard() {
             setIsOpen={handleSidebarToggle}
             isOpen={isOpen}
             isMobile={isMobile}
+            userName={user?.userId || "Name"}
+            userEmail={user?.email || "Email"}
           />
         }
         topbar={
@@ -62,17 +85,17 @@ export default function Dashboard() {
             display: "flex",
             flexDirection: "column",
             gap: "20px",
-            backgroundImage: `url(${backgroundImage})`,
+            backgroundImage: theme === "dark" ? "" : `url(${backgroundImage})`,
             backgroundPosition: "center",
-            backgroundSize: "1000px",
+            backgroundSize: isMobile ? "400px" : "1000px",
             backgroundRepeat: "no-repeat",
           }}
         >
           <div
-            style={{ marginTop: isMobile ? "20px" : "80px", marginLeft: "3%" }}
+            style={{ marginTop: isMobile ? "20px" : "50px", marginLeft: "3%" }}
             className={`${!isMobile ? "grid grid-cols-3 gap-4" : ""}`}
           >
-            <BalanceCard balance="67,480,100" isMobile={isMobile} />
+            <BalanceCard balance={user?.balance || 0.0} isMobile={isMobile} />
           </div>
 
           {isMobile ? (
@@ -142,7 +165,7 @@ export default function Dashboard() {
                 cursor: "pointer",
               }}
             >
-              <NavLink to="./transactions">
+              <NavLink to="../transactions">
                 <p
                   style={{
                     display: "flex",

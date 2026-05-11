@@ -13,21 +13,21 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(
-        origins = {
+//@CrossOrigin(
+//        origins = {
 //                "http://localhost:8083",
-                "http://localhost:5173"
-        },
-        allowedHeaders = "*",
-        methods = {
-                RequestMethod.GET,
-                RequestMethod.POST,
-                RequestMethod.PUT,
-                RequestMethod.DELETE,
-                RequestMethod.OPTIONS
-        },
-        allowCredentials = "true"
-)
+//                "http://localhost:5173"
+//        },
+//        allowedHeaders = "*",
+//        methods = {
+//                RequestMethod.GET,
+//                RequestMethod.POST,
+//                RequestMethod.PUT,
+//                RequestMethod.DELETE,
+//                RequestMethod.OPTIONS
+//        },
+//        allowCredentials = "true"
+//)
 
 public class AuthController {
 
@@ -46,9 +46,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<TokenResponseDTO> login(@Valid @RequestBody LogInRequest req) {
 
-        String token = authService.login(req);
+        TokenResponseDTO responseDTO = authService.login(req);
 
-        return ResponseEntity.ok(new TokenResponseDTO(token));
+        return ResponseEntity.ok(responseDTO);
 
     }
 }

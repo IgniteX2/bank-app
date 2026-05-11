@@ -9,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 import TransactionHistory from "./pages/TransactionHistory";
 import ResetPassword from "./pages/ResetPassword";
 import Settings from "./pages/Settings";
-import Profile from "./pages/Profile";
+
 import Sidebar from "./components/layout/Sidebar";
 
 function App() {
@@ -47,15 +47,6 @@ function App() {
             element={
               <ProtectedRoute>
                 <Settings />
-              </ProtectedRoute>
-            }
-          />
-
-          <Route
-            path="/profile"
-            element={
-              <ProtectedRoute>
-                <Profile />
               </ProtectedRoute>
             }
           />

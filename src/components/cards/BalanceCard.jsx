@@ -17,7 +17,7 @@ export default function BalanceCard({ balance, isMobile }) {
     <div
       style={{
         width: "96%",
-        height: isMobile ? "150px" : "250px",
+        height: isMobile ? "150px" : "230px",
         background: theme === "dark" ? "#354151" : "#f5f5f5",
         boxShadow:
           theme === "dark"
@@ -65,12 +65,12 @@ export default function BalanceCard({ balance, isMobile }) {
           >
             Available balance &nbsp;{" "}
             {viewBalance ? (
-              <LuEyeOff
+              <LuEye
                 style={{ alignSelf: "center" }}
                 onClick={handleViewBalance}
               />
             ) : (
-              <LuEye
+              <LuEyeOff
                 style={{ alignSelf: "center" }}
                 onClick={handleViewBalance}
               />

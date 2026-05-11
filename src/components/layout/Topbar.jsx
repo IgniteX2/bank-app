@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { useLocation } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import { FiBell } from "react-icons/fi";
 import { IoMoonOutline } from "react-icons/io5";
@@ -8,6 +9,83 @@ import userImg from "../../assets/user.jpg";
 
 export default function Topbar({ isOpen, setIsOpen, isMobile }) {
   const { theme, toggleTheme } = useContext(ThemeContext);
+  const location = useLocation();
+
+  const getPageTitle = () => {
+    switch (location.pathname) {
+      case "/dashboard":
+        return (
+          <div>
+            <h3
+              className={`text-lg font-bold ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
+            >
+              Dashboard
+            </h3>
+            <p
+              className={`text-sm ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#666D80]]"}`}
+            >
+              Hi, Alice Bourne!
+            </p>
+          </div>
+        );
+
+      case "/transactions":
+        return (
+          <div>
+            <h3
+              className={`text-lg font-bold ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
+            >
+              Transactions
+            </h3>
+            <p
+              style={{ display: isMobile ? "none" : "block" }}
+              className={`text-sm ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#666D80]]"}`}
+            >
+              Efficiently organize and keep track of your incoming receipts for
+              hassle-free financial management
+            </p>
+          </div>
+        );
+
+      case "/transfer":
+        return "Transfer Money";
+
+      case "/profile":
+        return (
+          <div>
+            <h3
+              className={`text-lg font-bold ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
+            >
+              Profile
+            </h3>
+            <p
+              className={`text-sm ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#666D80]]"}`}
+            >
+              Hi, Alice Bourne!
+            </p>
+          </div>
+        );
+
+      case "/settings":
+        return (
+          <div>
+            <h3
+              className={`text-lg font-bold ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
+            >
+              Settings
+            </h3>
+            <p
+              className={`text-sm ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#666D80]]"}`}
+            >
+              Customize and edit essential settings details.
+            </p>
+          </div>
+        );
+
+      default:
+        return "Welcome";
+    }
+  };
 
   return (
     <div
@@ -61,21 +139,15 @@ export default function Topbar({ isOpen, setIsOpen, isMobile }) {
               }}
               className="text-sm font-semibold"
             ></div>
-            {/* <h2
-              style={{ display: isMobile ? "none" : "block" }}
-              className={`${isMobile ? "text-base" : "text-2xl"} font-medium ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]"}`}
-            >
-              Dashboard
-            </h2> */}
-            <p
-              className={`text-xl ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
+            <span
+              // className={`text-xl ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
               style={{
                 alignSelf: isMobile ? "center" : "",
                 color: isMobile && theme === "dark" ? "#f5f5f5" : "#0d1b2e",
               }}
             >
-              Hi, Max Verstappen!
-            </p>
+              {getPageTitle()}
+            </span>
           </div>
         </div>
 

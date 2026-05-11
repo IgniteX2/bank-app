@@ -33,6 +33,7 @@ function Login() {
       const res = await loginUser(form);
 
       login(res.data);
+      localStorage.setItem("token", res.data.token);
 
       toast.success("Login successful");
       navigate("/dashboard");
@@ -240,7 +241,7 @@ function Login() {
                   Login
                 </button>
               </form>
-              <div>
+              <div className="register">
                 <span
                   // style={{ color: "rgba(10, 22, 40, 0.8)" }}
                   className={`${theme === "dark" ? "text-white" : ""}`}

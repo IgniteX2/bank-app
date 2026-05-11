@@ -11,3 +11,11 @@ export const registerUser = async (data) => {
 export const getBalance = async () => {
   return await API.get("/accounts/balance");
 };
+
+export const getUser = async (id) => {
+  return await API.get(`users/${id}`);
+};
+
+export const getCurrentUser = async () => {
+  return await API.get("/me");
+};

@@ -26,7 +26,7 @@ export default function Dashboard() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const userId = Number(localStorage.getItem("userId"));
+        const userId = localStorage.getItem("userId");
 
         if (!userId) return;
 
@@ -58,7 +58,7 @@ export default function Dashboard() {
     <div
       style={{
         background: theme === "dark" ? "rgb(13, 27, 46)" : "#F6F8FA",
-        minHeight: "100vh",
+        height: "100vh",
       }}
     >
       <DashboardLayout
@@ -112,7 +112,7 @@ export default function Dashboard() {
               border: theme === "dark" ? "none" : "1px solid #EBEBEB",
               borderTopLeftRadius: "15px",
               borderTopRightRadius: "15px",
-              height: "400px",
+              height: "350px",
               display: "flex",
               flexDirection: "column",
               // alignItems: "center",
@@ -123,7 +123,7 @@ export default function Dashboard() {
           >
             <div style={{ width: "96%", marginLeft: "2%" }}>
               <h3
-                className="p-3 font-semibold"
+                className="p-3 font-semibold text-sm"
                 style={{
                   marginTop: "20px",
                   color: theme === "dark" ? "#f5f5f5" : "",
@@ -157,7 +157,7 @@ export default function Dashboard() {
             </div>
             <div
               style={{
-                background: theme === "dark" ? "#0a1628" : "#FAFAFA",
+                background: theme === "dark" ? "#0a1628" : "#DFE1E7",
                 padding: "10px 0px",
                 display: "flex",
                 alignItems: "center",

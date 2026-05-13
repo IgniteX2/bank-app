@@ -7,3 +7,7 @@ export const transferMoney = async (data) => {
 export const getTransactions = async () => {
   return await API.get("/transactions");
 };
+
+export const getTransactionById = async (id) => {
+  return await API.get(`/transactions/${id}`);
+};

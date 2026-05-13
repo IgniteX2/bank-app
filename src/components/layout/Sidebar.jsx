@@ -37,13 +37,13 @@ export default function Sidebar({
       <div style={{ display: isMobile ? "none" : "block" }}>
         {isOpen ? (
           <aside
-            className={`sidebar w-84 h-screen ${theme === "light" ? "bg-[#F6F8FA]" : "bg-[#0a1628]"} shadow-md flex flex-col justify-between`}
+            className={`sidebar w-70 h-screen ${theme === "light" ? "bg-[#F6F8FA]" : "bg-[#0a1628]"} shadow-md flex flex-col justify-between`}
           >
             <div
               style={{
                 display: "flex",
                 flexDirection: "column",
-                height: "100%",
+                height: "100vh",
                 justifyContent: "space-between",
               }}
             >
@@ -70,7 +70,7 @@ export default function Sidebar({
                     <h3
                       style={{
                         alignSelf: "center",
-                        fontSize: "18px",
+                        fontSize: "14px",
                         marginLeft: "-10px",
 
                         // color: "rgba(10, 22, 40, 0.8)",
@@ -98,7 +98,7 @@ export default function Sidebar({
                   </button>
                 </div>
 
-                <div className="p-4" style={{ marginTop: "60px" }}>
+                <div className="p-4" style={{ marginTop: "40px" }}>
                   <p className="text-sm text-gray-400 mb-2">MAIN</p>
                   {navItems.map((item, i) => (
                     <div
@@ -106,14 +106,14 @@ export default function Sidebar({
                       className="flex items-center  font-normal p-2 text-sm text-[#818898]"
                       style={{
                         minHeight: "30px",
-                        marginTop: "10px",
+                        marginTop: "5px",
                         marginLeft: "15px",
                       }}
                     >
                       <NavLink
                         to={item.href}
                         className={({ isActive }) =>
-                          `flex items-center gap-x-3 p-2 text-sm rounded-lg transition font-normal ${
+                          `flex items-center gap-x-3 p-2 text-xs rounded-lg transition font-normal ${
                             isActive
                               ? "bg-[#ffffff] text-[#0D0D12] font-semibold"
                               : "text-[#818898]"
@@ -146,14 +146,14 @@ export default function Sidebar({
                       className="flex items-center gap-x-3 p-2 text-sm text-[#818898]"
                       style={{
                         minHeight: "30px",
-                        marginTop: "13px",
+                        marginTop: "5px",
                         marginLeft: "15px",
                       }}
                     >
                       <NavLink
                         to={item.href}
                         className={({ isActive }) =>
-                          `flex items-center gap-x-3 p-2 text-sm rounded-lg transition font-normal ${
+                          `flex items-center gap-x-3 p-2 text-xs rounded-lg transition font-normal ${
                             isActive
                               ? "bg-[#ffffff] text-[#0D0D12] font-semibold"
                               : "text-[#818898]"
@@ -193,7 +193,7 @@ export default function Sidebar({
               <div
                 style={{
                   width: "100%",
-                  height: "200px",
+                  height: "180px",
                   background: theme === "dark" ? "#354151" : "#ffffff",
                   boxShadow:
                     theme === "dark"
@@ -204,6 +204,7 @@ export default function Sidebar({
                   flexDirection: "column",
                   justifyContent: "space-around",
                   padding: "20px",
+                  marginTop: "10px",
                 }}
               >
                 <div className="flex items-start justify-between">
@@ -213,7 +214,7 @@ export default function Sidebar({
                     />
 
                     <h2
-                      className={`text-lg leading-none font-semibold ${theme === "dark" ? "text-[#ffffff]" : "text-[#0D0D12]"} `}
+                      className={`text-sm leading-none font-semibold ${theme === "dark" ? "text-[#ffffff]" : "text-[#0D0D12]"} `}
                     >
                       Need Support?
                     </h2>
@@ -228,7 +229,7 @@ export default function Sidebar({
                 </div>
 
                 <p
-                  className={`mt-10 max-w-4xl text-[14px] leading-[1.2] font-normal ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#818898]"}`}
+                  className={`mt-10 max-w-4xl text-xs leading-[1.2] font-normal ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#818898]"}`}
                 >
                   Connect with one of our experts to get support.
                 </p>
@@ -246,6 +247,7 @@ export default function Sidebar({
                     borderRadius: "10px",
                     cursor: "pointer",
                   }}
+                  className="text-xs"
                 >
                   Contact Us
                 </button>
@@ -263,8 +265,8 @@ export default function Sidebar({
               >
                 <div
                   style={{
-                    width: "60px",
-                    height: "60px",
+                    width: "50px",
+                    height: "50px",
                     borderRadius: "50%",
                     background: "transparent",
                     backgroundImage: `url(${userImg})`,
@@ -275,11 +277,11 @@ export default function Sidebar({
                 ></div>
                 <div className="text-xs  self-center">
                   <p
-                    className={`text-lg font-medium ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0D0D12]"}`}
+                    className={`text-sm font-medium ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0D0D12]"}`}
                   >
                     {userName}
                   </p>
-                  <p className="text-sm text-gray-500">{userEmail}</p>
+                  <p className="text-xs text-gray-500">{userEmail}</p>
                 </div>
               </div>
             </div>

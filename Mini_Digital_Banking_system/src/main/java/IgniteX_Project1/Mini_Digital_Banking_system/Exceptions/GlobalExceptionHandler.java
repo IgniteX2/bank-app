@@ -25,4 +25,9 @@ public class GlobalExceptionHandler {
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(ex.getMessage());
     }
+
+    @ExceptionHandler(UserNotFound.class)
+    public ResponseEntity<String> handleUserNotFound(UserNotFound ex) {
+        return ResponseEntity.status(404).body(ex.getMessage());
+    }
 }

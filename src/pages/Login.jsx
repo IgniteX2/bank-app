@@ -163,7 +163,7 @@ function Login() {
                 >
                   <FaEnvelope className="envelopeIcon" />
                   <input
-                    className={`cred ${theme === "dark" ? "credDark" : ""} ${error.email ? "error" : ""} ${
+                    className={`text-xs cred ${theme === "dark" ? "credDark" : ""} ${error.email ? "error" : ""} ${
                       shake.email ? "shake" : ""
                     } `}
                     type="email"
@@ -182,7 +182,7 @@ function Login() {
                 >
                   <GiPadlock className="padlockIcon" />
                   <input
-                    className={`cred ${theme === "dark" ? "credDark" : ""} ${error.email ? "error" : ""} ${
+                    className={`text-xs cred ${theme === "dark" ? "credDark" : ""} ${error.email ? "error" : ""} ${
                       shake.email ? "shake" : ""
                     }`}
                     name="password"
@@ -252,6 +252,25 @@ function Login() {
               </form>
             </div>
           </div>
+
+          {/* <div
+            className="register"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <span
+              // style={{ color: "rgba(10, 22, 40, 0.8)" }}
+              className={`text-xs  justify-self-center ${theme === "dark" ? "text-white" : ""}`}
+            >
+              Don't Have An Account?{" "}
+              <Link to="../Register">
+                <b>Register</b>
+              </Link>
+            </span>
+          </div>*/}
 
           <div
             className="register"

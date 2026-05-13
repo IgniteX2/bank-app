@@ -250,10 +250,29 @@ function Login() {
                   Login
                 </button>
               </form>
+
+              <div
+                className="register"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <span
+                  // style={{ color: "rgba(10, 22, 40, 0.8)" }}
+                  className={`text-xs  justify-self-center ${theme === "dark" ? "text-white" : ""}`}
+                >
+                  Don't Have An Account?{" "}
+                  <Link to="../Register">
+                    <b>Register</b>
+                  </Link>
+                </span>
+              </div>
             </div>
           </div>
 
-          <div
+          {/* <div
             className="register"
             style={{
               display: "flex",
@@ -270,7 +289,7 @@ function Login() {
                 <b>Register</b>
               </Link>
             </span>
-          </div>
+          </div>*/}
 
           <div
             className={`login-header shadow-[0_0_50px_12px_whitesmoke] ${theme === "dark" ? "headerDark" : "bg-[#ffffff]"}`}

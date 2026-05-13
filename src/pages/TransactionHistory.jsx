@@ -137,25 +137,32 @@ function TransactionHistory() {
               display: "flex",
               justifyContent: "space-between",
               flexDirection: isMobile ? "column" : "row",
-              marginBottom: 20,
+              marginBottom: 10,
               width: "100%",
               height: isMobile ? "40px" : "50px",
             }}
           >
             {/* FILTER BUTTONS */}
-            <div style={{ display: "flex", gap: 10 }}>
+            <div
+              style={{
+                display: "flex",
+                gap: 10,
+                // border: "1px solid red",
+                height: "35px",
+              }}
+            >
               {["all", "income", "expense"].map((type) => (
                 <button
                   key={type}
                   onClick={() => setFilterType(type)}
                   style={{
-                    padding: isMobile ? "5px 15px" : "0px 15px",
-                    borderRadius: isMobile ? 7 : 10,
+                    padding: isMobile ? "5px 15px" : "0px 10px",
+                    borderRadius: isMobile ? 7 : 5,
                     border: "none",
                     background: filterType === type ? "#C9A227" : "transparent",
                     color: filterType === type ? "#fff" : "#888",
                     cursor: "pointer",
-                    fontSize: isMobile ? "14px" : "16px",
+                    fontSize: isMobile ? "14px" : "10px",
                   }}
                 >
                   {type.toUpperCase()}
@@ -169,7 +176,7 @@ function TransactionHistory() {
                 display: "flex",
                 justifyContent: "space-between",
                 gap: 10,
-                height: isMobile ? "40px" : "",
+                height: isMobile ? "40px" : "35px",
                 marginTop: isMobile ? "20px" : "",
               }}
             >
@@ -182,7 +189,7 @@ function TransactionHistory() {
                   borderRadius: 10,
                 }}
               >
-                <FiSearch />
+                <FiSearch className="text-sm" />
                 <input
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -191,6 +198,8 @@ function TransactionHistory() {
                     border: "none",
                     outline: "none",
                     marginLeft: 10,
+                    fontSize: "10px",
+                    width: isMobile ? "170px" : "190px",
                   }}
                 />
               </div>
@@ -201,12 +210,13 @@ function TransactionHistory() {
                 style={{
                   border: "1px solid #E5E5E5",
                   background: "#ffffff",
-                  borderRadius: "16px",
-                  padding: isMobile ? "5px 22px" : "16px 22px",
+                  borderRadius: "10px",
+                  padding: isMobile ? "5px 22px" : "5px 22px",
                   cursor: "pointer",
                   color: "#666",
                   fontSize: "17px",
                   display: isMobile ? "flex" : "block",
+                  height: "35px",
                 }}
               >
                 <span>▼</span> Filter
@@ -237,6 +247,7 @@ function TransactionHistory() {
                   color: "#555",
                   borderBottom: "1px solid #e5e7eb",
                 }}
+                className="text-sm"
               >
                 {/* LEFT */}
                 <div
@@ -306,6 +317,7 @@ function TransactionHistory() {
                         transition: "0.3s ease",
                         gap: 15,
                       }}
+                      className="text-xs"
                     >
                       {/* LEFT SIDE */}
                       <div
@@ -472,6 +484,7 @@ function TransactionHistory() {
                     textAlign: "center",
                     color: "#6b7280",
                   }}
+                  className="text-sm"
                 >
                   No transaction found
                 </div>
@@ -625,11 +638,11 @@ function TransactionHistory() {
               marginTop: 20,
             }}
           >
-            <p>
+            <p className="text-sm">
               Page {currentPage} of {totalPages}
             </p>
 
-            <div style={{ display: "flex", gap: 10 }}>
+            <div style={{ display: "flex", gap: 10 }} className="text-sm">
               <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}>
                 Prev
               </button>

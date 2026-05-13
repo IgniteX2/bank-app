@@ -17,12 +17,12 @@ export default function BalanceCard({ balance, isMobile }) {
     <div
       style={{
         width: "96%",
-        height: isMobile ? "150px" : "230px",
+        height: isMobile ? "150px" : "180px",
         background: theme === "dark" ? "#354151" : "#f5f5f5",
         boxShadow:
           theme === "dark"
             ? "0 0px 20px 4px inset rgba(230, 230, 230, 0.2)"
-            : "",
+            : "0 0px 20px 4px  rgba(200, 200, 200, 0.4)",
         border: theme === "dark" ? "none" : "1px solid #EBEBEB",
       }}
       className=" p-4 rounded-xl "
@@ -32,7 +32,7 @@ export default function BalanceCard({ balance, isMobile }) {
           width: "90%",
           height: "200px",
           marginLeft: "5%",
-          marginTop: isMobile ? "0px" : "20px",
+          marginTop: isMobile ? "0px" : "5px",
           display: "flex",
           flexDirection: "column",
           rowGap: isMobile ? "70px" : "",
@@ -47,12 +47,12 @@ export default function BalanceCard({ balance, isMobile }) {
           }}
         >
           <p
-            className={`${theme === "dark" ? "text-[#f5f5f5]" : "text-gray-500"}`}
+            className={`${theme === "dark" ? "text-[#f5f5f5]" : "text-gray-500"} text-xs`}
           >
             My Balance
           </p>
           <p
-            className={`${theme === "dark" ? "text-[#f5f5f5]" : "text-gray-500"}`}
+            className={`${theme === "dark" ? "text-[#f5f5f5]" : "text-gray-500"} text-xs`}
           >
             NGN Naira
           </p>
@@ -60,7 +60,7 @@ export default function BalanceCard({ balance, isMobile }) {
 
         <div style={{ marginTop: isMobile ? "-50px" : "" }}>
           <p
-            className="text-gray-500 text-sm flex"
+            className="text-gray-500 text-xs flex"
             style={{ cursor: "pointer" }}
           >
             Available balance &nbsp;{" "}
@@ -77,7 +77,7 @@ export default function BalanceCard({ balance, isMobile }) {
             )}
           </p>
           <h1
-            className={`text-3xl font-semibold ${
+            className={`text-2xl font-semibold ${
               theme === "dark" ? "text-[#f5f5f5]" : "text-gray-500"
             }`}
           >
@@ -86,7 +86,7 @@ export default function BalanceCard({ balance, isMobile }) {
             ) : (
               <span className="flex gap-1">
                 {Array.from({ length: 4 }, (_, i) => (
-                  <FaAsterisk key={i} style={{ fontSize: "16px" }} />
+                  <FaAsterisk key={i} style={{ fontSize: "13px" }} />
                 ))}
               </span>
             )}

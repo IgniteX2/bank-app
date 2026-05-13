@@ -82,7 +82,7 @@ export default function BalanceCard({ balance, isMobile }) {
             }`}
           >
             {viewBalance ? (
-              <span>₦{balance}</span>
+              <span>₦ {balance}</span>
             ) : (
               <span className="flex gap-1">
                 {Array.from({ length: 4 }, (_, i) => (

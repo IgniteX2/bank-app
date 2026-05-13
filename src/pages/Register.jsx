@@ -1,41 +1,97 @@
 import React from 'react'
 import { FaRegUserCircle, FaUser } from 'react-icons/fa'
-import { FaRegFlag, FaFlag, FaEnvelope, FaEnvelopeCircleCheck, FaLock, FaEye, FaEyeSlash, FaRegCopyright, FaPhone } from 'react-icons/fa6'
+import { FaRegFlag, FaFlag, FaEnvelope, FaEnvelopeCircleCheck, FaLock, FaEye, FaEyeSlash, FaRegCopyright, FaPhone, FaMapLocationDot } from 'react-icons/fa6'
 import { RiPhoneLockLine } from 'react-icons/ri'
-import { MdContactPhone, MdError, MdOutlineAlternateEmail } from 'react-icons/md'
+import { MdContactPhone, MdError, MdOutlineAlternateEmail, MdPassword } from 'react-icons/md'
 import { FaCircleCheck } from 'react-icons/fa6'
 import { TbWorld } from "react-icons/tb"
 import { IoIosArrowDown } from 'react-icons/io'
 import { GoDotFill } from 'react-icons/go'
 import { BsBank } from 'react-icons/bs'
+import { BiWorld } from 'react-icons/bi'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Select from 'react-select'
+import { Link } from "react-router-dom";
+import API from '../services/api'
+import { registerUser } from '../services/authService'
+import { toast } from "react-toastify";
+
 
 function Register() {
 
   const [step, setStep] = useState(1)
-  const [fullName, setFullName] = useState(null)
-  const [email, setEmail] = useState(null)
-  const [password, setPassword] = useState(null)
+  // const [firstName, setFirstName] = useState(null)
+  // const [lastName, setLastName] = useState(null)
+  // const [email, setEmail] = useState(null)
+  // const [phone, setPhone] = useState(null)
+  // const [address, setAddress] = useState(null)
+  // const [country, setCountry] = useState(null)
+  // const [nextOfKin, setnextOfKin] = useState(null)
+  // const [password, setPassword] = useState(null)
+  // const [bvn, setBvn] = useState(null)
+  // const [nin, setNin] = useState(null)
+  // const [pin, setPin] = useState(null)
+  const [piN, setPiN] = useState(["", "", "", ""]);
   const [inputValue, setInputValue] = useState({
-    fullName: "",
+    firstName: "",
+    lastName: "",
     email: "",
-    password: ""
+    phoneNumber: "",
+    bvn: undefined,
+    userPassword: "",
+    accountType: "",
+    nationality: "",
+    NInNum: "",
+    address: "",
+    pin: "",
+    nextOfKin: ""
   })
   const [touched, setTouched] = useState({
-    fullName: false,
+    firstName: false,
+    lastName: false,
     email: false,
-    password: false
+    phoneNumber: false,
+    bvn: false,
+    userPassword: false,
+    accountType: false,
+    nationality: false,
+    NInNum: false,
+    address: false,
+    pin: false,
+    nextOfKin: false
   })
   const [errorMsg, setErrorMsg] = useState({
-    fullName: "",
+    firstName: "",
+    lastName: "",
     email: "",
-    password: ""
+    phoneNumber: "",
+    bvn: "",
+    userPassword: "",
+    accountType: "",
+    nationality: "",
+    NInNum: "",
+    address: "",
+    pin: "",
+    nextOfKin: ""
   })
-  const [countries, setCountries] = useState([])
 
   // INPUT CHANGE FUNCTION
+
+  const handlePinChange = (e, index) => {
+    const value = e.target.value;
+
+    const newPin = [...piN]
+    newPin[index] = value
+
+    setPiN(newPin);
+
+    setInputValue((prev) => ({
+      ...prev,
+      pin: newPin.join("")
+    }))
+  }
+
   const handleChange = (input) => {
     setInputValue((prev) => ({
       ...prev,
@@ -52,14 +108,57 @@ function Register() {
     const timer = setTimeout(() => {
       
       // NAME VALIDATION
-      inputValue.fullName.trim() === "" 
+      inputValue.firstName.trim() === "" 
         ? setErrorMsg((prev) => ({
             ...prev,
-            fullName: "This field is required"})
+            firstName: "This field is required"})
           )
         : setErrorMsg((prev) => ({
             ...prev,
-            fullName: ""})
+            firstName: ""})
+          )
+
+      inputValue.lastName.trim() === "" 
+        ? setErrorMsg((prev) => ({
+            ...prev,
+            lastName: "This field is required"})
+          )
+        : setErrorMsg((prev) => ({
+            ...prev,
+            lastName: ""})
+          )
+
+      // NEXT OF KIN VALIDATION
+      inputValue.nextOfKin.trim() === "" 
+        ? setErrorMsg((prev) => ({
+            ...prev,
+            nextOfKin: "This field is required"})
+          )
+        : setErrorMsg((prev) => ({
+            ...prev,
+            nextOfKin: ""})
+          )
+
+      // ADDRESS VALIDATION
+      inputValue.address.trim() === "" 
+        ? setErrorMsg((prev) => ({
+            ...prev,
+            address: "This field is required"})
+          )
+        : setErrorMsg((prev) => ({
+            ...prev,
+            address: ""})
+          )
+
+      // NATIONALITY VALIDATION
+      inputValue.nationality.trim() === "" 
+        ? setErrorMsg((prev) => ({
+            ...prev,
+            nationality: "This field is required"})
+          )
+        : setErrorMsg((prev) => ({
+            ...prev,
+            nationality: ""})
           )
 
       // EMAIL VALIDATION
@@ -81,48 +180,84 @@ function Register() {
         ) 
 
       // PASSWORD VALIDATION
-      inputValue.password.trim() === "" 
+      inputValue.userPassword.trim() === "" 
         ? setErrorMsg((prev) => ({
             ...prev,
-            password: "This field is required"})
+            userPassword: "This field is required"})
           )
         : setErrorMsg((prev) => ({
             ...prev,
-            password: ""})
+            userPassword: ""})
           )
+
+      // PHONE VALIDATION
+      const phoneRegex = /^(?:\d{11}|\+\d{1,3}\d{10})$/
+
+      inputValue.phoneNumber.trim() === "" 
+        ? setErrorMsg((prev) => ({
+          ...prev,
+          phoneNumber: "This field is required"})
+          ) 
+        : !phoneRegex.test(inputValue.phoneNumber.trim()) 
+        ? setErrorMsg((prev) => ({
+          ...prev,
+          phoneNumber: "Enter a valid phone number"})
+        ) 
+        : setErrorMsg((prev) => ({
+          ...prev,
+          phoneNumber: ""})
+        ) 
+
+      // BVN / NIN VALIDATION
+      inputValue.bvn || inputValue.NInNum.trim() === "" 
+        ? setErrorMsg((prev) => ({
+          ...prev,
+          bvn: "This field is required",
+          NInNum: "This field is required"})
+          ) 
+        : inputValue.bvn.trim().length || inputValue.NInNum.trim().length !== 11 
+        ? setErrorMsg((prev) => ({
+          ...prev,
+          bvn: "Enter a valid BVN number",
+          NInNum: "Enter a valid NIN number"})
+        ) 
+        : setErrorMsg((prev) => ({
+          ...prev,
+          bvn: "",
+          NInNum: ""})
+        ) 
+
     }, 1000)
 
     return () => clearTimeout(timer)
     
   }, [inputValue])
 
+  // SELECT ACCOUNT TYPE FUNCTION
+
+
   // PASSWORD STRENGTH CHECK
   const hasUpperCase = /[A-Z]/
   const hasNumber = /\d/
 
   const hasError = Object.values(errorMsg).some(
-    error => error !== ""
+    error => error === ""
   )
 
-  // CHOOSE A COUNTRY API
-  useEffect(() => {
-    const getCountries = async () => {
-      try {
-        const { data } = await axios.get('https://restcountries.com/v3.1/all?fields=name,flags')
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        const sorted = data.sort((a, b) => 
-          a.name.common.localeCompare(b.name.common)
-        )
+    try {
+      const data = await registerUser(inputValue);
 
-        // console.log(data)
-        setCountries(sorted)
-      } catch(error) {
-        console.error(error)
-      }
+      console.log(data);
+
+      toast.success("You have successfully created an acccout");
+      setStep((prev) => prev + 1);
+    } catch (error) {
+      console.log(error);
     }
-
-    getCountries()
-  }, [])
+  };
 
 
   return (
@@ -208,6 +343,26 @@ function Register() {
                 }
               <p>4. 2FA</p>
             </div>
+
+            <div 
+              className={`flex items-center gap-1  rounded-full bg-[#FFFFFF] border 
+              ${step >= 6 
+                ? "border-[#0D1B2E]" 
+                : "border-[#E7E8EA]"}`} 
+              style={{padding: "1px 8px 1px 2px"}}>
+
+              {step >= 6
+                ? <FaCircleCheck 
+                    className='border border-[#E7E8EA] rounded-full text-[20px] text-[#27A06E]' 
+                    style={{padding: "2px"}} 
+                  />
+                : <RiPhoneLockLine 
+                    className='border border-[#E7E8EA] rounded-full text-[20px] text-[#0D1B2E]' 
+                    style={{padding: "2px"}} 
+                  />
+                }
+              <p>5. Create PIN</p>
+            </div>
           </div>
 
           <div 
@@ -248,10 +403,11 @@ function Register() {
                 onSubmit={
                   (e) => {
                     e.preventDefault()
+                    setStep(prev => prev + 1)
 
-                    if(!hasError) {
-                      setStep(prev => prev + 1)
-                    }
+                    // if(!hasError) {
+                    //   setStep(prev => prev + 1)
+                    // }
                   }
                 }
                 action="" 
@@ -266,22 +422,49 @@ function Register() {
                     style={{padding: "10px"}}>
                     <FaUser className='text-[#6B7280]' />
                     <input
-                      value={inputValue.fullName}
+                      value={inputValue.firstName}
                       onChange={(e) => handleChange(e.target)} 
-                      onBlur={() => setTouched(prev => ({...prev, fullName: true}))}
+                      onBlur={() => setTouched(prev => ({...prev, firstName: true}))}
                       type="text"
-                      name='fullName' 
-                      placeholder='john doe' 
+                      name='firstName' 
+                      placeholder='Enter first name' 
                       className='w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]' 
                     />
                   </div>
                   
-                  { touched.fullName && 
-                    errorMsg.fullName && (
+                  { touched.firstName && 
+                    errorMsg.firstName && (
                     <div 
                       className=' w-full text-[14px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end'>
                       <MdError className='text-[16px]' />
-                      <p>{errorMsg.fullName}</p>
+                      <p>{errorMsg.firstName}</p>
+                    </div>
+                  ) }
+                </div>
+
+                <div 
+                  style={{ margin: "10px 0"}}>
+                  <div 
+                    className='flex items-center gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full' 
+                    style={{padding: "10px"}}>
+                    <FaUser className='text-[#6B7280]' />
+                    <input
+                      value={inputValue.lastName}
+                      onChange={(e) => handleChange(e.target)} 
+                      onBlur={() => setTouched(prev => ({...prev, lastName: true}))}
+                      type="text"
+                      name='lastName' 
+                      placeholder='Enter last name' 
+                      className='w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]' 
+                    />
+                  </div>
+                  
+                  { touched.lastName && 
+                    errorMsg.lastName && (
+                    <div 
+                      className=' w-full text-[14px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end'>
+                      <MdError className='text-[16px]' />
+                      <p>{errorMsg.lastName}</p>
                     </div>
                   ) }
                 </div>
@@ -313,6 +496,114 @@ function Register() {
                   )}
                 </div>
 
+                {/* ========== PHONE FIELD ========== */}
+                <div style={{ margin: "10px 0"}}>
+                  <div 
+                    className='flex items-center gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full' 
+                    style={{padding: "10px"}}>
+                    <FaPhone className='text-[#6B7280]' />
+                    <input 
+                      value={inputValue.phoneNumber}
+                      onChange={(e) => handleChange(e.target)}
+                      onBlur={() => setTouched(prev => ({...prev, phoneNumber: true}))}
+                      type="tel" 
+                      name='phoneNumber'
+                      placeholder='+1 000000000' 
+                      className='w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]' 
+                    />
+                  </div>
+                  
+                  { touched.phoneNumber &&
+                    errorMsg.phoneNumber && (
+                    <div 
+                      className='text-[14px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end'>
+                      <MdError className='text-[16px]' />
+                      <p>{errorMsg.phoneNumber}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* ========== ADDRESS FIELD ========== */}
+                <div style={{ margin: "10px 0"}}>
+                  <div 
+                    className='flex items-center gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full' 
+                    style={{padding: "10px"}}>
+                    <FaMapLocationDot className='text-[#6B7280]' />
+                    <input 
+                      value={inputValue.address}
+                      onChange={(e) => handleChange(e.target)}
+                      onBlur={() => setTouched(prev => ({...prev, address: true}))}
+                      type="text" 
+                      name='address'
+                      placeholder='53, Raymond Njoku Str, Ikoyi' 
+                      className='w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]' 
+                    />
+                  </div>
+                  
+                  { touched.address &&
+                    errorMsg.address && (
+                    <div 
+                      className='text-[14px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end'>
+                      <MdError className='text-[16px]' />
+                      <p>{errorMsg.address}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* ========== NATIONALITY FIELD ========== */}
+                <div style={{ margin: "10px 0"}}>
+                  <div 
+                    className='flex items-center gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full' 
+                    style={{padding: "10px"}}>
+                    <BiWorld className='text-[#6B7280] text-xl' />
+                    <input 
+                      value={inputValue.nationality}
+                      onChange={(e) => handleChange(e.target)}
+                      onBlur={() => setTouched(prev => ({...prev, nationality: true}))}
+                      type="text" 
+                      name='nationality'
+                      placeholder='Nigerian' 
+                      className='w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]' 
+                    />
+                  </div>
+                  
+                  { touched.nationality &&
+                    errorMsg.nationality && (
+                    <div 
+                      className='text-[14px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end'>
+                      <MdError className='text-[16px]' />
+                      <p>{errorMsg.nationality}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* ========== NEXT OF KIN FIELD ========== */}
+                <div style={{ margin: "10px 0"}}>
+                  <div 
+                    className='flex items-center gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full' 
+                    style={{padding: "10px"}}>
+                    <FaUser className='text-[#6B7280]' />
+                    <input 
+                      value={inputValue.nextOfKin}
+                      onChange={(e) => handleChange(e.target)}
+                      onBlur={() => setTouched(prev => ({...prev, nextOfKin: true}))}
+                      type="text" 
+                      name='nextOfKin'
+                      placeholder='sarah martins' 
+                      className='w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]' 
+                    />
+                  </div>
+                  
+                  { touched.nextOfKin &&
+                    errorMsg.nextOfKin && (
+                    <div 
+                      className='text-[14px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end'>
+                      <MdError className='text-[16px]' />
+                      <p>{errorMsg.nextOfKin}</p>
+                    </div>
+                  )}
+                </div>
+
                 {/* ========== PASSWORD FIELD ========== */}
                 <div style={{ margin: "10px 0"}}>
                   <div 
@@ -320,11 +611,11 @@ function Register() {
                     style={{padding: "10px"}}>
                     <FaLock className='text-[#6B7280]' />
                     <input
-                      value={inputValue.password}
+                      value={inputValue.userPassword}
                       onChange={(e) => handleChange(e.target)}
-                      onBlur={() => setTouched(prev => ({...prev, password: true}))}
+                      onBlur={() => setTouched(prev => ({...prev, userPassword: true}))}
                       type="password" 
-                      name="password" 
+                      name="userPassword" 
                       placeholder='Enter your password' 
                       className='w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]' 
                     />
@@ -332,12 +623,12 @@ function Register() {
                       className='text-[#6B7280] text-xl' />
                   </div>
                   
-                  { touched.password &&
-                    errorMsg.password && (
+                  { touched.userPassword &&
+                    errorMsg.userPassword && (
                     <div 
                       className='text-[14px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end'>
                       <MdError className='text-[16px]' />
-                      <p>{errorMsg.password}</p>
+                      <p>{errorMsg.userPassword}</p>
                     </div>
                   )}
                 </div>
@@ -355,17 +646,17 @@ function Register() {
                   </p>
                   <div className='flex items-center gap-1'>
                     <div 
-                      className={`w-26 h-2 rounded-md ${inputValue.password && hasUpperCase.test(inputValue.password) 
+                      className={`w-26 h-2 rounded-md ${inputValue.userPassword && hasUpperCase.test(inputValue.userPassword) 
                       ? "bg-[#27A06E]" 
                       : "bg-[#E5E7EB]"}`} 
                     />
                     <div 
-                      className={`w-26 h-2 rounded-md ${inputValue.password && hasNumber.test(inputValue.password) 
+                      className={`w-26 h-2 rounded-md ${inputValue.userPassword && hasNumber.test(inputValue.userPassword) 
                         ? "bg-[#27A06E]" 
                         : "bg-[#E5E7EB]"}`} 
                     />
                     <div 
-                      className={`w-26 h-2 rounded-md ${inputValue.password && inputValue.password.length >= 8 
+                      className={`w-26 h-2 rounded-md ${inputValue.userPassword && inputValue.userPassword.length >= 8 
                         ? "bg-[#27A06E]" 
                         : "bg-[#E5E7EB]"}`} 
                     />
@@ -374,14 +665,26 @@ function Register() {
 
                 <button 
                   type='submit'
-                  className={`rounded-lg text-[14px]/[24px] font-bold text-[#FFFFFF] bg-[#C9A227] ${hasError ? "cursor-not-allowed" : "cursor-pointer"} ${hasError ? "opacity-50" : "opacity-100"}`} 
-                  style={{padding: "6px 0", marginTop: "18px"}}>
+                  className={`rounded-lg text-[14px]/[24px] font-bold text-[#FFFFFF] bg-[#C9A227]`} 
+                  style={{padding: "6px 0", marginTop: "18px", marginBottom: "10px"}}>
                     Sign Up
                 </button>
               </form>
 
+              <div className="">
+                <span
+                  // style={{ color: "rgba(10, 22, 40, 0.8)" }}
+                  className={`text-[14px]/[24px]`}
+                >
+                  Have An Account?{" "}
+                  <Link to="../Login">
+                    <b>Login</b>
+                  </Link>
+                </span>
+              </div>
+
               <p 
-                className='text-[12px]/[24px] text-[#0D1B2E]' 
+                className='text-[12px]/[20px] text-[#0D1B2E] text-center' 
                 style={{marginTop: "20px"}}>
                   By clicking Register, you agree to accept IGNITE X'S Terms and Condition
               </p>
@@ -410,62 +713,89 @@ function Register() {
                   You can add another account later on , too.
               </p>
 
-              <form 
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setStep(prev => prev + 1)
+                }}
                 action="" 
                 className='flex flex-col w-full' 
                 style={{marginTop: "14px"}}>
+
                 <div 
+                  onClick={() => setInputValue((prev) => ({
+                    ...prev,
+                    accountType: "Savings"
+                  }))}
                   className='flex items-center justify-between gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full cursor-pointer' 
                   style={{padding: "10px", margin: "10px 0"}}>
                   <div className='flex items-center gap-3'>
+
                     <div 
                       className='bg-[#E7E8EA] w-10 h-10 flex items-center justify-center rounded-lg'>
                       <FaUser className='text-[#6B7280]' />
                     </div>
+                    
                     <div>
                       <p 
                         className='font-semibold text-[14px]/[24px] text-[#0D1B2E]'>
-                          Personal Account
+                          Savings Account
                       </p>
                       <p 
                         className='font-normal text-[12px]/[20px] text-[#6B7280]'>
                           For individuals use
                       </p>
                     </div>
+
                   </div>
                   <input 
-                    type="checkbox" 
+                    type="radio"
+                    name='accountType'
+                    checked={inputValue.accountType === "Savings"} 
+                    readOnly
                     className='w-5 h-5 accent-[#0D1B2E]' 
                   />
                 </div>
 
-                <div 
+                <div
+                  onClick={() => setInputValue((prev) => ({
+                    ...prev,
+                    accountType: "Current"
+                  }))}
                   className='flex items-center justify-between gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full cursor-pointer' 
                   style={{padding: "10px", margin: "10px 0"}}>
                   <div className='flex items-center gap-3'>
+
                     <div 
                       className='bg-[#E7E8EA] w-10 h-10 flex items-center justify-center rounded-lg'>
                       <FaEnvelope className='bg-[#E7E8EA] text-[#6B7280]' />
                     </div>
+
                       <div>
+
                         <p 
                           className='font-semibold text-[14px]/[24px] text-[#0D1B2E]'>
-                            Business Account
+                            Current Account
                         </p>
                         <p 
                           className='font-normal text-[12px]/[20px] text-[#6B7280]'>
                             For company use
                         </p>
+
                       </div>
+
                     </div>
                   <input 
-                    type="checkbox" 
+                    type="radio"
+                    name='accountType'
+                    checked={inputValue.accountType === "Current"}
+                    readOnly
                     className='w-5 h-5 accent-[#0D1B2E]' 
                   />
                 </div>
 
                 <button
-                  onClick={() => setStep(prev => prev + 1)}
+                  type='submit'
                   className='rounded-lg text-[14px]/[24px] font-bold text-[#FFFFFF] bg-[#C9A227] cursor-pointer' 
                   style={{padding: "6px 0", marginTop: "18px"}}>
                     Continue
@@ -475,7 +805,7 @@ function Register() {
           )}
 
 
-          {/* ========== ENTER BVN UI ========== */}
+          {/* ========== ENTER BVN / NIN UI ========== */}
           {step === 3 && (
             <div 
               className='w-md min-h-80 bg-[#FFFFFF] border border-[#E7E8EA] shadow-md flex flex-col items-center justify-center rounded-xl' 
@@ -496,6 +826,10 @@ function Register() {
               </p>
 
               <form 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setStep(prev => prev + 1);
+                }}
                 action="" 
                 className='flex flex-col gap-3 w-full' 
                 style={{marginTop: "24px"}}>
@@ -505,8 +839,11 @@ function Register() {
                       className='text-[#0D1B2E] text-[14px]/[20px] font-medium'>
                         Enter BVN
                     </label>
-                    <input 
-                      type="tel" 
+                    <input
+                      value={inputValue.bvn}
+                      onChange={(e) => handleChange(e.target)}
+                      type="text" 
+                      name='bvn'
                       className='gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full cursor-pointer outline-none text-[#0D1B2E] text-[16px]/[20px]'
                       style={{padding: "10px"}}
                     />
@@ -517,45 +854,18 @@ function Register() {
                       className='text-[#0D1B2E] text-[14px]/[20px] font-medium'>
                         Enter NIN
                     </label>
-                    <input 
-                      type="tel" 
+                    <input
+                      value={inputValue.NInNum}
+                      onChange={(e) => handleChange(e.target)}
+                      type="text" 
+                      name='NInNum'
                       className='gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full cursor-pointer outline-none text-[#0D1B2E] text-[16px]/[20px]'
                       style={{padding: "10px"}}
                     />
                   </div>
-                {/* <p 
-                  className='text-[#0D1B2E] text-[14px]/[20px] font-medium' 
-                  style={{marginBottom: "4px"}}>
-                    Choose country
-                </p>
-                <div 
-                  className='flex items-center justify-between gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full cursor-pointer' 
-                  style={{padding: "10px"}}>
-                    <div>
-                      <img src={} alt="" />
-                      <p className='text-[#6B7280]'>------ select country ------</p>
-                      <p className='text-[#0D1B2E] text-[16px]/[20px] font-normal'>{}</p>
-                    </div>
-                    <IoIosArrowDown />
-                </div> */}
-                {/* <div className='text-[#0D1B2E] text-[16px]/[20px] font-normal h-45 overflow-y-auto overscroll-contain border border-[#E5E7EB]' style={{padding: "0 10px"}}>
-                  {countries.map((country, index) => (
-                    <div
-                      key={index}
-                      className='flex items-center gap-3 cursor-pointer' style={{margin: "6px 0"}}
-                      >
-                      <img 
-                        src={country.flags.png} 
-                        alt=""
-                        className='w-5 h-5 object-cover'
-                      />
-                      <p>{country.name.common}</p>
-                    </div>
-                  ))}
-                </div> */}
 
                 <button 
-                  onClick={() => setStep(prev => prev + 1)}
+                  type='submit'
                   className='rounded-lg text-[14px]/[24px] font-bold text-[#FFFFFF] bg-[#C9A227] cursor-pointer' 
                   style={{padding: "6px 0", marginTop: "18px"}}>
                     Continue
@@ -565,7 +875,7 @@ function Register() {
           )}
 
 
-          {/* ========== VERIFY PHONE NUMBER UI ========== */}
+          {/* ========== VERIFY EMAIL UI ========== */}
           {step === 4 && (
             <div 
               className='w-md min-h-80 bg-[#FFFFFF] border border-[#E7E8EA] shadow-md flex flex-col items-center justify-center rounded-xl' 
@@ -586,6 +896,9 @@ function Register() {
               </p>
 
               <form 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setStep(prev => prev + 1)}}
                 action="" 
                 className='flex flex-col w-full' 
                 style={{marginTop: "24px"}}>
@@ -604,7 +917,7 @@ function Register() {
                 </div>
 
                 <button
-                  onClick={() => setStep(prev => prev + 1)}
+                  type='submit'
                   className='rounded-lg text-[14px]/[24px] font-bold text-[#FFFFFF] bg-[#C9A227] cursor-pointer' 
                   style={{padding: "6px 0", marginTop: "18px"}}>
                     Continue
@@ -639,6 +952,10 @@ function Register() {
               </p>
 
               <form 
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  setStep(prev => prev + 1)
+                }}
                 action="" 
                 className='flex flex-col w-full' 
                 style={{marginTop: "24px"}}>
@@ -650,27 +967,27 @@ function Register() {
                 <div 
                   className='flex justify-between gap-3 w-full cursor-pointer font-semibold'>
                   <input 
-                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-12 h-12 outline-none text-[#0D1B2E] text-center' maxLength={1} 
+                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-15 h-15 outline-none text-[#0D1B2E] text-center' maxLength={1} 
                   />
                   <input 
-                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-12 h-12 outline-none text-[#0D1B2E] text-center' maxLength={1} 
+                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-15 h-15 outline-none text-[#0D1B2E] text-center' maxLength={1} 
                   />
                   <input 
-                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-12 h-12 outline-none text-[#0D1B2E] text-center' maxLength={1} 
+                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-15 h-15 outline-none text-[#0D1B2E] text-center' maxLength={1} 
                   />
                   <input 
-                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-12 h-12 outline-none text-[#0D1B2E] text-center' maxLength={1} 
+                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-15 h-15 outline-none text-[#0D1B2E] text-center' maxLength={1} 
                   />
                   <input 
-                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-12 h-12 outline-none text-[#0D1B2E] text-center' maxLength={1} 
+                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-15 h-15 outline-none text-[#0D1B2E] text-center' maxLength={1} 
                   />
                   <input 
-                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-12 h-12 outline-none text-[#0D1B2E] text-center' maxLength={1} 
+                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-15 h-15 outline-none text-[#0D1B2E] text-center' maxLength={1} 
                   />
                 </div>
 
                 <button 
-                  onClick={() => setStep(prev => prev + 1)}
+                  type='submit'
                   className='rounded-lg text-[14px]/[24px] font-bold text-[#FFFFFF] bg-[#C9A227] cursor-pointer' 
                   style={{padding: "6px 0", margin: "18px 0"}}>
                     Continue
@@ -685,8 +1002,62 @@ function Register() {
           )}
 
 
-          {/* ========== SUCCESS REGISTRATION UI ========== */}
+
+          {/* ========== CREATE PIN UI ========== */}
           {step === 6 && (
+            <div 
+              className='w-md min-h-80 bg-[#FFFFFF] border border-[#E7E8EA] shadow-md flex flex-col items-center justify-center rounded-xl' 
+              style={{padding: "24px"}}>
+              <div 
+                className='bg-[#E7E8EA] w-16 h-16 rounded-full flex items-center justify-center text-[#6B7280] text-xl' 
+                style={{marginBottom: "14px"}}>
+                <MdPassword className='text-2xl' />
+              </div>
+              <h2 
+                className='text-[#0D1B2E] text-[24px]/[30px] font-bold text-center' 
+                style={{marginBottom: "3px"}}>
+                  Create a Transaction PIN
+              </h2>
+              <p 
+                className='text-[#6B7280] text-[14px]/[20px]'>
+                Make your transactions secure.
+              </p>
+
+              <form 
+                onSubmit={handleSubmit}
+                className='flex flex-col w-full' 
+                style={{marginTop: "24px", padding:"0 20px"}}>
+                <p 
+                  className='text-[#0D1B2E] text-[14px]/[20px] font-medium' 
+                  style={{marginBottom: "7px"}}>
+                    Enter PIN
+                </p>
+                <div 
+                  className='flex justify-between gap-3 w-full cursor-pointer font-semibold text-2xl'>
+                  {piN.map((value, index) => (
+                    <input
+                      key={index}
+                      value={piN[index] || ""}
+                      onChange={(e) => handlePinChange(e, index)}
+                      maxLength={1}
+                      className="bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-15 h-15 outline-none text-[#0D1B2E] text-center"
+                    />
+                  ))}
+                </div>
+
+                <button 
+                  type='submit'
+                  className='rounded-lg text-[14px]/[24px] font-bold text-[#FFFFFF] bg-[#C9A227] cursor-pointer' 
+                  style={{padding: "6px 0", margin: "18px 0"}}>
+                    Submit
+                </button>
+              </form>
+            </div>
+          )}
+
+
+          {/* ========== SUCCESS REGISTRATION UI ========== */}
+          {step === 7 && (
             <div 
               className='w-md min-h-80 bg-[#FFFFFF] border border-[#E7E8EA] shadow-md flex flex-col items-center justify-center rounded-xl' 
               style={{padding: "24px"}}>

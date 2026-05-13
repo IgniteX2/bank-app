@@ -5,27 +5,31 @@ import userImg from "../../assets/user.jpg";
 import { FiHome, FiHelpCircle, FiLogOut, FiX } from "react-icons/fi";
 import { LiaHeadsetSolid } from "react-icons/lia";
 import { LuPanelRightOpen, LuSettings } from "react-icons/lu";
-import { IoPersonCircleOutline } from "react-icons/io5";
 
 import { RiExchangeLine } from "react-icons/ri";
 
 const navItems = [
   { label: "Dashboard", icon: <FiHome />, href: "/dashboard" },
   {
-    label: "Transaction History",
+    label: "Transactions",
     icon: <RiExchangeLine />,
     href: "/transactions",
   },
 ];
 
 const otherItems = [
-  { label: "Profile", icon: <IoPersonCircleOutline />, href: "/profile" },
   { label: "Settings", icon: <LuSettings />, href: "/settings" },
   { label: "Get Help", icon: <FiHelpCircle />, href: "/help" },
   { label: "Logout", icon: <FiLogOut />, href: "/logout" },
 ];
 
-export default function Sidebar({ isOpen, setIsOpen, isMobile }) {
+export default function Sidebar({
+  isOpen,
+  setIsOpen,
+  isMobile,
+  userName,
+  userEmail,
+}) {
   const { theme } = useContext(ThemeContext);
 
   return (
@@ -273,9 +277,9 @@ export default function Sidebar({ isOpen, setIsOpen, isMobile }) {
                   <p
                     className={`text-lg font-medium ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0D0D12]"}`}
                   >
-                    Alice Bourne
+                    {userName}
                   </p>
-                  <p className="text-sm text-gray-500">Alice@mail.com</p>
+                  <p className="text-sm text-gray-500">{userEmail}</p>
                 </div>
               </div>
             </div>

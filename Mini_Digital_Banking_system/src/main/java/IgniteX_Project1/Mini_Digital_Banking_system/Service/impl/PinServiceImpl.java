@@ -93,7 +93,7 @@ public class PinServiceImpl implements PinService {
 
         userRepository.save(user);
     }
-    //So many methods here are not functional yet
+
     // ================= CHANGE PIN =================
     @Override
     public String changePin(ChangePinRequest request) {

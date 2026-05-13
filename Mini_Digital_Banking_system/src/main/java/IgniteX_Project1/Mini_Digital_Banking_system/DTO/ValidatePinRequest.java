@@ -1,5 +1,9 @@
 package IgniteX_Project1.Mini_Digital_Banking_system.DTO;
+
+import lombok.Data;
+
 //Used during transfer
+@Data
 public class ValidatePinRequest {
     private String pin;
 

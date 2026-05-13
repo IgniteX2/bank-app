@@ -163,7 +163,7 @@ function Login() {
                 >
                   <FaEnvelope className="envelopeIcon" />
                   <input
-                    className={`cred ${theme === "dark" ? "credDark" : ""} ${error.email ? "error" : ""} ${
+                    className={`text-xs cred ${theme === "dark" ? "credDark" : ""} ${error.email ? "error" : ""} ${
                       shake.email ? "shake" : ""
                     } `}
                     type="email"
@@ -182,7 +182,7 @@ function Login() {
                 >
                   <GiPadlock className="padlockIcon" />
                   <input
-                    className={`cred ${theme === "dark" ? "credDark" : ""} ${error.email ? "error" : ""} ${
+                    className={`text-xs cred ${theme === "dark" ? "credDark" : ""} ${error.email ? "error" : ""} ${
                       shake.email ? "shake" : ""
                     }`}
                     name="password"

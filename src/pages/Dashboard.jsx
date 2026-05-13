@@ -10,7 +10,7 @@ import { ThemeContext } from ".././context/ThemeContext";
 import MobileNav from "../components/layout/MobileNav";
 import Button from "../components/ui/Button";
 import backgroundImage from "../assets/Background.png";
-import { getUser } from "../services/authService";
+import { getBalance } from "../services/authService";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -30,7 +30,7 @@ export default function Dashboard() {
 
         if (!userId) return;
 
-        const res = await getUser(userId);
+        const res = await getBalance(userId);
 
         console.log(`loggedUser: ${res.data}`);
         setUser(res.data);
@@ -95,7 +95,11 @@ export default function Dashboard() {
             style={{ marginTop: isMobile ? "20px" : "50px", marginLeft: "3%" }}
             className={`${!isMobile ? "grid grid-cols-3 gap-4" : ""}`}
           >
-            <BalanceCard balance={user?.balance || 0.0} isMobile={isMobile} />
+            <BalanceCard
+              balance={user?.balance || 0.0}
+              isMobile={isMobile}
+              accountNum={user?.account_number || "#0000000000"}
+            />
           </div>
 
           {isMobile ? (

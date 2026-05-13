@@ -5,7 +5,7 @@ import Button from "../ui/Button";
 import { LuEyeOff, LuEye } from "react-icons/lu";
 import { FaAsterisk } from "react-icons/fa6";
 
-export default function BalanceCard({ balance, isMobile }) {
+export default function BalanceCard({ balance, isMobile, accountNum }) {
   const { theme } = useContext(ThemeContext);
   const [viewBalance, setViewBalance] = useState(true);
 
@@ -54,7 +54,7 @@ export default function BalanceCard({ balance, isMobile }) {
           <p
             className={`${theme === "dark" ? "text-[#f5f5f5]" : "text-gray-500"} text-xs`}
           >
-            NGN Naira
+            {accountNum}
           </p>
         </div>
 

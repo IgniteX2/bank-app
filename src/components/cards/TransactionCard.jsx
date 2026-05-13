@@ -35,7 +35,7 @@ export default function TransactionCard({ title, type, amount, date }) {
           {amount}
         </p>
         <p
-          className={`text-xs text-xs ${theme === "dark" ? "text-[#f5f5f5]" : "text-gray-400"}`}
+          className={`text-xs ${theme === "dark" ? "text-[#f5f5f5]" : "text-gray-400"}`}
         >
           {date}
         </p>

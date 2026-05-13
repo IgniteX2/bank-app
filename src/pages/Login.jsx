@@ -111,10 +111,10 @@ function Login() {
                     style={{ marginLeft: "5px" }}
                   >
                     <button
-                      style={{ paddingLeft: "5px", cursor: "pointer" }}
+                      style={{ paddingLeft: "0px", cursor: "pointer" }}
                       onClick={toggleTheme}
                       aria-label="toggle theme"
-                      className={`w-14 h-7 flex items-center rounded-full p-1 transition-colors duration-300 
+                      className={`w-12 h-5 flex items-center rounded-full p-1 transition-colors duration-300 
           ${theme === "dark" ? "text-black bg-[#121212] shadow-inner" : "bg-gray-300 "}`}
                     >
                       <div
@@ -130,11 +130,11 @@ function Login() {
                     </button>
 
                     {theme === "dark" ? (
-                      <span className="themeState font-semibold dark:text-white">
+                      <span className="themeState font-semibold dark:text-white text-xs">
                         &nbsp; &nbsp;Dark Mode
                       </span>
                     ) : (
-                      <span className="themeState font-semibold">
+                      <span className="themeState font-semibold text-xs">
                         &nbsp; &nbsp;Light Mode
                       </span>
                     )}
@@ -222,14 +222,21 @@ function Login() {
                     <input
                       type="checkbox"
                       className="remMe"
-                      style={{ alignSelf: "center" }}
+                      style={{
+                        alignSelf: "center",
+                        width: "15px",
+                        height: "15px",
+                      }}
                     />
-                    <label style={{ marginLeft: "10px", alignSelf: "center" }}>
+                    <label
+                      style={{ marginLeft: "10px", alignSelf: "center" }}
+                      className="text-xs"
+                    >
                       Remember me
                     </label>
                   </div>
 
-                  <div>
+                  <div className="text-xs">
                     <Link to="../ResetPassword">Forget password? </Link>
                   </div>
                 </div>
@@ -243,18 +250,26 @@ function Login() {
                   Login
                 </button>
               </form>
-              <div className="register">
-                <span
-                  // style={{ color: "rgba(10, 22, 40, 0.8)" }}
-                  className={`${theme === "dark" ? "text-white" : ""}`}
-                >
-                  Don't Have An Account?{" "}
-                  <Link to="../Register">
-                    <b>Register</b>
-                  </Link>
-                </span>
-              </div>
             </div>
+          </div>
+
+          <div
+            className="register"
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <span
+              // style={{ color: "rgba(10, 22, 40, 0.8)" }}
+              className={`text-xs  justify-self-center ${theme === "dark" ? "text-white" : ""}`}
+            >
+              Don't Have An Account?{" "}
+              <Link to="../Register">
+                <b>Register</b>
+              </Link>
+            </span>
           </div>
 
           <div
@@ -273,8 +288,8 @@ function Login() {
                   style={{
                     display: "flex",
                     alignSelf: "center",
-                    fontWeight: "bold",
                   }}
+                  className="text-xs"
                 >
                   <FaRegCopyright style={{ alignSelf: "center" }} /> 2026
                   IGNITEX BANK
@@ -286,9 +301,10 @@ function Login() {
                   style={{
                     display: "flex",
                     alignSelf: "center",
-                    fontWeight: "bold",
+
                     // color: "rgba(10, 22, 40, 0.8)",
                   }}
+                  className="text-xs"
                 >
                   <TbWorld
                     style={{

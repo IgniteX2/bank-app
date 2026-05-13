@@ -2,7 +2,7 @@ import React from 'react'
 import { FaRegUserCircle, FaUser } from 'react-icons/fa'
 import { FaRegFlag, FaFlag, FaEnvelope, FaEnvelopeCircleCheck, FaLock, FaEye, FaEyeSlash, FaRegCopyright, FaPhone } from 'react-icons/fa6'
 import { RiPhoneLockLine } from 'react-icons/ri'
-import { MdContactPhone, MdError, MdOutlineAlternateEmail } from 'react-icons/md'
+import { MdContactPhone, MdError, MdOutlineAlternateEmail, MdPassword } from 'react-icons/md'
 import { FaCircleCheck } from 'react-icons/fa6'
 import { TbWorld } from "react-icons/tb"
 import { IoIosArrowDown } from 'react-icons/io'
@@ -11,29 +11,66 @@ import { BsBank } from 'react-icons/bs'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Select from 'react-select'
+import { Link } from "react-router-dom";
+import API from '../services/api'
+
 
 function Register() {
 
   const [step, setStep] = useState(1)
-  const [fullName, setFullName] = useState(null)
-  const [email, setEmail] = useState(null)
-  const [password, setPassword] = useState(null)
+  // const [firstName, setFirstName] = useState(null)
+  // const [lastName, setLastName] = useState(null)
+  // const [email, setEmail] = useState(null)
+  // const [phone, setPhone] = useState(null)
+  // const [address, setAddress] = useState(null)
+  // const [country, setCountry] = useState(null)
+  // const [nextOfKin, setnextOfKin] = useState(null)
+  // const [password, setPassword] = useState(null)
+  // const [bvn, setBvn] = useState(null)
+  // const [nin, setNin] = useState(null)
+  // const [pin, setPin] = useState(null)
   const [inputValue, setInputValue] = useState({
-    fullName: "",
+    firstName: "",
+    lastName: "",
     email: "",
-    password: ""
+    phoneNumber: "",
+    bvn: "",
+    userPassword: "",
+    accountType: "",
+    nationality: "",
+    NInNum: "",
+    address: "",
+    pin: "",
+    nextOfKin: ""
   })
   const [touched, setTouched] = useState({
-    fullName: false,
+    firstName: false,
+    lastName: false,
     email: false,
-    password: false
+    phoneNumber: false,
+    bvn: false,
+    userPassword: false,
+    accountType: false,
+    nationality: false,
+    NInNum: false,
+    address: false,
+    pin: false,
+    nextOfKin: false
   })
   const [errorMsg, setErrorMsg] = useState({
-    fullName: "",
+    firstName: "",
+    lastName: "",
     email: "",
-    password: ""
+    phoneNumber: "",
+    bvn: "",
+    userPassword: "",
+    accountType: "",
+    nationality: "",
+    NInNum: "",
+    address: "",
+    pin: "",
+    nextOfKin: ""
   })
-  const [countries, setCountries] = useState([])
 
   // INPUT CHANGE FUNCTION
   const handleChange = (input) => {
@@ -52,14 +89,46 @@ function Register() {
     const timer = setTimeout(() => {
       
       // NAME VALIDATION
-      inputValue.fullName.trim() === "" 
+      inputValue.firstName.trim() === "" 
         ? setErrorMsg((prev) => ({
             ...prev,
-            fullName: "This field is required"})
+            firstName: "This field is required"})
           )
         : setErrorMsg((prev) => ({
             ...prev,
-            fullName: ""})
+            firstName: ""})
+          )
+
+      inputValue.lastName.trim() === "" 
+        ? setErrorMsg((prev) => ({
+            ...prev,
+            lastName: "This field is required"})
+          )
+        : setErrorMsg((prev) => ({
+            ...prev,
+            lastName: ""})
+          )
+
+      // NEXT OF KIN VALIDATION
+      inputValue.nextOfKin.trim() === "" 
+        ? setErrorMsg((prev) => ({
+            ...prev,
+            nextOfKin: "This field is required"})
+          )
+        : setErrorMsg((prev) => ({
+            ...prev,
+            nextOfKin: ""})
+          )
+
+      // ADDRESS VALIDATION
+      inputValue.address.trim() === "" 
+        ? setErrorMsg((prev) => ({
+            ...prev,
+            address: "This field is required"})
+          )
+        : setErrorMsg((prev) => ({
+            ...prev,
+            address: ""})
           )
 
       // EMAIL VALIDATION
@@ -90,6 +159,25 @@ function Register() {
             ...prev,
             password: ""})
           )
+
+      // PHONE VALIDATION
+      const phoneRegex = /^(?:\d{11}|\+\d{1,3}\d{10})$/
+
+      inputValue.phoneNumber.trim() === "" 
+        ? setErrorMsg((prev) => ({
+          ...prev,
+          phoneNumber: "This field is required"})
+          ) 
+        : !phoneRegex.test(inputValue.phoneNumber.trim()) 
+        ? setErrorMsg((prev) => ({
+          ...prev,
+          phoneNumber: "Enter a valid phone number"})
+        ) 
+        : setErrorMsg((prev) => ({
+          ...prev,
+          phoneNumber: ""})
+        ) 
+
     }, 1000)
 
     return () => clearTimeout(timer)
@@ -104,25 +192,13 @@ function Register() {
     error => error !== ""
   )
 
-  // CHOOSE A COUNTRY API
-  useEffect(() => {
-    const getCountries = async () => {
-      try {
-        const { data } = await axios.get('https://restcountries.com/v3.1/all?fields=name,flags')
-
-        const sorted = data.sort((a, b) => 
-          a.name.common.localeCompare(b.name.common)
-        )
-
-        // console.log(data)
-        setCountries(sorted)
-      } catch(error) {
-        console.error(error)
-      }
-    }
-
-    getCountries()
-  }, [])
+  // // CHOOSE A COUNTRY API
+  // useEffect(() => {
+  //   const registerUser = async () => {
+  //     try {
+  //       const { data } = await API.post("/auth/signup",)
+  //   }
+  // }, [])
 
 
   return (
@@ -208,6 +284,26 @@ function Register() {
                 }
               <p>4. 2FA</p>
             </div>
+
+            <div 
+              className={`flex items-center gap-1  rounded-full bg-[#FFFFFF] border 
+              ${step >= 6 
+                ? "border-[#0D1B2E]" 
+                : "border-[#E7E8EA]"}`} 
+              style={{padding: "1px 8px 1px 2px"}}>
+
+              {step >= 6
+                ? <FaCircleCheck 
+                    className='border border-[#E7E8EA] rounded-full text-[20px] text-[#27A06E]' 
+                    style={{padding: "2px"}} 
+                  />
+                : <RiPhoneLockLine 
+                    className='border border-[#E7E8EA] rounded-full text-[20px] text-[#0D1B2E]' 
+                    style={{padding: "2px"}} 
+                  />
+                }
+              <p>5. Create PIN</p>
+            </div>
           </div>
 
           <div 
@@ -266,18 +362,45 @@ function Register() {
                     style={{padding: "10px"}}>
                     <FaUser className='text-[#6B7280]' />
                     <input
-                      value={inputValue.fullName}
+                      value={inputValue.firstName}
                       onChange={(e) => handleChange(e.target)} 
-                      onBlur={() => setTouched(prev => ({...prev, fullName: true}))}
+                      onBlur={() => setTouched(prev => ({...prev, firstName: true}))}
                       type="text"
-                      name='fullName' 
+                      name='firstName' 
                       placeholder='john doe' 
                       className='w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]' 
                     />
                   </div>
                   
-                  { touched.fullName && 
-                    errorMsg.fullName && (
+                  { touched.firstName && 
+                    errorMsg.firstName && (
+                    <div 
+                      className=' w-full text-[14px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end'>
+                      <MdError className='text-[16px]' />
+                      <p>{errorMsg.firstName}</p>
+                    </div>
+                  ) }
+                </div>
+
+                <div 
+                  style={{ margin: "10px 0"}}>
+                  <div 
+                    className='flex items-center gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full' 
+                    style={{padding: "10px"}}>
+                    <FaUser className='text-[#6B7280]' />
+                    <input
+                      value={inputValue.lastName}
+                      onChange={(e) => handleChange(e.target)} 
+                      onBlur={() => setTouched(prev => ({...prev, lastName: true}))}
+                      type="text"
+                      name='lastName' 
+                      placeholder='john doe' 
+                      className='w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]' 
+                    />
+                  </div>
+                  
+                  { touched.lastName && 
+                    errorMsg.lastName && (
                     <div 
                       className=' w-full text-[14px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end'>
                       <MdError className='text-[16px]' />
@@ -311,6 +434,114 @@ function Register() {
                       <p>{errorMsg.email}</p>
                     </div>
                   )}
+                </div>
+
+                {/* ========== PHONE FIELD ========== */}
+                <div style={{ margin: "10px 0"}}>
+                  <div 
+                    className='flex items-center gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full' 
+                    style={{padding: "10px"}}>
+                    <FaEnvelope className='text-[#6B7280]' />
+                    <input 
+                      value={inputValue.email}
+                      onChange={(e) => handleChange(e.target)}
+                      onBlur={() => setTouched(prev => ({...prev, email: true}))}
+                      type="tel" 
+                      name='phone'
+                      placeholder='+1 000000000' 
+                      className='w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]' 
+                    />
+                  </div>
+                  
+                  { touched.email &&
+                    errorMsg.email && (
+                    <div 
+                      className='text-[14px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end'>
+                      <MdError className='text-[16px]' />
+                      <p>{errorMsg.email}</p>
+                    </div>
+                  )}
+                </div>
+
+                {/* ========== ADDRESS FIELD ========== */}
+                <div style={{ margin: "10px 0"}}>
+                  <div 
+                    className='flex items-center gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full' 
+                    style={{padding: "10px"}}>
+                    <FaEnvelope className='text-[#6B7280]' />
+                    <input 
+                      value={inputValue.email}
+                      onChange={(e) => handleChange(e.target)}
+                      // onBlur={() => setTouched(prev => ({...prev, email: true}))}
+                      type="text" 
+                      name='address'
+                      placeholder='53, Raymond Njoku Str, Ikoyi' 
+                      className='w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]' 
+                    />
+                  </div>
+                  
+                  {/* { touched.email &&
+                    errorMsg.email && (
+                    <div 
+                      className='text-[14px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end'>
+                      <MdError className='text-[16px]' />
+                      <p>{errorMsg.email}</p>
+                    </div>
+                  )} */}
+                </div>
+
+                {/* ========== NATIONALITY FIELD ========== */}
+                <div style={{ margin: "10px 0"}}>
+                  <div 
+                    className='flex items-center gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full' 
+                    style={{padding: "10px"}}>
+                    <FaEnvelope className='text-[#6B7280]' />
+                    <input 
+                      value={inputValue.email}
+                      onChange={(e) => handleChange(e.target)}
+                      // onBlur={() => setTouched(prev => ({...prev, email: true}))}
+                      type="text" 
+                      name='country'
+                      placeholder='Nigerian' 
+                      className='w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]' 
+                    />
+                  </div>
+                  
+                  {/* { touched.email &&
+                    errorMsg.email && (
+                    <div 
+                      className='text-[14px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end'>
+                      <MdError className='text-[16px]' />
+                      <p>{errorMsg.email}</p>
+                    </div>
+                  )} */}
+                </div>
+
+                {/* ========== NEXT OF KIN FIELD ========== */}
+                <div style={{ margin: "10px 0"}}>
+                  <div 
+                    className='flex items-center gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full' 
+                    style={{padding: "10px"}}>
+                    <FaEnvelope className='text-[#6B7280]' />
+                    <input 
+                      value={inputValue.email}
+                      // onChange={(e) => handleChange(e.target)}
+                      // onBlur={() => setTouched(prev => ({...prev, email: true}))}
+                      type="text" 
+                      name='nexOfKin'
+                      placeholder='sarah martins' 
+                      className='w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]' 
+                    />
+                  </div>
+                  
+                  {/* { touched.email &&
+                    errorMsg.email && (
+                    <div 
+                      className='text-[14px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end'>
+                      <MdError className='text-[16px]' />
+                      <p>{errorMsg.email}</p>
+                    </div>
+                  )} */}
                 </div>
 
                 {/* ========== PASSWORD FIELD ========== */}
@@ -375,13 +606,25 @@ function Register() {
                 <button 
                   type='submit'
                   className={`rounded-lg text-[14px]/[24px] font-bold text-[#FFFFFF] bg-[#C9A227] ${hasError ? "cursor-not-allowed" : "cursor-pointer"} ${hasError ? "opacity-50" : "opacity-100"}`} 
-                  style={{padding: "6px 0", marginTop: "18px"}}>
+                  style={{padding: "6px 0", marginTop: "18px", marginBottom: "10px"}}>
                     Sign Up
                 </button>
               </form>
 
+              <div className="">
+                <span
+                  // style={{ color: "rgba(10, 22, 40, 0.8)" }}
+                  className={`text-[14px]/[24px]`}
+                >
+                  Have An Account?{" "}
+                  <Link to="../Login">
+                    <b>Login</b>
+                  </Link>
+                </span>
+              </div>
+
               <p 
-                className='text-[12px]/[24px] text-[#0D1B2E]' 
+                className='text-[12px]/[20px] text-[#0D1B2E] text-center' 
                 style={{marginTop: "20px"}}>
                   By clicking Register, you agree to accept IGNITE X'S Terms and Condition
               </p>
@@ -523,36 +766,6 @@ function Register() {
                       style={{padding: "10px"}}
                     />
                   </div>
-                {/* <p 
-                  className='text-[#0D1B2E] text-[14px]/[20px] font-medium' 
-                  style={{marginBottom: "4px"}}>
-                    Choose country
-                </p>
-                <div 
-                  className='flex items-center justify-between gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full cursor-pointer' 
-                  style={{padding: "10px"}}>
-                    <div>
-                      <img src={} alt="" />
-                      <p className='text-[#6B7280]'>------ select country ------</p>
-                      <p className='text-[#0D1B2E] text-[16px]/[20px] font-normal'>{}</p>
-                    </div>
-                    <IoIosArrowDown />
-                </div> */}
-                {/* <div className='text-[#0D1B2E] text-[16px]/[20px] font-normal h-45 overflow-y-auto overscroll-contain border border-[#E5E7EB]' style={{padding: "0 10px"}}>
-                  {countries.map((country, index) => (
-                    <div
-                      key={index}
-                      className='flex items-center gap-3 cursor-pointer' style={{margin: "6px 0"}}
-                      >
-                      <img 
-                        src={country.flags.png} 
-                        alt=""
-                        className='w-5 h-5 object-cover'
-                      />
-                      <p>{country.name.common}</p>
-                    </div>
-                  ))}
-                </div> */}
 
                 <button 
                   onClick={() => setStep(prev => prev + 1)}
@@ -565,7 +778,7 @@ function Register() {
           )}
 
 
-          {/* ========== VERIFY PHONE NUMBER UI ========== */}
+          {/* ========== VERIFY EMAIL UI ========== */}
           {step === 4 && (
             <div 
               className='w-md min-h-80 bg-[#FFFFFF] border border-[#E7E8EA] shadow-md flex flex-col items-center justify-center rounded-xl' 
@@ -650,22 +863,22 @@ function Register() {
                 <div 
                   className='flex justify-between gap-3 w-full cursor-pointer font-semibold'>
                   <input 
-                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-12 h-12 outline-none text-[#0D1B2E] text-center' maxLength={1} 
+                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-15 h-15 outline-none text-[#0D1B2E] text-center' maxLength={1} 
                   />
                   <input 
-                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-12 h-12 outline-none text-[#0D1B2E] text-center' maxLength={1} 
+                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-15 h-15 outline-none text-[#0D1B2E] text-center' maxLength={1} 
                   />
                   <input 
-                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-12 h-12 outline-none text-[#0D1B2E] text-center' maxLength={1} 
+                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-15 h-15 outline-none text-[#0D1B2E] text-center' maxLength={1} 
                   />
                   <input 
-                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-12 h-12 outline-none text-[#0D1B2E] text-center' maxLength={1} 
+                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-15 h-15 outline-none text-[#0D1B2E] text-center' maxLength={1} 
                   />
                   <input 
-                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-12 h-12 outline-none text-[#0D1B2E] text-center' maxLength={1} 
+                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-15 h-15 outline-none text-[#0D1B2E] text-center' maxLength={1} 
                   />
                   <input 
-                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-12 h-12 outline-none text-[#0D1B2E] text-center' maxLength={1} 
+                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-15 h-15 outline-none text-[#0D1B2E] text-center' maxLength={1} 
                   />
                 </div>
 
@@ -685,8 +898,65 @@ function Register() {
           )}
 
 
-          {/* ========== SUCCESS REGISTRATION UI ========== */}
+
+          {/* ========== CREATE PIN UI ========== */}
           {step === 6 && (
+            <div 
+              className='w-md min-h-80 bg-[#FFFFFF] border border-[#E7E8EA] shadow-md flex flex-col items-center justify-center rounded-xl' 
+              style={{padding: "24px"}}>
+              <div 
+                className='bg-[#E7E8EA] w-16 h-16 rounded-full flex items-center justify-center text-[#6B7280] text-xl' 
+                style={{marginBottom: "14px"}}>
+                <MdPassword className='text-2xl' />
+              </div>
+              <h2 
+                className='text-[#0D1B2E] text-[24px]/[30px] font-bold text-center' 
+                style={{marginBottom: "3px"}}>
+                  Create a Transaction PIN
+              </h2>
+              <p 
+                className='text-[#6B7280] text-[14px]/[20px]'>
+                Make your transactions secure.
+              </p>
+
+              <form 
+                action="" 
+                className='flex flex-col w-full' 
+                style={{marginTop: "24px", padding:"0 20px"}}>
+                <p 
+                  className='text-[#0D1B2E] text-[14px]/[20px] font-medium' 
+                  style={{marginBottom: "7px"}}>
+                    Enter PIN
+                </p>
+                <div 
+                  className='flex justify-between gap-3 w-full cursor-pointer font-semibold text-2xl'>
+                  <input 
+                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-15 h-15 outline-none text-[#0D1B2E] text-center' maxLength={1} 
+                  />
+                  <input 
+                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-15 h-15 outline-none text-[#0D1B2E] text-center' maxLength={1} 
+                  />
+                  <input 
+                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-15 h-15 outline-none text-[#0D1B2E] text-center' maxLength={1} 
+                  />
+                  <input 
+                    className='bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-15 h-15 outline-none text-[#0D1B2E] text-center' maxLength={1} 
+                  />
+                </div>
+
+                <button 
+                  onClick={() => setStep(prev => prev + 1)}
+                  className='rounded-lg text-[14px]/[24px] font-bold text-[#FFFFFF] bg-[#C9A227] cursor-pointer' 
+                  style={{padding: "6px 0", margin: "18px 0"}}>
+                    Continue
+                </button>
+              </form>
+            </div>
+          )}
+
+
+          {/* ========== SUCCESS REGISTRATION UI ========== */}
+          {step === 7 && (
             <div 
               className='w-md min-h-80 bg-[#FFFFFF] border border-[#E7E8EA] shadow-md flex flex-col items-center justify-center rounded-xl' 
               style={{padding: "24px"}}>

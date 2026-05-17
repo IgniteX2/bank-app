@@ -39,20 +39,20 @@ public class UserInfo {
     @Column(name = "user_password", nullable = false)
     private String userPassword;
 
-    @Column(name = "account_type", nullable = false)
-    private String accountType;
+//    @Column(name = "account_type", nullable = false)
+//    private String accountType;
 
     @Column(name = "nationality", nullable = false)
     private String nationality;
 
-    @Column(name = "NIN_number", unique = true, nullable = false)
+    @Column(name = "nin_num", unique = true, nullable = false)
     private String NInNum;
 
-    @Column(name = "address_of_resdient", nullable = false)
+    @Column(name = "address", nullable = false)
     private String address;
 
-    @Column(name = "pin", nullable = false)
-    private Long pin;
+//    @Column(name = "pin", nullable = false)
+//    private Long pin;
 
     @Column(name = "user_created_at", nullable = false)
     private LocalDateTime userCreatedAt;

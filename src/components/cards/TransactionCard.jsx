@@ -13,7 +13,7 @@ export default function TransactionCard({ title, type, amount, date }) {
           style={{
             color: theme === "dark" ? "#f5f5f5" : "#0d1b2e",
           }}
-          className="font-medium"
+          className="font-medium text-sm"
         >
           {title}
         </p>
@@ -30,12 +30,12 @@ export default function TransactionCard({ title, type, amount, date }) {
 
       <div className="text-right">
         <p
-          className={`font-semibold ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]"}`}
+          className={`font-semibold text-sm ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]"}`}
         >
           {amount}
         </p>
         <p
-          className={`text-xs ${theme === "dark" ? "text-[#f5f5f5]" : "text-gray-400"}`}
+          className={`text-xs text-xs ${theme === "dark" ? "text-[#f5f5f5]" : "text-gray-400"}`}
         >
           {date}
         </p>

@@ -16,6 +16,7 @@ function App() {
   return (
     <>
       <ToastContainer position="top-right" />
+      {/* <BrowserRouter> */}
       <Sidebar />
       <BrowserRouter>
         <Routes>
@@ -61,8 +62,9 @@ function App() {
           />
         </Routes>
       </BrowserRouter>
+      {/* <Register /> */}
     </>
-  );
+  )
 }
 
 export default App;

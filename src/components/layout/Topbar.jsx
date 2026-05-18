@@ -17,7 +17,7 @@ export default function Topbar({ isOpen, setIsOpen, isMobile }) {
         return (
           <div>
             <h3
-              className={`text-lg font-bold ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
+              className={`text-sm font-bold ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
             >
               Dashboard
             </h3>
@@ -33,13 +33,13 @@ export default function Topbar({ isOpen, setIsOpen, isMobile }) {
         return (
           <div>
             <h3
-              className={`text-lg font-bold ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
+              className={`text-sm font-bold ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
             >
               Transactions
             </h3>
             <p
               style={{ display: isMobile ? "none" : "block" }}
-              className={`text-sm ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#666D80]]"}`}
+              className={`text-xs ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#666D80]]"}`}
             >
               Efficiently organize and keep track of your incoming receipts for
               hassle-free financial management
@@ -54,7 +54,7 @@ export default function Topbar({ isOpen, setIsOpen, isMobile }) {
         return (
           <div>
             <h3
-              className={`text-lg font-bold ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
+              className={`text-sm font-bold ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
             >
               Profile
             </h3>
@@ -70,12 +70,12 @@ export default function Topbar({ isOpen, setIsOpen, isMobile }) {
         return (
           <div>
             <h3
-              className={`text-lg font-bold ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
+              className={`text-sm font-bold ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
             >
               Settings
             </h3>
             <p
-              className={`text-sm ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#666D80]]"}`}
+              className={`text-xs ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#666D80]]"}`}
             >
               Customize and edit essential settings details.
             </p>
@@ -184,11 +184,11 @@ export default function Topbar({ isOpen, setIsOpen, isMobile }) {
               </button>
 
               {theme === "dark" ? (
-                <span className="themeState font-semibold dark:text-white">
+                <span className="themeState font-semibold dark:text-white text-xs">
                   {isMobile ? "" : <span>&nbsp; &nbsp;Dark Mode</span>}
                 </span>
               ) : (
-                <span className="themeState font-semibold">
+                <span className="themeState font-semibold text-xs">
                   {isMobile ? "" : <span>&nbsp; &nbsp;Light Mode</span>}
                 </span>
               )}

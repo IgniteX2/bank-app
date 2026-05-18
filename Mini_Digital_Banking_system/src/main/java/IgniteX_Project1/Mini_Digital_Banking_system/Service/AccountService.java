@@ -11,9 +11,13 @@ import org.springframework.stereotype.Service;
 public class AccountService {
     private final AccountRepository accountRepository;
 
-    public AccountResponse getAccountById(Long userId) {
-        AccountInfo account = accountRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Account not found for userId: " + userId));
+    public AccountService(AccountRepository accountRepository) {
+        this.accountRepository = accountRepository;
+    }
+
+    public AccountResponse getAccountByUserId(Long userId) {
+        AccountInfo account = accountRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("Account not found for useId: " + userId));
 
         AccountResponse response = new AccountResponse();
         response.setUserId(account.getUserId());

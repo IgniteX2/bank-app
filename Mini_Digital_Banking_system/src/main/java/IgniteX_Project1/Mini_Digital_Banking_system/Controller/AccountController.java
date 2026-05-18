@@ -2,6 +2,7 @@ package IgniteX_Project1.Mini_Digital_Banking_system.Controller;
 
 import IgniteX_Project1.Mini_Digital_Banking_system.DTO.AccountResponse;
 import IgniteX_Project1.Mini_Digital_Banking_system.Service.AccountService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

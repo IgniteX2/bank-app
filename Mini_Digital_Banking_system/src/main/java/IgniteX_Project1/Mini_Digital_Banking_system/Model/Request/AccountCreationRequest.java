@@ -37,14 +37,14 @@ public class AccountCreationRequest {
     @NotBlank(message = "NIN is required")
     private String NInNum;
 
-    @NotBlank(message = "account_type is Required")
-    private String accountType;
+//    @NotBlank(message = "account_type is Required")
+//    private String accountType;
 
     @NotBlank(message = "Nationality is required")
     private String nationality;
 
-    @NotNull(message = "pin is required")
-    private Long pin;
+//    @NotNull(message = "pin is required")
+//    private Long pin;
 
     @NotBlank(message = "address is required")
     private String address;

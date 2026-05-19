@@ -11,3 +11,7 @@ export const registerUser = async (data) => {
 export const getBalance = async () => {
   return await API.get("/accounts/balance");
 };
+
+export const getUser = async (id) => {
+  return await API.get(`/api/users/${id}`);
+};

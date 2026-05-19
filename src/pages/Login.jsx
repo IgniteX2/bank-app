@@ -34,6 +34,9 @@ function Login() {
 
       login(res.data);
 
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("userId", res.data.userId);
+
       toast.success("Login successful");
       navigate("/dashboard");
     } catch (err) {
@@ -240,7 +243,7 @@ function Login() {
                   Login
                 </button>
               </form>
-              <div>
+              <div className="register">
                 <span
                   // style={{ color: "rgba(10, 22, 40, 0.8)" }}
                   className={`${theme === "dark" ? "text-white" : ""}`}

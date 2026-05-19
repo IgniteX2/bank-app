@@ -98,7 +98,7 @@ function TableSkeleton({ isMobile }) {
               <tr className="animate-pulse">
                 <td
                   className="whitespace-nowrap px-6 py-4"
-                  className={{ paddingLeft: "20px" }}
+                  style={{ paddingLeft: "20px" }}
                 >
                   <div className="h-8 w-3/4 rounded bg-gray-200"></div>
                 </td>

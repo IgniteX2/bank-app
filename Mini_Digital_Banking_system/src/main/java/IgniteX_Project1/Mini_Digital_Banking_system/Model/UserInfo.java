@@ -41,13 +41,13 @@ public class UserInfo {
     @Column(name = "user_password", nullable = false)
     private String userPassword;
 
-    @Column(name = "transaction_pin", nullable = true)
+    @Column(name = "transaction_pin")
     private String transactionPin;
 
-    @Column(name = "pin_attempts", nullable = true)
+    @Column(name = "pin_attempts")
     private Integer pinAttempts = 0;
 
-    @Column(name = "pin_locked_until", nullable = true)
+    @Column(name = "pin_locked_until")
     private LocalDateTime pinLockedUntil;
 
     @Column(name = "pin_reset_token", nullable = true)

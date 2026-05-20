@@ -21,24 +21,13 @@ import { toast } from "react-toastify";
 function Register() {
 
   const [step, setStep] = useState(1)
-  // const [firstName, setFirstName] = useState(null)
-  // const [lastName, setLastName] = useState(null)
-  // const [email, setEmail] = useState(null)
-  // const [phone, setPhone] = useState(null)
-  // const [address, setAddress] = useState(null)
-  // const [country, setCountry] = useState(null)
-  // const [nextOfKin, setnextOfKin] = useState(null)
-  // const [password, setPassword] = useState(null)
-  // const [bvn, setBvn] = useState(null)
-  // const [nin, setNin] = useState(null)
-  // const [pin, setPin] = useState(null)
   const [piN, setPiN] = useState(["", "", "", ""]);
   const [inputValue, setInputValue] = useState({
     firstName: "",
     lastName: "",
     email: "",
     phoneNumber: "",
-    bvn: undefined,
+    bvn: "",
     userPassword: "",
     accountType: "",
     nationality: "",
@@ -75,6 +64,7 @@ function Register() {
     pin: "",
     nextOfKin: ""
   })
+  const [isViewPassword, setIsViewPassword] = useState(false);
 
   // INPUT CHANGE FUNCTION
 
@@ -99,9 +89,9 @@ function Register() {
     }))
   }
 
-  // const showPassword = (password) => {
-  //   password.type === "text"
-  // }
+  const handleShowPassword = () => {
+    setIsViewPassword((prev) => !prev);
+  };
 
   // FORM VALIDATION FUNCTION
   useEffect(() => {
@@ -264,104 +254,115 @@ function Register() {
     <div 
       className='min-h-screen max-w-360 flex items-start justify-center bg-[#f5f7f9]' style={{padding: "0 50px 0 50px"}}>
       <div 
-        className='w-330 min-h-screen flex flex-col justify-between' style={{margin: "20px 0"}}>
+        className='w-330 min-h-screen flex flex-col' style={{margin: "20px 0"}}>
         <header 
           className='flex items-center justify-between'>
           <div 
-            className='bg-[#1A3A5C] w-8 h-8 rounded-sm flex items-center justify-center'>
+            className='bg-[#1A3A5C] rounded-sm flex items-center justify-center'
+            style={{padding: "8px 35px"}}>
             <p>⚡</p>
           </div>
 
           <div 
             className='flex items-center gap-6 font-normal text-[16px] text-[#0D1B2E]'>
             <div 
-              className='flex items-center gap-1 rounded-full bg-[#FFFFFF] border border-[#0D1B2E]' 
-              style={{padding: "1px 8px 1px 2px"}}>
-              <FaCircleCheck 
-                className='border border-[#E7E8EA] rounded-full text-[20px] text-[#27A06E]' 
-                style={{padding: "2px"}} 
-              />
-              <p>1. Email</p>
+              className='rounded-full bg-[#FFFFFF] border border-[#0D1B2E]' 
+              style={{padding: "6px"}}>
+              <div className='flex items-center justify-center gap-1'>
+                <FaCircleCheck 
+                  className='border border-[#E7E8EA] rounded-full text-[25px] text-[#27A06E]' 
+                  style={{padding: "1px"}} 
+                />
+                <p className='hidden lg:block'>1. Email</p>
+              </div>
             </div>
 
             <div 
-              className={`flex items-center gap-1 rounded-full bg-[#FFFFFF] border 
+              className={`rounded-full flex items-center justify-center bg-[#FFFFFF] border 
               ${step >= 2 
                 ? "border-[#0D1B2E]" 
                 : "border-[#E7E8EA]"}`} 
-              style={{padding: "1px 8px 1px 2px"}}>
+              style={{padding: "6px"}}>
               
-              {step >= 2
-                ? <FaCircleCheck 
-                    className='border border-[#E7E8EA] rounded-full text-[20px] text-[#27A06E]' 
-                    style={{padding: "2px"}} 
-                  />
-                : <FaRegUserCircle 
-                    className='border border-[#E7E8EA] rounded-full text-[20px] text-[#0D1B2E]' 
-                    style={{padding: "2px"}} 
-                  />
-              }
-              <p>2. Account Type</p>
+              <div className='flex items-center gap-1'>
+                {step >= 2
+                  ? <FaCircleCheck 
+                      className='border border-[#E7E8EA] rounded-full text-[25px] text-[#27A06E]' 
+                      style={{padding: "1px"}} 
+                    />
+                  : <FaRegUserCircle 
+                      className='border border-[#E7E8EA] rounded-full text-[25px] text-[#0D1B2E]' 
+                      style={{padding: "1px"}} 
+                    />
+                }
+                <p className='hidden lg:block'>2. Account Type</p>
+              </div>
             </div>
 
             <div 
-              className={`flex items-center gap-1  rounded-full bg-[#FFFFFF] border 
+              className={`rounded-full bg-[#FFFFFF] border 
               ${step >= 3 
                 ? "border-[#0D1B2E]" 
                 : "border-[#E7E8EA]"}`} 
-              style={{padding: "1px 8px 1px 2px"}}>
+              style={{padding: "6px"}}>
               
-              {step >= 3
-                ? <FaCircleCheck 
-                    className='border border-[#E7E8EA] rounded-full text-[20px] text-[#27A06E]' 
-                    style={{padding: "2px"}} 
-                  />
-                : <FaRegFlag 
-                    className='border border-[#E7E8EA] rounded-full text-[20px] text-[#0D1B2E]' 
-                    style={{padding: "2px"}} 
-                  />
-                }
-              <p>3. BVN / NIN</p>
+              <div className='flex items-center justify-center gap-1  '>
+                {step >= 3
+                  ? <FaCircleCheck 
+                      className='border border-[#E7E8EA] rounded-full text-[25px] text-[#27A06E]' 
+                      style={{padding: "1px"}} 
+                    />
+                  : <FaRegFlag 
+                      className='border border-[#E7E8EA] rounded-full text-[25px] text-[#0D1B2E]' 
+                      style={{padding: "1px"}} 
+                    />
+                  }
+                <p className='hidden lg:block'>3. BVN / NIN</p>
+              </div>
             </div>
 
             <div 
-              className={`flex items-center gap-1  rounded-full bg-[#FFFFFF] border 
+              className={`rounded-full bg-[#FFFFFF] border 
               ${step >= 4 
                 ? "border-[#0D1B2E]" 
                 : "border-[#E7E8EA]"}`} 
-              style={{padding: "1px 8px 1px 2px"}}>
+              style={{padding: "6px"}}>
 
-              {step >= 4
-                ? <FaCircleCheck 
-                    className='border border-[#E7E8EA] rounded-full text-[20px] text-[#27A06E]' 
-                    style={{padding: "2px"}} 
-                  />
-                : <RiPhoneLockLine 
-                    className='border border-[#E7E8EA] rounded-full text-[20px] text-[#0D1B2E]' 
-                    style={{padding: "2px"}} 
-                  />
-                }
-              <p>4. 2FA</p>
+              <div className='flex items-center justify-center gap-1'>
+                {step >= 4
+                  ? <FaCircleCheck 
+                      className='border border-[#E7E8EA] rounded-full text-[25px] text-[#27A06E]' 
+                      style={{padding: "1px"}} 
+                    />
+                  : <RiPhoneLockLine 
+                      className='border border-[#E7E8EA] rounded-full text-[25px] text-[#0D1B2E]' 
+                      style={{padding: "1px"}} 
+                    />
+                  }
+                <p className='hidden lg:block'>4. 2FA</p>
+              </div>
             </div>
 
             <div 
-              className={`flex items-center gap-1  rounded-full bg-[#FFFFFF] border 
+              className={`rounded-full bg-[#FFFFFF] border 
               ${step >= 6 
                 ? "border-[#0D1B2E]" 
                 : "border-[#E7E8EA]"}`} 
-              style={{padding: "1px 8px 1px 2px"}}>
+              style={{padding: "6px"}}>
 
-              {step >= 6
-                ? <FaCircleCheck 
-                    className='border border-[#E7E8EA] rounded-full text-[20px] text-[#27A06E]' 
-                    style={{padding: "2px"}} 
-                  />
-                : <RiPhoneLockLine 
-                    className='border border-[#E7E8EA] rounded-full text-[20px] text-[#0D1B2E]' 
-                    style={{padding: "2px"}} 
-                  />
-                }
-              <p>5. Create PIN</p>
+              <div className='flex items-center justify-center gap-1  '>
+                {step >= 6
+                  ? <FaCircleCheck 
+                      className='border border-[#E7E8EA] rounded-full text-[25px] text-[#27A06E]' 
+                      style={{padding: "1px"}} 
+                    />
+                  : <RiPhoneLockLine 
+                      className='border border-[#E7E8EA] rounded-full text-[25px] text-[#0D1B2E]' 
+                      style={{padding: "1px"}} 
+                    />
+                  }
+                <p className='hidden lg:block'>5. Create PIN</p>
+              </div>
             </div>
           </div>
 
@@ -381,10 +382,10 @@ function Register() {
           {/* ========== SIGN UP FORM ========== */}
           {step === 1 && (
             <div 
-              className='w-md min-h-125 bg-[#FFFFFF] border border-[#E7E8EA] shadow-md flex flex-col items-center justify-center rounded-xl' 
+              className='w-sm min-h-125 bg-[#FFFFFF] border border-[#E7E8EA] shadow-md flex flex-col items-center justify-center rounded-xl' 
               style={{padding: "24px"}}>
               <div 
-                className='bg-[#1A3A5C] w-20 h-16 rounded-[20px] flex items-center justify-center' 
+                className='bg-[#1A3A5C] w-16 h-14 rounded-[20px] flex items-center justify-center' 
                 style={{marginBottom: "14px"}}>
                 <p>⚡</p>
               </div>
@@ -427,7 +428,7 @@ function Register() {
                       onBlur={() => setTouched(prev => ({...prev, firstName: true}))}
                       type="text"
                       name='firstName' 
-                      placeholder='Enter first name' 
+                      placeholder='First name' 
                       className='w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]' 
                     />
                   </div>
@@ -454,7 +455,7 @@ function Register() {
                       onBlur={() => setTouched(prev => ({...prev, lastName: true}))}
                       type="text"
                       name='lastName' 
-                      placeholder='Enter last name' 
+                      placeholder='Last name' 
                       className='w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]' 
                     />
                   </div>
@@ -589,7 +590,7 @@ function Register() {
                       onBlur={() => setTouched(prev => ({...prev, nextOfKin: true}))}
                       type="text" 
                       name='nextOfKin'
-                      placeholder='sarah martins' 
+                      placeholder='Next of kin' 
                       className='w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]' 
                     />
                   </div>
@@ -614,13 +615,22 @@ function Register() {
                       value={inputValue.userPassword}
                       onChange={(e) => handleChange(e.target)}
                       onBlur={() => setTouched(prev => ({...prev, userPassword: true}))}
-                      type="password" 
+                      type={isViewPassword ? "text" : "password"} 
                       name="userPassword" 
                       placeholder='Enter your password' 
                       className='w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]' 
                     />
-                    <FaEye 
-                      className='text-[#6B7280] text-xl' />
+
+                    <div onClick={handleShowPassword}>
+                      {isViewPassword ? (
+                        <FaEyeSlash className="togPass" />
+                      ) : (
+                        <FaEye className="togPass" />
+                      )}
+                    </div>
+                    {/* <FaEye 
+                      onClick={handleShowPassword}
+                      className='text-[#6B7280] text-xl' /> */}
                   </div>
                   
                   { touched.userPassword &&

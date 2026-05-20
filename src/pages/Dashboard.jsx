@@ -10,7 +10,7 @@ import { ThemeContext } from ".././context/ThemeContext";
 import MobileNav from "../components/layout/MobileNav";
 import Button from "../components/ui/Button";
 import backgroundImage from "../assets/Background.png";
-import { getBalance } from "../services/authService";
+import { getUser } from "../services/authService";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -30,9 +30,9 @@ export default function Dashboard() {
 
         if (!userId) return;
 
-        const res = await getBalance(userId);
+        const res = await getUser(userId);
 
-        console.log(`loggedUser: ${res.data}`);
+        console.log("loggedUser:", res.data);
         setUser(res.data);
       } catch (error) {
         console.log(error);

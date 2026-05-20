@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://schedule-tall-throwback.ngrok-free.dev",
+  baseURL: "http://localhost:8083",
 });
 
 // Attach token to every request

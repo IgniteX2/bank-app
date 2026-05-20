@@ -19,8 +19,8 @@ public class AccountInfo {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name = "account_name", nullable = false)
-    private String accountName;
+//    @Column(name = "account_name", nullable = false)
+//    private String accountName;
 
     @Column(name = "account_number", nullable = false, unique = true)
     private Long accountNumber;
@@ -30,6 +30,12 @@ public class AccountInfo {
 
     @Column(name = "balance")
     private BigDecimal balance;
+
+    @Column(name = "pin")
+    private Long pin;
+
+    @Column(name = "tier")
+    private String tier;
 
     @Column(name = "account_created_at")
     private LocalDateTime accountCreatedAt;

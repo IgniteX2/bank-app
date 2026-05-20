@@ -8,9 +8,10 @@ import java.time.LocalDateTime;
 @Data
 public class AccountResponse {
     private Long userId;
-    private String accountName;
+//    private String accountName;
     private Long accountNumber;
     private String accountType;
     private BigDecimal balance;
+    private String tier;
     private LocalDateTime accountCreatedAt;
 }

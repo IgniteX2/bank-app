@@ -45,7 +45,7 @@ public class UserInfo {
     @Column(name = "nationality", nullable = false)
     private String nationality;
 
-    @Column(name = "nin_num", unique = true, nullable = false)
+    @Column(name = "NIN_num", unique = true, nullable = false)
     private String NInNum;
 
     @Column(name = "address", nullable = false)
@@ -75,6 +75,12 @@ public class UserInfo {
 
     @Column(name = "proof_of_address")
     private String proofOfAddress;
+
+    @Column(name = "next_of_kin_contact")
+    private String nextOfKinContact;
+
+    @Column(name = "source_of_income")
+    private String sourceOfIncome;
 
 
 }

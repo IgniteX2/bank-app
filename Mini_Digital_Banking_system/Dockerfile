@@ -1,5 +1,5 @@
 # Step 1: Build the application using Maven and JDK 26
-FROM maven:3.9.9-eclipse-temurin-26 AS build
+FROM maven:3.9-eclipse-temurin-26-noble AS build
 WORKDIR /app
 COPY . .
 
@@ -9,7 +9,7 @@ RUN chmod +x ./mvnw
 # Compile and package the JAR file
 RUN ./mvnw clean package -DskipTests
 
-# Step 2: Use a lightweight JRE/JDK 26 image to run the app
+# Step 2: Use a lightweight JDK 26 image to run the app
 FROM eclipse-temurin:26-jdk-jammy
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar

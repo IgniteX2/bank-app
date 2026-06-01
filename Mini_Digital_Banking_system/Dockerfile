@@ -2,6 +2,10 @@
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 COPY . .
+
+# FIX: Grant executable permission to the Maven wrapper
+RUN chmod +x ./mvnw
+
 RUN ./mvnw clean package -DskipTests
 
 # Step 2: Use a lightweight JRE image to run the app

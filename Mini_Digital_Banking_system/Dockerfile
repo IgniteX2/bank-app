@@ -1,20 +1,21 @@
-# Step 1: Build the application using Maven
-FROM maven:3.9.6-eclipse-temurin-17 AS build
+# Step 1: Build the application using Maven and JDK 26
+FROM maven:3.9.9-eclipse-temurin-26 AS build
 WORKDIR /app
 COPY . .
 
-# FIX: Grant executable permission to the Maven wrapper
+# Grant executable permission to the Maven wrapper
 RUN chmod +x ./mvnw
 
+# Compile and package the JAR file
 RUN ./mvnw clean package -DskipTests
 
-# Step 2: Use a lightweight JRE image to run the app
-FROM eclipse-temurin:17-jre-jammy
+# Step 2: Use a lightweight JRE/JDK 26 image to run the app
+FROM eclipse-temurin:26-jdk-jammy
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
 # Expose Spring Boot's default port
 EXPOSE 8083
 
-# Limit Java memory allocation to stay under Render's 512MB free tier limit
+# Keep your JVM memory safely within Render's 512MB free tier limit
 ENTRYPOINT ["java", "-Xmx350m", "-jar", "app.jar"]

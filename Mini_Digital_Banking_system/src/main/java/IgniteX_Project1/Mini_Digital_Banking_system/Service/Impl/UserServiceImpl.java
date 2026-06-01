@@ -1,13 +1,14 @@
-package IgniteX_Project1.Mini_Digital_Banking_system.Service;
+package IgniteX_Project1.Mini_Digital_Banking_system.Service.Impl;
 
 import IgniteX_Project1.Mini_Digital_Banking_system.DTO.UserResponse;
 import IgniteX_Project1.Mini_Digital_Banking_system.Exceptions.UserNotFound;
 import IgniteX_Project1.Mini_Digital_Banking_system.Model.UserInfo;
+import IgniteX_Project1.Mini_Digital_Banking_system.Service.UserService;
 import IgniteX_Project1.Mini_Digital_Banking_system.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private  final UserRepository userRepository;
 

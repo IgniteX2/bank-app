@@ -39,6 +39,18 @@ public class UserInfo {
     @Column(name = "user_password", nullable = false)
     private String userPassword;
 
+    @Column(name = "transaction_pin", nullable = true)
+    private String transactionPin;
+
+    @Column(name = "pin_attempts", nullable = true)
+    private Integer pinAttempts = 0;
+
+    @Column(name = "pin_locked_until", nullable = true)
+    private LocalDateTime pinLockedUntil;
+
+    @Column(name = "pin_reset_token", nullable = true)
+    private String pinResetToken;
+
 //    @Column(name = "account_type", nullable = false)
 //    private String accountType;
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
-import Button from "../ui/Button";
+import MyButton from "../ui/ActionsButtons";
 import { LuEyeOff, LuEye } from "react-icons/lu";
 import { FaAsterisk } from "react-icons/fa6";
 
@@ -94,7 +94,7 @@ export default function BalanceCard({ balance, isMobile, accountNum }) {
         </div>
         {isMobile ? null : (
           <div>
-            <Button />
+            <MyButton />
           </div>
         )}
       </div>

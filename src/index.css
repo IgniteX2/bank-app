@@ -118,7 +118,11 @@ body {
 
 @media (max-width: 768px) {
   .register {
+<<<<<<< sekemi/frontend
     margin-top: -150px;
+=======
+    margin-top: 0px;
+>>>>>>> main
   }
 }
 

@@ -10,15 +10,16 @@ import TransactionHistory from "./pages/TransactionHistory";
 import ResetPassword from "./pages/ResetPassword";
 import Settings from "./pages/Settings";
 
-import Sidebar from "./components/layout/Sidebar";
+
+// import Sidebar from "./components/layout/Sidebar";
 
 function App() {
   return (
     <>
-      <ToastContainer position="top-right" />
       {/* <BrowserRouter> */}
-      <Sidebar />
+      {/* <Sidebar /> */}
       <BrowserRouter>
+        <ToastContainer position="top-right" />
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
           <Route path="/dashboard" element={<Dashboard />} />

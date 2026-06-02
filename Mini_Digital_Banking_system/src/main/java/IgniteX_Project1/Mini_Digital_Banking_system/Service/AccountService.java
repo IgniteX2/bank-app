@@ -13,8 +13,8 @@ public class AccountService {
         this.accountRepository = accountRepository;
     }
 
-    public AccountResponse getAccountById(Long userId) {
-        AccountInfo account = accountRepository.findById(userId)
+    public AccountResponse getAccountByUserId(Long userId) {
+        AccountInfo account = accountRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Account not found for useId: " + userId));
 
         AccountResponse response = new AccountResponse();

@@ -19,11 +19,8 @@ user_id SERIAL PRIMARY KEY,
  nationality VARCHAR(50),
  source_of_income VARCHAR(50)
  
- pin AUTO GENERATED NOT NULL
-); 
 
-SELECT *
-FROM USERS;
+); 
 
 --CREATING THE FUNCTION THAT WOULD AUTO GENERATE THE ACCOUNT NUMBER
 CREATE OR REPLACE FUNCTION GENERATE_ACCOUNT_NUMBER()
@@ -37,16 +34,14 @@ BEGIN
         -- 67 + 8 random digits
         v_account_number := '67' ||
             FLOOR(10000000 + RANDOM() * 90000000)::TEXT;
-
-        -- Ensure uniqueness
-        IF NOT EXISTS (
+			--EXIT LOOP IF IT ALREADY EXISTS
+			  EXIT WHEN NOT EXISTS (
             SELECT 1
-            FROM accounts
+            FROM ACCOUNT
             WHERE account_number = v_account_number
-        ) THEN
-            EXIT;
-        END IF;
-    END LOOP;
+        );
+
+           END LOOP;
 
     RETURN v_account_number;
 END;
@@ -61,13 +56,10 @@ CREATE TABLE ACCOUNT(
 	account_number VARCHAR(10) UNIQUE NOT NULL DEFAULT GENERATE_ACCOUNT_NUMBER(),
 	account_type VARCHAR(100),
 	balance DECIMAL(15,2) DEFAULT 0.00 CHECK (balance>=0),
-	pin INT NOT NULL,
+	pin INT ,
 	tier VARCHAR(50),
 	account_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
-SELECT *
-FROM ACCOUNT;
 
 
 --CREATING THE SEQUENCE THAT GENERATES A 9-DIGIT TRANSACTION ID
@@ -78,7 +70,7 @@ INCREMENT BY 1;
 
 --CREATING THE TRANSACTIONS TABLE THAT WOULD STORE ALL KINDS OF TRANSACTIONS(WITHDRAWALS, DEPOSITS, TRANSFER)
 
-CREATE TABLE TRANSACTION(
+CREATE TABLE TRANSACTIONS(
 	 transaction_id BIGINT PRIMARY KEY DEFAULT nextval('transaction_id_seq'),
 	sender_account_id INT REFERENCES ACCOUNT(account_id) ON DELETE SET NULL,
 	receiver_account_id INT  REFERENCES ACCOUNT(account_id) ON DELETE SET NULL,
@@ -89,24 +81,20 @@ CREATE TABLE TRANSACTION(
 	transaction_created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-SELECT *
-FROM TRANSACTION;
-
-
 
 --CREATING THE BENEFICIARIES TABLE THAT STORES THE FULLNAME, ACCOUNT NUMBER, 
 CREATE TABLE BENEFICIARIES(
-	beneficiaries_id,
+	beneficiaries_id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
 	user_id INT NOT NULL REFERENCES USERS(user_id) ON DELETE CASCADE,
 	account_id INT NOT NULL REFERENCES ACCOUNT(account_id) ON DELETE CASCADE,
-	account_number VARCHAR(50),
-	full_name	VARCHAR(50)
-)
+	account_number VARCHAR(50) NOT NULL,
+	beneficiary_name	VARCHAR(50) NOT NULL,
+	isFavorite BOOLEAN NOT NULL DEFAULT FALSE,
+	beneficiary_created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
-
-
-DROP TABLE TRANSACTION;
-
+	--User should not save beneficiary twice
+	  UNIQUE(user_id, account_number)
+);
 
 --3 STORED PROCEDURES NEEDED FOR THE TASK
 -- DEPOSIT_MONEY(account_num, amount) : IT'LL UPDATE THE BALANCE IN THE ACCOUNT TABLE
@@ -145,7 +133,7 @@ CREATE OR REPLACE FUNCTION DEPOSIT(account_num VARCHAR(50) , amount DECIMAL(15,2
 			 WHERE account_number = account_num;
 
 			-- INSERT THE NEW ROW INTO THE TRANSACTIONS TABLE
-			INSERT INTO TRANSACTION(
+			INSERT INTO TRANSACTIONS(
 			sender_account_id,
 			receiver_account_id,
 			transaction_type,
@@ -212,7 +200,7 @@ CREATE OR REPLACE FUNCTION WITHDRAW(account_num VARCHAR(50) , amount DECIMAL(15,
 			 WHERE account_number = account_num;
 
 			-- INSERT THE NEW ROW INTO THE TRANSACTIONS TABLE
-			INSERT INTO TRANSACTION(
+			INSERT INTO TRANSACTIONS(
 			sender_account_id,
 			receiver_account_id,
 			transaction_type,
@@ -288,3 +276,38 @@ EXCEPTION
         RAISE; -- Rolls back the entire transaction automatically
 END;
 $$;
+
+--CREATING THE TRIGGER FUNCTION
+CREATE OR REPLACE FUNCTION create_account_after_user_insert()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO ACCOUNT (
+        user_id,
+        account_number,
+        balance
+    )
+    VALUES (
+        NEW.user_id,
+        generate_account_number(),
+        0.00
+    );
+
+    RETURN NEW;
+END;
+$$;
+
+-- CREATING THE TRIGGER
+CREATE TRIGGER trigger_create_account
+AFTER INSERT ON USERS
+FOR EACH ROW
+EXECUTE FUNCTION create_account_after_user_insert();
+
+
+
+--INSERTING THE USER
+
+INSERT INTO USERS (first_name, last_name, email, phone_number, bvn, nin_num, user_password)
+VALUES ('Peter', 'Obi', 'peter@email.com', '08012345678', '12345678901', '98765432109', 'hashed_pw');
+

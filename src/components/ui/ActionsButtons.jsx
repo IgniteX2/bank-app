@@ -1,6 +1,6 @@
 import { FaLongArrowAltUp, FaLongArrowAltDown } from "react-icons/fa";
 
-export default function Button({ isMobile }) {
+export default function MyButton({ isMobile }) {
   return (
     <div
       className={`flex gap-3  ${isMobile ? "justify-center" : ""}`}

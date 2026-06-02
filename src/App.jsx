@@ -10,24 +10,19 @@ import TransactionHistory from "./pages/TransactionHistory";
 import ResetPassword from "./pages/ResetPassword";
 import Settings from "./pages/Settings";
 
-import Sidebar from "./components/layout/Sidebar";
+
+// import Sidebar from "./components/layout/Sidebar";
 
 function App() {
   return (
     <>
-      <ToastContainer position="top-right" />
-      <Sidebar />
+      {/* <BrowserRouter> */}
+      {/* <Sidebar /> */}
       <BrowserRouter>
+        <ToastContainer position="top-right" />
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
-          <Route
-            path="/dashboard"
-            element={
-              <ProtectedRoute>
-                <Dashboard />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/dashboard" element={<Dashboard />} />
 
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -61,6 +56,7 @@ function App() {
           />
         </Routes>
       </BrowserRouter>
+      {/* <Register /> */}
     </>
   );
 }

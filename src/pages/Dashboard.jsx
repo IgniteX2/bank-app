@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import DashboardLayout from "../components/layout/Dashboard";
-import Sidebar from "../components/layout/Sidebar";
+import AppSidebar from "../components/layout/Sidebar";
 import Topbar from "../components/layout/Topbar";
 import BalanceCard from "../components/cards/BalanceCard";
 import TransactionCard from "../components/cards/TransactionCard";
@@ -8,7 +8,7 @@ import { FaLongArrowAltRight } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { ThemeContext } from ".././context/ThemeContext";
 import MobileNav from "../components/layout/MobileNav";
-import Button from "../components/ui/Button";
+import ActionButtons from "../components/ui/ActionsButtons";
 import backgroundImage from "../assets/Background.png";
 import { getUser } from "../services/authService";
 
@@ -63,7 +63,7 @@ export default function Dashboard() {
     >
       <DashboardLayout
         sidebar={
-          <Sidebar
+          <AppSidebar
             setIsOpen={handleSidebarToggle}
             isOpen={isOpen}
             isMobile={isMobile}
@@ -104,7 +104,7 @@ export default function Dashboard() {
 
           {isMobile ? (
             <div>
-              <Button isMobile={isMobile} />
+              <ActionButtons isMobile={isMobile} />
             </div>
           ) : null}
 

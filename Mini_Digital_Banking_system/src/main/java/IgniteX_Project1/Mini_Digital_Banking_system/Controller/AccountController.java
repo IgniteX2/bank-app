@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/acc")
 public class AccountController {
     private final AccountService accountService;
 
@@ -17,8 +17,8 @@ public class AccountController {
         this.accountService = accountService;
     }
 
-    @GetMapping("/accounts/{id}")
+    @GetMapping("/accounts/{userId}")
     public ResponseEntity<AccountResponse> getAccountByUserId(@PathVariable Long userId) {
-        return ResponseEntity.ok(accountService.getAccountById(userId));
+        return ResponseEntity.ok(accountService.getAccountByUserId(userId));
     }
 }

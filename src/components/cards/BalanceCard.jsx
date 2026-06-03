@@ -65,7 +65,7 @@ export default function BalanceCard({ isMobile, accountNum }) {
           <p
             className={`${theme === "dark" ? "text-[#f5f5f5]" : "text-gray-500"} text-xs`}
           >
-            {accountNum}
+            #{account?.accountNumber || accountNum}
           </p>
         </div>
 
@@ -95,9 +95,10 @@ export default function BalanceCard({ isMobile, accountNum }) {
             {!isLoading && (
               <>
                 {viewBalance ? (
-                  <span>₦{account?.balance?.toLocalString() || 0}</span>
+                  <span>₦{account?.balance?.toLocaleString() || 0}</span>
                 ) : (
                   <span className="flex gap-1">
+                    ₦
                     {Array.from({ length: 4 }, (_, i) => (
                       <FaAsterisk key={i} style={{ fontSize: "13px" }} />
                     ))}

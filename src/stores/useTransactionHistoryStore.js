@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { toast } from "sonner";
-import { getTransactionsById } from "../services/transactionService";
+import { getTransactionById } from "../services/transactionService";
 
 export const useTransactionHistoryStore = create((set) => ({
   transactions: [],
@@ -20,7 +20,7 @@ export const useTransactionHistoryStore = create((set) => ({
         error: null,
       });
 
-      const response = await getTransactionsById(userId);
+      const response = await getTransactionById(userId);
 
       set({
         transactions: response?.data || [],

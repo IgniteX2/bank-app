@@ -5,8 +5,10 @@ import MyButton from "../ui/ActionsButtons";
 import { LuEyeOff, LuEye } from "react-icons/lu";
 import { FaAsterisk } from "react-icons/fa6";
 import { useAccountStore } from "../../stores/useAccountStore";
+import BalanceSkeleton from "../../skeletons/BalanceSkeleton";
+import AccountNumberSkeleton from "../../skeletons/AccountNumberSkeleton";
 
-export default function BalanceCard({ isMobile, accountNum }) {
+export default function BalanceCard({ isMobile }) {
   const { theme } = useContext(ThemeContext);
   const { account, isLoading } = useAccountStore();
   const fetchAccount = useAccountStore((state) => state.fetchAccount);
@@ -62,11 +64,15 @@ export default function BalanceCard({ isMobile, accountNum }) {
           >
             My Balance
           </p>
-          <p
-            className={`${theme === "dark" ? "text-[#f5f5f5]" : "text-gray-500"} text-xs`}
-          >
-            #{account?.accountNumber || accountNum}
-          </p>
+          {isLoading ? (
+            <AccountNumberSkeleton />
+          ) : (
+            <p
+              className={`${theme === "dark" ? "text-[#f5f5f5]" : "text-gray-500"} text-xs`}
+            >
+              #{account?.accountNumber || "##########"}
+            </p>
+          )}
         </div>
 
         <div style={{ marginTop: isMobile ? "-50px" : "" }}>
@@ -92,7 +98,7 @@ export default function BalanceCard({ isMobile, accountNum }) {
               theme === "dark" ? "text-[#f5f5f5]" : "text-gray-500"
             }`}
           >
-            {!isLoading && (
+            {!isLoading ? (
               <>
                 {viewBalance ? (
                   <span>₦{account?.balance?.toLocaleString() || 0}</span>
@@ -105,6 +111,8 @@ export default function BalanceCard({ isMobile, accountNum }) {
                   </span>
                 )}
               </>
+            ) : (
+              <BalanceSkeleton />
             )}
           </h1>
         </div>

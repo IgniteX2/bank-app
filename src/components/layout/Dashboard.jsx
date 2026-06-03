@@ -16,7 +16,7 @@ export default function DashboardLayout({ children, topbar, mobilebar }) {
         <AppSidebar />
 
         <main className="flex flex-1 flex-col">
-          <div className="border-b px-4 py-3">
+          <div className=" px-4 py-3">
             <div className="flex items-center gap-3">
               <SidebarTrigger />
               {topbar}

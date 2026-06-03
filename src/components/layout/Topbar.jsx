@@ -8,6 +8,7 @@ import { MdOutlineWbSunny } from "react-icons/md";
 import { LuPanelLeftOpen } from "react-icons/lu";
 import userImg from "../../assets/user.jpg";
 import { useSidebar } from "../../components/ui/sidebar";
+import AccountNumberSkeleton from "../../skeletons/AccountNumberSkeleton";
 
 export default function Topbar({ isOpen, setIsOpen, isMobile }) {
   const { theme, toggleTheme } = useContext(ThemeContext);
@@ -16,8 +17,6 @@ export default function Topbar({ isOpen, setIsOpen, isMobile }) {
   const user = useUserStore((state) => state.user);
 
   const isLoading = useUserStore((state) => state.isLoading);
-
-  if (isLoading) return <p>Loading...</p>;
 
   const getPageTitle = () => {
     switch (location.pathname) {
@@ -29,11 +28,15 @@ export default function Topbar({ isOpen, setIsOpen, isMobile }) {
             >
               Dashboard
             </h3>
-            <p
-              className={`text-sm ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#666D80]]"}`}
-            >
-              Hi, {user?.fullName}
-            </p>
+            {isLoading ? (
+              <AccountNumberSkeleton />
+            ) : (
+              <p
+                className={`text-sm ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#666D80]]"}`}
+              >
+                Hi, {user?.fullName}
+              </p>
+            )}
           </div>
         );
 

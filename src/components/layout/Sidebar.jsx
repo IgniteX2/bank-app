@@ -14,11 +14,6 @@ import {
 } from "@/components/ui/sidebar";
 import { useUserStore } from "@/stores/useUserStore";
 
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { LiaHeadsetSolid } from "react-icons/lia";
-import { FiX } from "react-icons/fi";
-
 import {
   Bell,
   ChevronsUpDown,
@@ -36,10 +31,11 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import UserDetailsSkeleton from "../../skeletons/userDetailsSkeleton";
 
 import { useSidebar } from "@/components/ui/sidebar";
 
-import { Home, Headset, Send, CircleQuestionMark, Logs } from "lucide-react";
+import { Home, Headset, Send, Logs } from "lucide-react";
 import { useAuth } from "@/context/useAuth";
 
 function AppSidebar() {
@@ -150,26 +146,30 @@ function AppSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <DropdownMenu>
-                  <DropdownMenuTrigger
-                    style={{ marginBottom: "10%" }}
-                    className="flex w-full items-center gap-2 rounded-md px-2 py-2 hover:bg-gray-100 "
-                  >
-                    <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarImage src={user?.avatar} />
-                      <AvatarFallback className="bg-gray-200">
-                        {initials}
-                      </AvatarFallback>
-                    </Avatar>
+                  {isLoading ? (
+                    <UserDetailsSkeleton />
+                  ) : (
+                    <DropdownMenuTrigger
+                      style={{ marginBottom: "10%" }}
+                      className="flex w-full items-center gap-2 rounded-md px-2 py-2 hover:bg-gray-100 "
+                    >
+                      <Avatar className="h-8 w-8 rounded-lg">
+                        <AvatarImage src={user?.avatar} />
+                        <AvatarFallback className="bg-gray-200">
+                          {initials}
+                        </AvatarFallback>
+                      </Avatar>
 
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-medium">
-                        {user?.fullName}
-                      </span>
-                      <span className="truncate text-xs">{user?.email}</span>
-                    </div>
+                      <div className="grid flex-1 text-left text-sm leading-tight">
+                        <span className="truncate font-medium">
+                          {user?.fullName}
+                        </span>
+                        <span className="truncate text-xs">{user?.email}</span>
+                      </div>
 
-                    <ChevronsUpDown className="ml-auto size-4" />
-                  </DropdownMenuTrigger>
+                      <ChevronsUpDown className="ml-auto size-4" />
+                    </DropdownMenuTrigger>
+                  )}
 
                   <DropdownMenuContent
                     className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-sm border-none ring-0 shadow-2xl bg-white"

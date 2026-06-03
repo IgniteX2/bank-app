@@ -43,17 +43,17 @@ public class TransactionHistoryService {
 
 
     public List<TransactionsHistory> getSenderTransactions(Long senderId) {
-        if (!userRepository.existsById(senderId)) {
-            throw new RuntimeException("Sender does not exist");
-        }
+//        if (!userRepository.existsById(senderId)) {
+//            throw new RuntimeException("Sender does not exist");
+//        }
         return transactionHistoryRepository.findBySenderAccountId(senderId);
     }
 
 
     public List<TransactionsHistory> getReceiverTransactions(Long receiverId) {
-        if(!userRepository.existsById(receiverId)) {
-            throw new RuntimeException("Receiver does not exist");
-        }
+//        if(!userRepository.existsById(receiverId)) {
+//            throw new RuntimeException("Receiver does not exist");
+//        }
         return transactionHistoryRepository.findByReceiverId(receiverId);
     }
 

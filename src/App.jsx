@@ -10,7 +10,6 @@ import TransactionHistory from "./pages/TransactionHistory";
 import ResetPassword from "./pages/ResetPassword";
 import Settings from "./pages/Settings";
 
-
 // import Sidebar from "./components/layout/Sidebar";
 
 function App() {
@@ -46,14 +45,7 @@ function App() {
             }
           />
 
-          <Route
-            path="/transactions"
-            element={
-              <ProtectedRoute>
-                <TransactionHistory />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/transactions" element={<TransactionHistory />} />
         </Routes>
       </BrowserRouter>
       {/* <Register /> */}

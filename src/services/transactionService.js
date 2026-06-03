@@ -8,6 +8,6 @@ export const getTransactions = async () => {
   return await API.get("/transactions");
 };
 
-export const getTransactionById = async (id) => {
-  return await API.get(`/transactions/${id}`);
+export const getTransactionById = async (userId) => {
+  return await API.get(`/transactions/${userId}`);
 };

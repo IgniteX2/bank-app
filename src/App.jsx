@@ -52,7 +52,14 @@ function App() {
             }
           />
 
-          <Route path="/transactions" element={<TransactionHistory />} />
+          <Route
+            path="/transactions"
+            element={
+              <ProtectedRoute>
+                <TransactionHistory />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
       {/* <Register /> */}

@@ -1,4 +1,4 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 import {
@@ -24,7 +24,7 @@ import {
   ChevronsUpDown,
   CreditCard,
   LogOut,
-  Sparkles,
+  UserPen,
   Settings,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -40,6 +40,7 @@ import {
 import { useSidebar } from "@/components/ui/sidebar";
 
 import { Home, Headset, Send, CircleQuestionMark, Logs } from "lucide-react";
+import { useAuth } from "@/context/useAuth";
 
 function AppSidebar() {
   const { isMobile } = useSidebar();
@@ -47,10 +48,13 @@ function AppSidebar() {
 
   const { theme } = useContext(ThemeContext);
   const user = useUserStore((state) => state.user);
+  const initials = user?.fullName?.slice(0, 2);
 
   const isLoading = useUserStore((state) => state.isLoading);
+  const navigate = useNavigate();
+  const { logout } = useAuth();
 
-  if (isLoading) return <p>Loading...</p>;
+  // if (isLoading) return <p>Loading...</p>;
 
   const menuItems = [
     {
@@ -83,16 +87,11 @@ function AppSidebar() {
       icon: Headset,
       tooltip: "Help",
     },
-    {
-      label: "FAQ",
-      path: "/faq",
-      icon: CircleQuestionMark,
-      tooltip: "FAQ",
-    },
   ];
 
   const handleLogout = () => {
-    console.log("Logout clicked");
+    logout();
+    navigate("/");
   };
 
   return (
@@ -126,7 +125,7 @@ function AppSidebar() {
                             style={{ paddingLeft: "10px" }}
                             className={`w-[90%] cursor-pointer transition-colors  ${
                               isActive
-                                ? "bg-gray-200 text-gray-700 rounded-none "
+                                ? "bg-gray-100 text-gray-700 rounded-none "
                                 : "text-gray-900 hover:bg-gray-100"
                             }`}
                           >
@@ -142,55 +141,6 @@ function AppSidebar() {
                   );
                 })}
               </SidebarMenu>
-
-              {state !== "collapsed" ? (
-                <div style={{ marginTop: "20%" }} className=" p-2">
-                  <Card className="mx-auto w-[90%] space-y-4 rounded-lg border-none ring-0 bg-white p-4 shadow-sm">
-                    <div
-                      className="flex items-start justify-between"
-                      style={{
-                        marginLeft: "10px",
-                        marginRight: "10px",
-                        paddingTop: "10px",
-                      }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <LiaHeadsetSolid className="h-5 w-5 text-cyan-700" />
-
-                        <h2 className="text-sm font-semibold text-slate-800">
-                          Need Support?
-                        </h2>
-                      </div>
-
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-slate-500 hover:bg-slate-100 self-center"
-                      >
-                        <FiX className="h-4 w-4" />
-                      </Button>
-                    </div>
-
-                    <p
-                      style={{ paddingLeft: "10px", paddingRight: "10px" }}
-                      className="text-xs leading-relaxed text-slate-500 "
-                    >
-                      Connect with one of our experts to get support.
-                    </p>
-
-                    <Button
-                      style={{
-                        marginLeft: "2%",
-                        width: "96%",
-                        marginBottom: "2%",
-                      }}
-                      className=" bg-gray-300 hover:bg-gray-500 hover:text-white"
-                    >
-                      Contact Us
-                    </Button>
-                  </Card>
-                </div>
-              ) : null}
             </SidebarGroupContent>
           </SidebarGroup>
         </div>
@@ -206,11 +156,15 @@ function AppSidebar() {
                   >
                     <Avatar className="h-8 w-8 rounded-lg">
                       <AvatarImage src={user?.avatar} />
-                      <AvatarFallback>CN</AvatarFallback>
+                      <AvatarFallback className="bg-gray-200">
+                        {initials}
+                      </AvatarFallback>
                     </Avatar>
 
                     <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-medium">{user?.name}</span>
+                      <span className="truncate font-medium">
+                        {user?.fullName}
+                      </span>
                       <span className="truncate text-xs">{user?.email}</span>
                     </div>
 
@@ -235,12 +189,13 @@ function AppSidebar() {
                       >
                         <Avatar className="h-8 w-8 rounded-lg">
                           <AvatarImage src={user?.avatar} />
-                          <AvatarFallback>CN</AvatarFallback>
+                          <AvatarFallback className="bg-gray-100">
+                            {initials}
+                          </AvatarFallback>
                         </Avatar>
 
                         <div className="grid flex-1 text-left">
-                          <span className="font-medium">{user?.name}</span>
-                          <span className="text-xs">{user?.email}</span>
+                          <span className="font-medium">{user?.fullName}</span>
                         </div>
                       </div>
                     </DropdownMenuGroup>
@@ -255,7 +210,7 @@ function AppSidebar() {
                           cursor: "pointer",
                         }}
                       >
-                        <Sparkles className="mr-2 h-4 w-4" />
+                        <UserPen className="mr-2 h-4 w-4" />
                         Profile
                       </DropdownMenuItem>
 
@@ -305,6 +260,7 @@ function AppSidebar() {
                           paddingTop: "3%",
                           cursor: "pointer",
                         }}
+                        onClick={handleLogout}
                       >
                         <LogOut className="mr-2 h-4 w-4" />
                         Log out

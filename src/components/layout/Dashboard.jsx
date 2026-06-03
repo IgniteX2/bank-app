@@ -9,7 +9,7 @@ export default function DashboardLayout({ children, topbar, mobilebar }) {
 
   useEffect(() => {
     fetchUser();
-  }, []);
+  }, [fetchUser]);
   return (
     <SidebarProvider>
       <div className="flex min-h-screen w-full">

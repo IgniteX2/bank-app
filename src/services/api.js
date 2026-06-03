@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://schedule-tall-throwback.ngrok-free.dev",
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 // Attach token to every request

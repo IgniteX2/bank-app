@@ -1,5 +1,6 @@
 package IgniteX_Project1.Mini_Digital_Banking_system.Model.Request;
 
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
@@ -24,7 +25,7 @@ public class AccountCreationRequest {
     private String phoneNumber;
 
     @NotNull(message = "bvn is required")
-    private Long bvn;
+    private String bvn;
 
     @NotBlank(message = "Password is required")
     @Size(min = 8, message = "Minimum 8 characters required")
@@ -36,6 +37,9 @@ public class AccountCreationRequest {
 
     @NotBlank(message = "NIN is required")
     private String NInNum;
+
+    @Column(name = "transaction_pin", nullable = true)
+    private String transactionPin;
 
 //    @NotBlank(message = "account_type is Required")
 //    private String accountType;

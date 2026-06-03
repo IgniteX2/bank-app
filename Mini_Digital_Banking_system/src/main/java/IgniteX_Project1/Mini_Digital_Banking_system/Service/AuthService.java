@@ -62,7 +62,7 @@ public class AuthService {
         userInfo.setNInNum(req.getNInNum());
 //        userInfo.setAccountType(req.getAccountType());
         userInfo.setNationality(req.getNationality());
-//        userInfo.setPin(req.getPin());
+        userInfo.setTransactionPin(req.getTransactionPin());
         userInfo.setAddress(req.getAddress());
 
         repo.save(userInfo);

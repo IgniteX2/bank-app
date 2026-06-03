@@ -9,8 +9,9 @@ public class UserResponse {
     private Long userId;
     private String fullName;
     private String email;
-    private Long bvn;
+    private String bvn;
     private String NInNum;
     private LocalDateTime UserCreatedAt;
     private LocalDateTime UserModifiedAt;
+    private String transactionPin;
 }

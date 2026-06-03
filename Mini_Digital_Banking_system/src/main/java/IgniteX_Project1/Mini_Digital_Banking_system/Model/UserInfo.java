@@ -34,7 +34,7 @@ public class UserInfo {
     private String PhoneNumber;
 
     @Column(name = "bvn", unique = true, nullable = false, length = 50)
-    private Long bvn;
+    private String bvn;
 
     @Column(name = "user_password", nullable = false)
     private String userPassword;

@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import { useUserStore } from "../../stores/useUserStore";
 import { useLocation } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import { FiBell } from "react-icons/fi";
@@ -6,10 +7,17 @@ import { IoMoonOutline } from "react-icons/io5";
 import { MdOutlineWbSunny } from "react-icons/md";
 import { LuPanelLeftOpen } from "react-icons/lu";
 import userImg from "../../assets/user.jpg";
+import { useSidebar } from "../../components/ui/sidebar";
 
 export default function Topbar({ isOpen, setIsOpen, isMobile }) {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const location = useLocation();
+  const { state } = useSidebar();
+  const user = useUserStore((state) => state.user);
+
+  const isLoading = useUserStore((state) => state.isLoading);
+
+  if (isLoading) return <p>Loading...</p>;
 
   const getPageTitle = () => {
     switch (location.pathname) {
@@ -24,7 +32,7 @@ export default function Topbar({ isOpen, setIsOpen, isMobile }) {
             <p
               className={`text-sm ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#666D80]]"}`}
             >
-              Hi, Alice Bourne!
+              Hi, {user?.fullName}
             </p>
           </div>
         );

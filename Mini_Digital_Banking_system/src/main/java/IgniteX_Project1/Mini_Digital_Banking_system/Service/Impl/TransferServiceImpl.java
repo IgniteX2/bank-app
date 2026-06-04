@@ -52,17 +52,14 @@ public class TransferServiceImpl implements TransferService {
 
         entityManager
                 .createNativeQuery(
-                        "CALL transfer_money(:sender, :receiver, :amount)"
+                        "CALL transfer_money(:sender, :receiver, :amount, :description)"
                 )
                 .setParameter("sender", trequest.getSenderAccountNumber())
                 .setParameter("receiver", trequest.getReceiverAccountNumber())
                 .setParameter("amount", trequest.getAmount())
+                .setParameter("description", trequest.getDescription())
                 .executeUpdate();
 
-        TransactionInfo description = new TransactionInfo();
-                description.setDescription(trequest.getDescription());
-
-        transactionRepository.save(description);
             return new TransferResponseDTO(
                 "Transfer Successful",
                 "SUCCESS"

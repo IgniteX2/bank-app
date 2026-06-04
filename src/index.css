@@ -56,7 +56,7 @@ body {
   height: 40px;
   border-radius: 8px;
   background-color: #1a3a5c;
-  box-shadow: 0 0 30px 12px lightgrey;
+  /* box-shadow: 0 0 20px 4px lightgrey; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -118,7 +118,11 @@ body {
 
 @media (max-width: 768px) {
   .register {
+<<<<<<< HEAD
     margin-top: -150px;
+=======
+    margin-top: 0px;
+>>>>>>> 894cac61e92a7d702620cf84b7d0d5b9407d3f91
   }
 }
 
@@ -253,7 +257,7 @@ body {
 
 .innerForm .submitBtn {
   background-color: #a78620;
-  color: #0a1628;
+  color: #fff;
   height: 40px;
   font-size: 0.9rem;
   font-weight: 600;
@@ -357,4 +361,20 @@ body {
 
 .loadingDark {
   background-color: #0d1b2e;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(200%);
+  }
+}
+@layer utilities {
+  .no-scrollbar {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge */
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome/Safari */
+  }
 }

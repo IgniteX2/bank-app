@@ -143,7 +143,10 @@ function Login() {
               </div>
             </div>
           </div>
-          <div className={`form ${theme === "dark" ? "formDark" : ""}`}>
+          <div
+            className={`form ${theme === "dark" ? "formDark" : ""} flex flex-col justify-center items-center
+            `}
+          >
             <div className="innerForm">
               <div className={`logo ${theme === "dark" ? "formLogoDark" : ""}`}>
                 <p>⚡</p>
@@ -251,44 +254,26 @@ function Login() {
                 </button>
               </form>
             </div>
-          </div>
 
-          {/* <div
-            className="register"
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <span
-              // style={{ color: "rgba(10, 22, 40, 0.8)" }}
-              className={`text-xs  justify-self-center ${theme === "dark" ? "text-white" : ""}`}
+            <div
+              className="register"
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                paddingTop: "8%",
+                paddingBottom: "5%",
+              }}
             >
-              Don't Have An Account?{" "}
-              <Link to="../Register">
-                <b>Register</b>
-              </Link>
-            </span>
-          </div>*/}
-
-          <div
-            className="register"
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <span
-              // style={{ color: "rgba(10, 22, 40, 0.8)" }}
-              className={`text-xs  justify-self-center ${theme === "dark" ? "text-white" : ""}`}
-            >
-              Don't Have An Account?{" "}
-              <Link to="../Register">
-                <b>Register</b>
-              </Link>
-            </span>
+              <span
+                className={`text-xs  justify-self-center ${theme === "dark" ? "text-white" : ""}`}
+              >
+                Don't Have An Account?{" "}
+                <Link to="../Register">
+                  <b>Register</b>
+                </Link>
+              </span>
+            </div>
           </div>
 
           <div

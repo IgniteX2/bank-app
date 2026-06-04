@@ -56,7 +56,7 @@ body {
   height: 40px;
   border-radius: 8px;
   background-color: #1a3a5c;
-  box-shadow: 0 0 30px 12px lightgrey;
+  /* box-shadow: 0 0 20px 4px lightgrey; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -253,7 +253,7 @@ body {
 
 .innerForm .submitBtn {
   background-color: #a78620;
-  color: #0a1628;
+  color: #fff;
   height: 40px;
   font-size: 0.9rem;
   font-weight: 600;

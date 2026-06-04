@@ -1,143 +1,6 @@
-//
-
-// import { useContext } from "react";
-// import { ThemeContext } from "../../context/ThemeContext";
-// import { NavLink } from "react-router-dom";
-
-// import { FiHome, FiHelpCircle, FiLogOut, FiX } from "react-icons/fi";
-// import { LiaHeadsetSolid } from "react-icons/lia";
-// import { LuPanelRightOpen, LuSettings } from "react-icons/lu";
-// import { RiExchangeLine } from "react-icons/ri";
-
-// import userImg from "../../assets/user.jpg";
-
-// import Button from "@/components/ui/button";
-// import { Card } from "@/components/ui/card";
-// import { Separator } from "@/components/ui/separator";
-// import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-// import { ScrollArea } from "@/components/ui/scroll-area";
-
-// const navItems = [
-//   { label: "Dashboard", icon: <FiHome />, href: "/dashboard" },
-//   { label: "Transactions", icon: <RiExchangeLine />, href: "/transactions" },
-// ];
-
-// const otherItems = [
-//   { label: "Settings", icon: <LuSettings />, href: "/settings" },
-//   { label: "Get Help", icon: <FiHelpCircle />, href: "/help" },
-//   { label: "Logout", icon: <FiLogOut />, href: "/logout" },
-// ];
-
-// export default function Sidebar({
-//   isOpen,
-//   setIsOpen,
-//   isMobile,
-//   userName,
-//   userEmail,
-// }) {
-//   const { theme } = useContext(ThemeContext);
-
-//   if (isMobile) return null;
-
-//   return (
-//     <aside
-//       className={`h-screen w-72 flex flex-col border-r ${
-//         theme === "dark" ? "bg-[#0a1628] border-gray-800" : "bg-white"
-//       }`}
-//     >
-//       {/* HEADER */}
-//       <div className="flex items-center justify-between p-4">
-//         <div className="flex items-center gap-2 font-semibold">
-//           ⚡ IGNITEX BANK
-//         </div>
-
-//         <Button variant="ghost" size="icon" onClick={() => setIsOpen(!isOpen)}>
-//           <LuPanelRightOpen />
-//         </Button>
-//       </div>
-
-//       <Separator />
-
-//       {/* NAV */}
-//       <ScrollArea className="flex-1 px-3 py-4">
-//         <p className="text-xs text-muted-foreground mb-2">MAIN</p>
-
-//         <div className="space-y-1">
-//           {navItems.map((item) => (
-//             <NavLink
-//               key={item.label}
-//               to={item.href}
-//               className={({ isActive }) =>
-//                 `flex items-center gap-3 px-3 py-2 rounded-md text-sm transition ${
-//                   isActive ? "bg-muted font-medium" : "hover:bg-muted/50"
-//                 }`
-//               }
-//             >
-//               {item.icon}
-//               {item.label}
-//             </NavLink>
-//           ))}
-//         </div>
-
-//         <p className="text-xs text-muted-foreground mt-6 mb-2">OTHER</p>
-
-//         <div className="space-y-1">
-//           {otherItems.map((item) => (
-//             <NavLink
-//               key={item.label}
-//               to={item.href}
-//               className={({ isActive }) =>
-//                 `flex items-center gap-3 px-3 py-2 rounded-md text-sm transition ${
-//                   isActive ? "bg-muted font-medium" : "hover:bg-muted/50"
-//                 }`
-//               }
-//             >
-//               {item.icon}
-//               {item.label}
-//             </NavLink>
-//           ))}
-//         </div>
-//       </ScrollArea>
-
-//       {/* SUPPORT CARD */}
-//       <div className="p-4">
-//         <Card className="p-4 space-y-3">
-//           <div className="flex items-center justify-between">
-//             <div className="flex items-center gap-2">
-//               <LiaHeadsetSolid className="text-xl" />
-//               <h2 className="text-sm font-semibold">Need Support?</h2>
-//             </div>
-
-//             <Button variant="ghost" size="icon">
-//               <FiX />
-//             </Button>
-//           </div>
-
-//           <p className="text-xs text-muted-foreground">
-//             Connect with one of our experts to get support.
-//           </p>
-
-//           <Button className="w-full text-xs">Contact Us</Button>
-//         </Card>
-//       </div>
-
-//       {/* USER */}
-//       <div className="p-4 flex items-center gap-3 border-t">
-//         <Avatar>
-//           <AvatarImage src={userImg} />
-//           <AvatarFallback>{userName?.[0] || "U"}</AvatarFallback>
-//         </Avatar>
-
-//         <div>
-//           <p className="text-sm font-medium">{userName}</p>
-//           <p className="text-xs text-muted-foreground">{userEmail}</p>
-//         </div>
-//       </div>
-//     </aside>
-//   );
-// }
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { ThemeContext } from "../../context/ThemeContext";
 import {
   Sidebar,
   SidebarContent,
@@ -149,18 +12,14 @@ import {
   SidebarMenuItem,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { LiaHeadsetSolid } from "react-icons/lia";
-import { FiX } from "react-icons/fi";
+import { useUserStore } from "@/stores/useUserStore";
 
 import {
   Bell,
   ChevronsUpDown,
   CreditCard,
   LogOut,
-  Sparkles,
+  UserPen,
   Settings,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -172,15 +31,27 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import UserDetailsSkeleton from "../../skeletons/userDetailsSkeleton";
 
 import { useSidebar } from "@/components/ui/sidebar";
 
-import { Home, Headset, Send, CircleQuestionMark, Logs } from "lucide-react";
+import { Home, Headset, Send, Logs } from "lucide-react";
+import { useAuth } from "@/context/useAuth";
 
 function AppSidebar() {
   const { isMobile } = useSidebar();
   const { state } = useSidebar();
-  const [user, setUser] = useState(null);
+
+  const { theme } = useContext(ThemeContext);
+  const user = useUserStore((state) => state.user);
+  const initials = user?.fullName?.slice(0, 2);
+
+  const isLoading = useUserStore((state) => state.isLoading);
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  // if (isLoading) return <p>Loading...</p>;
+
   const menuItems = [
     {
       label: "Dashboard",
@@ -212,16 +83,11 @@ function AppSidebar() {
       icon: Headset,
       tooltip: "Help",
     },
-    {
-      label: "FAQ",
-      path: "/faq",
-      icon: CircleQuestionMark,
-      tooltip: "FAQ",
-    },
   ];
 
   const handleLogout = () => {
-    console.log("Logout clicked");
+    logout();
+    navigate("/");
   };
 
   return (
@@ -255,7 +121,7 @@ function AppSidebar() {
                             style={{ paddingLeft: "10px" }}
                             className={`w-[90%] cursor-pointer transition-colors  ${
                               isActive
-                                ? "bg-gray-200 text-gray-700 rounded-none "
+                                ? "bg-gray-100 text-gray-700 rounded-none "
                                 : "text-gray-900 hover:bg-gray-100"
                             }`}
                           >
@@ -271,55 +137,6 @@ function AppSidebar() {
                   );
                 })}
               </SidebarMenu>
-
-              {state !== "collapsed" ? (
-                <div style={{ marginTop: "20%" }} className=" p-2">
-                  <Card className="mx-auto w-[90%] space-y-4 rounded-lg border-none ring-0 bg-white p-4 shadow-sm">
-                    <div
-                      className="flex items-start justify-between"
-                      style={{
-                        marginLeft: "10px",
-                        marginRight: "10px",
-                        paddingTop: "10px",
-                      }}
-                    >
-                      <div className="flex items-center gap-2">
-                        <LiaHeadsetSolid className="h-5 w-5 text-cyan-700" />
-
-                        <h2 className="text-sm font-semibold text-slate-800">
-                          Need Support?
-                        </h2>
-                      </div>
-
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-slate-500 hover:bg-slate-100 self-center"
-                      >
-                        <FiX className="h-4 w-4" />
-                      </Button>
-                    </div>
-
-                    <p
-                      style={{ paddingLeft: "10px", paddingRight: "10px" }}
-                      className="text-xs leading-relaxed text-slate-500 "
-                    >
-                      Connect with one of our experts to get support.
-                    </p>
-
-                    <Button
-                      style={{
-                        marginLeft: "2%",
-                        width: "96%",
-                        marginBottom: "2%",
-                      }}
-                      className=" bg-gray-300 hover:bg-gray-500 hover:text-white"
-                    >
-                      Contact Us
-                    </Button>
-                  </Card>
-                </div>
-              ) : null}
             </SidebarGroupContent>
           </SidebarGroup>
         </div>
@@ -329,25 +146,33 @@ function AppSidebar() {
             <SidebarMenu>
               <SidebarMenuItem>
                 <DropdownMenu>
-                  <DropdownMenuTrigger
-                    style={{ marginBottom: "10%" }}
-                    className="flex w-full items-center gap-2 rounded-md px-2 py-2 hover:bg-gray-100 "
-                  >
-                    <Avatar className="h-8 w-8 rounded-lg">
-                      <AvatarImage src={user?.avatar} />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
+                  {isLoading ? (
+                    <UserDetailsSkeleton />
+                  ) : (
+                    <DropdownMenuTrigger
+                      style={{ marginBottom: "10%" }}
+                      className="flex w-full items-center gap-2 rounded-md px-2 py-2 hover:bg-gray-100 "
+                    >
+                      <Avatar className="h-8 w-8 rounded-lg">
+                        <AvatarImage src={user?.avatar} />
+                        <AvatarFallback className="bg-gray-200">
+                          {initials}
+                        </AvatarFallback>
+                      </Avatar>
 
-                    <div className="grid flex-1 text-left text-sm leading-tight">
-                      <span className="truncate font-medium">{user?.name}</span>
-                      <span className="truncate text-xs">{user?.email}</span>
-                    </div>
+                      <div className="grid flex-1 text-left text-sm leading-tight">
+                        <span className="truncate font-medium">
+                          {user?.fullName}
+                        </span>
+                        <span className="truncate text-xs">{user?.email}</span>
+                      </div>
 
-                    <ChevronsUpDown className="ml-auto size-4" />
-                  </DropdownMenuTrigger>
+                      <ChevronsUpDown className="ml-auto size-4" />
+                    </DropdownMenuTrigger>
+                  )}
 
                   <DropdownMenuContent
-                    className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-sm border-none ring-0 shadow-xl bg-white"
+                    className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-sm border-none ring-0 shadow-2xl bg-white"
                     side={isMobile ? "bottom" : "right"}
                     align="end"
                     sideOffset={4}
@@ -364,12 +189,13 @@ function AppSidebar() {
                       >
                         <Avatar className="h-8 w-8 rounded-lg">
                           <AvatarImage src={user?.avatar} />
-                          <AvatarFallback>CN</AvatarFallback>
+                          <AvatarFallback className="bg-gray-100">
+                            {initials}
+                          </AvatarFallback>
                         </Avatar>
 
                         <div className="grid flex-1 text-left">
-                          <span className="font-medium">{user?.name}</span>
-                          <span className="text-xs">{user?.email}</span>
+                          <span className="font-medium">{user?.fullName}</span>
                         </div>
                       </div>
                     </DropdownMenuGroup>
@@ -384,7 +210,7 @@ function AppSidebar() {
                           cursor: "pointer",
                         }}
                       >
-                        <Sparkles className="mr-2 h-4 w-4" />
+                        <UserPen className="mr-2 h-4 w-4" />
                         Profile
                       </DropdownMenuItem>
 
@@ -434,6 +260,7 @@ function AppSidebar() {
                           paddingTop: "3%",
                           cursor: "pointer",
                         }}
+                        onClick={handleLogout}
                       >
                         <LogOut className="mr-2 h-4 w-4" />
                         Log out

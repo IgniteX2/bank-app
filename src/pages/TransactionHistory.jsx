@@ -1,4 +1,5 @@
 import { useContext, useEffect, useMemo, useState } from "react";
+import { useTransactionHistoryStore } from "../stores/useTransactionHistoryStore";
 import DashboardLayout from "../components/layout/Dashboard";
 import Sidebar from "../components/layout/Sidebar";
 import Topbar from "../components/layout/Topbar";
@@ -6,7 +7,6 @@ import MobileNav from "../components/layout/MobileNav";
 import backgroundImage from "../assets/Background.png";
 
 import { ThemeContext } from "../context/ThemeContext";
-import { getTransactions } from "../services/transactionService";
 
 import { FiSearch } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
@@ -14,10 +14,6 @@ import TableSkeleton from "../components/layout/TableSkeleton";
 
 function TransactionHistory() {
   const { theme } = useContext(ThemeContext);
-
-  // raw data from API
-  const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   // UI states
   const [isOpen, setIsOpen] = useState(true);
@@ -45,36 +41,39 @@ function TransactionHistory() {
   }, []);
 
   // fetch data
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const res = await getTransactions();
-        setTransactions(res.data || []);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const transactions = useTransactionHistoryStore(
+    (state) => state.transactions,
+  );
 
+  const isLoading = useTransactionHistoryStore((state) => state.isLoading);
+
+  const fetchTransactions = useTransactionHistoryStore(
+    (state) => state.fetchTransactions,
+  );
+
+  useEffect(() => {
     fetchTransactions();
-  }, []);
+  }, [fetchTransactions]);
+
+  if (isLoading) {
+    return <p>Loading transactions...</p>;
+  }
 
   // FILTER LOGIC (source of truth)
   const filteredTransactions = useMemo(() => {
     return transactions.filter((tx) => {
       const matchesSearch =
-        tx.name.toLowerCase().includes(search.toLowerCase()) ||
-        tx.type.toLowerCase().includes(search.toLowerCase());
+        (tx?.name || "").toLowerCase().includes(search.toLowerCase()) ||
+        (tx?.type || "").toLowerCase().includes(search.toLowerCase());
 
       const matchesType =
         filterType === "all"
           ? true
           : filterType === "income"
-            ? tx.amount.startsWith("+")
-            : tx.amount.startsWith("-");
+            ? String(tx?.amount || "").startsWith("+")
+            : String(tx?.amount || "").startsWith("-");
 
-      const txDate = new Date(tx.date);
+      const txDate = new Date(tx?.date);
 
       const matchesDate =
         (!dateFilter.from || new Date(dateFilter.from) <= txDate) &&
@@ -85,7 +84,10 @@ function TransactionHistory() {
   }, [transactions, search, filterType, dateFilter]);
 
   // pagination logic
-  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredTransactions.length / itemsPerPage),
+  );
 
   const paginatedTransactions = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
@@ -225,7 +227,7 @@ function TransactionHistory() {
           </div>
 
           {/* TABLE */}
-          {!loading ? (
+          {!isLoading ? (
             <div
               style={{
                 background: "#fff",

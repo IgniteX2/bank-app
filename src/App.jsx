@@ -21,7 +21,14 @@ function App() {
         <ToastContainer position="top-right" />
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
 
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -45,7 +52,14 @@ function App() {
             }
           />
 
-          <Route path="/transactions" element={<TransactionHistory />} />
+          <Route
+            path="/transactions"
+            element={
+              <ProtectedRoute>
+                <TransactionHistory />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
       {/* <Register /> */}

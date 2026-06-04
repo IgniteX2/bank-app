@@ -8,8 +8,8 @@ export const registerUser = async (data) => {
   return await API.post("/auth/signup", data);
 };
 
-export const getBalance = async (userId) => {
-  return await API.get(`/accounts/${userId}`);
+export const getAccount = async (userId) => {
+  return await API.get(`/acc/accounts/${userId}`);
 };
 
 export const getUser = async (id) => {

@@ -1,17 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 import MyButton from "../ui/ActionsButtons";
 import { LuEyeOff, LuEye } from "react-icons/lu";
 import { FaAsterisk } from "react-icons/fa6";
+import { useAccountStore } from "../../stores/useAccountStore";
+import BalanceSkeleton from "../../skeletons/BalanceSkeleton";
+import AccountNumberSkeleton from "../../skeletons/AccountNumberSkeleton";
 
-export default function BalanceCard({ balance, isMobile, accountNum }) {
+export default function BalanceCard({ isMobile }) {
   const { theme } = useContext(ThemeContext);
+  const { account, isLoading } = useAccountStore();
+  const fetchAccount = useAccountStore((state) => state.fetchAccount);
+
+  useEffect(() => {
+    fetchAccount();
+  }, [fetchAccount]);
   const [viewBalance, setViewBalance] = useState(true);
 
   const handleViewBalance = () => {
     setViewBalance((prev) => !prev);
   };
+
+  useEffect(() => {
+    fetchAccount();
+  }, [fetchAccount]);
 
   return (
     <div
@@ -51,11 +64,15 @@ export default function BalanceCard({ balance, isMobile, accountNum }) {
           >
             My Balance
           </p>
-          <p
-            className={`${theme === "dark" ? "text-[#f5f5f5]" : "text-gray-500"} text-xs`}
-          >
-            {accountNum}
-          </p>
+          {isLoading ? (
+            <AccountNumberSkeleton />
+          ) : (
+            <p
+              className={`${theme === "dark" ? "text-[#f5f5f5]" : "text-gray-500"} text-xs`}
+            >
+              #{account?.accountNumber || "##########"}
+            </p>
+          )}
         </div>
 
         <div style={{ marginTop: isMobile ? "-50px" : "" }}>
@@ -81,14 +98,21 @@ export default function BalanceCard({ balance, isMobile, accountNum }) {
               theme === "dark" ? "text-[#f5f5f5]" : "text-gray-500"
             }`}
           >
-            {viewBalance ? (
-              <span>₦ {balance}</span>
+            {!isLoading ? (
+              <>
+                {viewBalance ? (
+                  <span>₦{account?.balance?.toLocaleString() || 0}</span>
+                ) : (
+                  <span className="flex gap-1">
+                    ₦
+                    {Array.from({ length: 4 }, (_, i) => (
+                      <FaAsterisk key={i} style={{ fontSize: "13px" }} />
+                    ))}
+                  </span>
+                )}
+              </>
             ) : (
-              <span className="flex gap-1">
-                {Array.from({ length: 4 }, (_, i) => (
-                  <FaAsterisk key={i} style={{ fontSize: "13px" }} />
-                ))}
-              </span>
+              <BalanceSkeleton />
             )}
           </h1>
         </div>

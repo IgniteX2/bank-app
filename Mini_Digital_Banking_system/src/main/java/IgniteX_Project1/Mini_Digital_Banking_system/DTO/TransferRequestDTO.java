@@ -24,5 +24,7 @@ public class TransferRequestDTO {
     @Size(min = 4, max = 4)
     private String pin;  //pin validation would occur here
 
+    private String description;
+
 //    private String narration;
 }

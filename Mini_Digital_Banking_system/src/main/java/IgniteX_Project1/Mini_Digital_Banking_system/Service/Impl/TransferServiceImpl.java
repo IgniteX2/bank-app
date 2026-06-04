@@ -2,9 +2,11 @@ package IgniteX_Project1.Mini_Digital_Banking_system.Service.Impl;
 
 import IgniteX_Project1.Mini_Digital_Banking_system.DTO.TransferRequestDTO;
 import IgniteX_Project1.Mini_Digital_Banking_system.DTO.TransferResponseDTO;
+import IgniteX_Project1.Mini_Digital_Banking_system.Model.TransactionInfo;
 import IgniteX_Project1.Mini_Digital_Banking_system.Model.UserInfo;
 import IgniteX_Project1.Mini_Digital_Banking_system.Service.PinService;
 import IgniteX_Project1.Mini_Digital_Banking_system.Service.TransferService;
+import IgniteX_Project1.Mini_Digital_Banking_system.repository.TransactionRepository;
 import IgniteX_Project1.Mini_Digital_Banking_system.repository.UserRepository;
 import IgniteX_Project1.Mini_Digital_Banking_system.security.AuthUtil;
 import IgniteX_Project1.Mini_Digital_Banking_system.security.JwtUtil;
@@ -35,6 +37,8 @@ public class TransferServiceImpl implements TransferService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private TransactionRepository transactionRepository;
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -55,6 +59,10 @@ public class TransferServiceImpl implements TransferService {
                 .setParameter("amount", trequest.getAmount())
                 .executeUpdate();
 
+        TransactionInfo description = new TransactionInfo();
+                description.setDescription(trequest.getDescription());
+
+        transactionRepository.save(description);
             return new TransferResponseDTO(
                 "Transfer Successful",
                 "SUCCESS"

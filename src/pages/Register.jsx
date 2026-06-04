@@ -222,10 +222,10 @@ function Register() {
 
   return (
     <div 
-      className='min-h-screen max-w-360 flex items-start justify-center bg-[#f5f5f5]' 
+      className='min-h-screen w-full flex items-start justify-center bg-[#f5f5f5]' 
       >
       <div 
-        className='w-330 min-h-screen flex flex-col justify-between'>
+        className='w-full min-h-screen flex flex-col justify-between'>
         <header 
           className='flex items-center justify-between w-full bg-[#ffffff]'
           style={{padding: "14px 50px"}}>

@@ -37,4 +37,10 @@ public class TransactionHistoryController {
     public List<TransactionHistory> getReceiverTransactions(@PathVariable Long receiverId) {
         return transactionHistoryService.getReceiverTransactions(receiverId);
     }
+
+    // New API Endpoint matching by senderId
+    @GetMapping("/history/{senderId}")
+    public List<TransactionHistory> getFullHistoryBySenderId(@PathVariable Long senderId) {
+        return transactionHistoryService.getTransactionsBySenderId(senderId);
+    }
 }

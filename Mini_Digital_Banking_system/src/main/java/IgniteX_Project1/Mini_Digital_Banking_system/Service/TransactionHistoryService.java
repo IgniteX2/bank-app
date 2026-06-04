@@ -55,4 +55,11 @@ public class TransactionHistoryService {
         return transactionHistoryRepository.findByReceiverAccountId(receiverId);
     }
 
+    public List<TransactionHistory> getTransactionsBySenderId(Long senderId) {
+//        if (!userRepository.existsById(accountId)) {
+//            throw new RuntimeException("Account does not exist");
+//        }
+        return transactionHistoryRepository.findBySenderAccountIdOrReceiverAccountId(senderId, senderId);
+    }
+
 }

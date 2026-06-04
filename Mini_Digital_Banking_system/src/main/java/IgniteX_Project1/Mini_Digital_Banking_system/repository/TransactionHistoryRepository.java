@@ -8,4 +8,7 @@ import java.util.List;
 public interface TransactionHistoryRepository extends JpaRepository<TransactionHistory, Long> {
     List<TransactionHistory> findBySenderAccountId(Long senderId);
     List<TransactionHistory> findByReceiverAccountId(Long receiverId);
+
+    // New query method to find transactions matching either field
+    List<TransactionHistory> findBySenderAccountIdOrReceiverAccountId(Long senderId, Long receiverId);
 }

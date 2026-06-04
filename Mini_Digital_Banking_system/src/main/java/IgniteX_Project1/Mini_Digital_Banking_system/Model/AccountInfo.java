@@ -19,8 +19,8 @@ public class AccountInfo {
     @Column(name = "user_id", nullable = false)
     private Long userId;
 
-//    @Column(name = "account_name", nullable = false)
-//    private String accountName;
+    @Column(name = "account_name", nullable = false)
+    private String accountName;
 
     @Column(name = "account_number", nullable = false, unique = true)
     private Long accountNumber;

@@ -16,8 +16,9 @@ public class AccountService {
                 .orElseThrow(() -> new RuntimeException("Account not found for useId: " + userId));
 
         AccountResponse response = new AccountResponse();
+        response.setAccountID(account.getAccountId());
         response.setUserId(account.getUserId());
-//        response.setAccountName(account.getAccountName());
+        response.setAccountName(account.getAccountName());
         response.setAccountNumber(account.getAccountNumber());
         response.setAccountType(account.getAccountType());
         response.setBalance(account.getBalance());

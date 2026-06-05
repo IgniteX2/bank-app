@@ -228,16 +228,17 @@ function Register() {
   };
 
   return (
-    <div className="min-h-screen w-full flex items-start justify-center bg-[#f5f5f5]">
-      <div className="w-full min-h-screen flex flex-col justify-between">
-        <header
-          className="flex items-center justify-between w-full bg-[#ffffff]"
-          style={{ padding: "14px 50px" }}
-        >
-          <div
-            className="bg-[#1A3A5C] rounded-md flex items-center justify-center"
-            style={{ padding: "8px 14px" }}
-          >
+    <div 
+      className='min-h-screen w-full flex items-start justify-center bg-[#f5f5f5]' 
+      >
+      <div 
+        className='w-full min-h-screen flex flex-col justify-between'>
+        <header 
+          className='flex items-center justify-between w-full bg-[#ffffff]'
+          style={{padding: "14px 50px"}}>
+          <div 
+            className='bg-[#1A3A5C] rounded-md flex items-center justify-center'
+            style={{padding: "8px 14px"}}>
             <p>⚡</p>
           </div>
 

@@ -30,10 +30,10 @@ function TransactionHistory() {
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const [itemsPerPage, setItemsPerPage] = useState(5);
 
   // dropdown actions
-  const [openMenu, setOpenMenu] = useState(null);
+  // const [openMenu, setOpenMenu] = useState(null);
   const transactions = useTransactionHistoryStore(
     (state) => state.transactions,
   );
@@ -46,12 +46,32 @@ function TransactionHistory() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const matchesSearch = useMemo(() => {
+    const q = search.toLowerCase().trim();
+
+    return (tx) => {
+      if (!q) return true;
+
+      return (
+        tx.transactionType?.toLowerCase().includes(q) ||
+        tx.description?.toLowerCase().includes(q) ||
+        tx.status?.toLowerCase().includes(q) ||
+        String(tx.amount)?.includes(q) ||
+        String(tx.transactionId)?.includes(q) ||
+        String(tx.senderAccountId)?.includes(q) ||
+        String(tx.receiverAccountId)?.includes(q) ||
+        new Date(tx.transactionCreatedAt)
+          ?.toLocaleString()
+          .toLowerCase()
+          .includes(q)
+      );
+    };
+  }, [search]);
+
   // FILTER LOGIC (source of truth)
   const filteredTransactions = useMemo(() => {
     return transactions.filter((tx) => {
-      const matchesSearch =
-        tx.transactionType?.toLowerCase().includes(search.toLowerCase()) ||
-        tx.description?.toLowerCase().includes(search.toLowerCase());
+      const matchSearch = matchesSearch(tx);
 
       const matchesType =
         filterType === "all"
@@ -66,9 +86,16 @@ function TransactionHistory() {
         (!dateFilter.from || txDate >= new Date(dateFilter.from)) &&
         (!dateFilter.to || txDate <= new Date(dateFilter.to));
 
-      return matchesSearch && matchesType && matchesDate;
+      return matchSearch && matchesType && matchesDate;
     });
-  }, [transactions, search, filterType, dateFilter]);
+  }, [transactions, matchesSearch, filterType, dateFilter]);
+
+  const sortedTransactions = useMemo(() => {
+    return [...filteredTransactions].sort(
+      (a, b) =>
+        new Date(b.transactionCreatedAt) - new Date(a.transactionCreatedAt),
+    );
+  }, [filteredTransactions]);
 
   // pagination logic
   const totalPages = Math.max(
@@ -78,8 +105,8 @@ function TransactionHistory() {
 
   const paginatedTransactions = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
-    return filteredTransactions.slice(start, start + itemsPerPage);
-  }, [filteredTransactions, currentPage]);
+    return sortedTransactions.slice(start, start + itemsPerPage);
+  }, [sortedTransactions, currentPage, itemsPerPage]);
 
   return (
     <div
@@ -223,7 +250,7 @@ function TransactionHistory() {
               border: theme === "dark" ? "none" : "1px solid #EBEBEB",
               borderTopLeftRadius: "15px",
               borderTopRightRadius: "15px",
-              minHeight: "200px",
+              minHeight: "150px",
               display: "flex",
               flexDirection: "column",
               // alignItems: "center",
@@ -234,35 +261,185 @@ function TransactionHistory() {
           >
             <div style={{ width: "96%", marginLeft: "2%" }}>
               <div style={{ marginTop: "20px" }}>
-                <MainTransactionsTable />
+                <MainTransactionsTable
+                  transactionData={paginatedTransactions}
+                />
+              </div>
+            </div>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 20,
+                marginBottom: 20,
+                width: "98%",
+                marginLeft: "1%",
+                paddingTop: 10,
+                paddingBottom: 10,
+                paddingLeft: 10,
+                paddingRight: 10,
+              }}
+              className="bg-gray-50"
+            >
+              <p className="text-sm">
+                Page {currentPage} of {totalPages}
+              </p>
+
+              <div style={{ display: "flex", gap: 10 }} className="text-sm">
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                  className="cursor-pointer"
+                >
+                  Prev
+                </button>
+
+                <button
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(p + 1, totalPages))
+                  }
+                  className="cursor-pointer"
+                >
+                  Next
+                </button>
               </div>
             </div>
           </div>
 
+          {showFilter && (
+            <div
+              onClick={() => setShowFilter(false)}
+              style={{
+                position: "fixed",
+                top: 0,
+                left: 0,
+                width: "100%",
+                height: "100%",
+                background: "rgba(0,0,0,0.4)",
+                zIndex: 50,
+              }}
+            />
+          )}
+
           <div
             style={{
+              position: "fixed",
+              top: 0,
+              right: showFilter ? 0 : "-400px",
+              width: "380px",
+              height: "100vh",
+              background: "#fff",
+              zIndex: 60,
+              transition: "right 0.3s ease-in-out",
+              boxShadow: "-5px 0 20px rgba(0,0,0,0.1)",
+              padding: "20px",
               display: "flex",
-              justifyContent: "space-between",
-              marginTop: 20,
+              flexDirection: "column",
+              gap: "20px",
             }}
           >
-            <p className="text-sm">
-              Page {currentPage} of {totalPages}
-            </p>
-
-            <div style={{ display: "flex", gap: 10 }} className="text-sm">
-              <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}>
-                Prev
-              </button>
+            {/* HEADER */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <h2 style={{ margin: 0 }}>Filter Transactions</h2>
 
               <button
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(p + 1, totalPages))
-                }
+                onClick={() => setShowFilter(false)}
+                style={{
+                  border: "none",
+                  background: "transparent",
+                  fontSize: "20px",
+                  cursor: "pointer",
+                }}
               >
-                Next
+                ✕
               </button>
             </div>
+
+            {/* TYPE FILTER */}
+            <div>
+              <p style={{ fontWeight: "600" }}>Transaction Type</p>
+
+              {["all", "income", "expense"].map((type) => (
+                <button
+                  key={type}
+                  onClick={() => setFilterType(type)}
+                  style={{
+                    display: "block",
+                    width: "100%",
+                    padding: "10px",
+                    marginBottom: "10px",
+                    borderRadius: "8px",
+                    border:
+                      filterType === type ? "2px solid #111" : "1px solid #ddd",
+                    background: filterType === type ? "#f5f5f5" : "#fff",
+                    cursor: "pointer",
+                    textAlign: "left",
+                  }}
+                >
+                  {type.toUpperCase()}
+                </button>
+              ))}
+            </div>
+
+            {/* DATE FILTER */}
+            <div>
+              <p style={{ fontWeight: "600" }}>Date Range</p>
+
+              <input
+                type="date"
+                value={dateFilter.from}
+                onChange={(e) =>
+                  setDateFilter({ ...dateFilter, from: e.target.value })
+                }
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  marginBottom: "10px",
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                }}
+              />
+
+              <input
+                type="date"
+                value={dateFilter.to}
+                onChange={(e) =>
+                  setDateFilter({ ...dateFilter, to: e.target.value })
+                }
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  border: "1px solid #ddd",
+                  borderRadius: "8px",
+                }}
+              />
+            </div>
+
+            {/* RESET BUTTON */}
+            <button
+              onClick={() => {
+                setFilterType("all");
+                setSearch("");
+                setDateFilter({ from: "", to: "" });
+              }}
+              style={{
+                marginTop: "auto",
+                padding: "12px",
+                background: "#C9A227",
+                color: "#fff",
+                border: "none",
+                borderRadius: "10px",
+                cursor: "pointer",
+              }}
+            >
+              Reset Filters
+            </button>
           </div>
         </div>
       </DashboardLayout>

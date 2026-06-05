@@ -16,16 +16,16 @@ import { GrMoney, GrUpdate } from "react-icons/gr";
 import { RxCalendar } from "react-icons/rx";
 import TransactionsTableSkeleton from "../../skeletons/transactionTableSkeleton";
 
-export default function MainTransactionsTable() {
+export default function MainTransactionsTable({ transactionData }) {
   const fetchAccount = useAccountStore((state) => state.fetchAccount);
 
   const fetchTransactions = useTransactionHistoryStore(
     (state) => state.fetchTransactions,
   );
 
-  const transactions = useTransactionHistoryStore(
-    (state) => state.transactions,
-  );
+  //   const transactions = useTransactionHistoryStore(
+  //     (state) => state.transactions,
+  //   );
 
   const isLoading = useTransactionHistoryStore((state) => state.isLoading);
 
@@ -99,7 +99,7 @@ export default function MainTransactionsTable() {
         </TableHeader>
 
         <TableBody className="text-xs text-gray-600">
-          {transactions
+          {transactionData
             .slice()
             .sort(
               (a, b) =>

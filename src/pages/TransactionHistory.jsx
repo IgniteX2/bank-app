@@ -1,5 +1,5 @@
 import { useContext, useEffect, useMemo, useState } from "react";
-import { useTransactionHistoryStore } from "../stores/useTransactionHistoryStore";
+import { useTransactionHistoryStore } from "../stores/useTransactionsStore";
 import DashboardLayout from "../components/layout/Dashboard";
 import Sidebar from "../components/layout/Sidebar";
 import Topbar from "../components/layout/Topbar";
@@ -10,7 +10,10 @@ import { ThemeContext } from "../context/ThemeContext";
 
 import { FiSearch } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
-import TableSkeleton from "../components/layout/TableSkeleton";
+
+import TransactionsTableSkeleton from "../skeletons/transactionTableSkeleton";
+import TransactionsTable from "../components/cards/DashboardTransactionTable";
+import MainTransactionsTable from "../components/cards/TransactionTable";
 
 function TransactionHistory() {
   const { theme } = useContext(ThemeContext);
@@ -31,6 +34,9 @@ function TransactionHistory() {
 
   // dropdown actions
   const [openMenu, setOpenMenu] = useState(null);
+  const transactions = useTransactionHistoryStore(
+    (state) => state.transactions,
+  );
 
   const handleSidebarToggle = () => setIsOpen((prev) => !prev);
 
@@ -40,44 +46,25 @@ function TransactionHistory() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // fetch data
-  const transactions = useTransactionHistoryStore(
-    (state) => state.transactions,
-  );
-
-  const isLoading = useTransactionHistoryStore((state) => state.isLoading);
-
-  const fetchTransactions = useTransactionHistoryStore(
-    (state) => state.fetchTransactions,
-  );
-
-  useEffect(() => {
-    fetchTransactions();
-  }, [fetchTransactions]);
-
-  if (isLoading) {
-    return <p>Loading transactions...</p>;
-  }
-
   // FILTER LOGIC (source of truth)
   const filteredTransactions = useMemo(() => {
     return transactions.filter((tx) => {
       const matchesSearch =
-        (tx?.name || "").toLowerCase().includes(search.toLowerCase()) ||
-        (tx?.type || "").toLowerCase().includes(search.toLowerCase());
+        tx.transactionType?.toLowerCase().includes(search.toLowerCase()) ||
+        tx.description?.toLowerCase().includes(search.toLowerCase());
 
       const matchesType =
         filterType === "all"
           ? true
           : filterType === "income"
-            ? String(tx?.amount || "").startsWith("+")
-            : String(tx?.amount || "").startsWith("-");
+            ? tx.transactionType === "DEPOSIT"
+            : tx.transactionType !== "DEPOSIT";
 
-      const txDate = new Date(tx?.date);
+      const txDate = new Date(tx.transactionCreatedAt);
 
       const matchesDate =
-        (!dateFilter.from || new Date(dateFilter.from) <= txDate) &&
-        (!dateFilter.to || new Date(dateFilter.to) >= txDate);
+        (!dateFilter.from || txDate >= new Date(dateFilter.from)) &&
+        (!dateFilter.to || txDate <= new Date(dateFilter.to));
 
       return matchesSearch && matchesType && matchesDate;
     });
@@ -140,8 +127,9 @@ function TransactionHistory() {
               justifyContent: "space-between",
               flexDirection: isMobile ? "column" : "row",
               marginBottom: 10,
-              width: "100%",
+              width: "92%",
               height: isMobile ? "40px" : "50px",
+              marginLeft: "4%",
             }}
           >
             {/* FILTER BUTTONS */}
@@ -227,412 +215,30 @@ function TransactionHistory() {
           </div>
 
           {/* TABLE */}
-          {!isLoading ? (
-            <div
-              style={{
-                background: "#fff",
-                borderRadius: "16px",
-                overflow: "hidden",
-                boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
-                marginTop: isMobile ? "80px" : "20px",
-              }}
-            >
-              {/* TABLE HEADER */}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "18px 20px",
-                  background: "#f8fafc",
-                  fontWeight: 600,
-                  color: "#555",
-                  borderBottom: "1px solid #e5e7eb",
-                }}
-                className="text-sm"
-              >
-                {/* LEFT */}
-                <div
-                  style={{
-                    flex: 1,
-                  }}
-                >
-                  Transaction
-                </div>
-
-                {/* RIGHT */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: isMobile ? 15 : 30,
-                  }}
-                >
-                  {/* AMOUNT */}
-                  {!isMobile && (
-                    <div
-                      style={{
-                        minWidth: 100,
-                      }}
-                    >
-                      Amount
-                    </div>
-                  )}
-
-                  {/* DATE */}
-                  <div
-                    style={{
-                      minWidth: isMobile ? "auto" : 100,
-                      textAlign: "right",
-                    }}
-                  >
-                    Date
-                  </div>
-
-                  {/* ACTION */}
-                  {!isMobile && (
-                    <div
-                      style={{
-                        width: 50,
-                        textAlign: "center",
-                      }}
-                    >
-                      Action
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* TABLE BODY */}
-              {paginatedTransactions.length > 0 ? (
-                paginatedTransactions.map((tx, index) => {
-                  return (
-                    <div
-                      key={index}
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: "18px 20px",
-                        borderBottom: "1px solid #f1f5f9",
-                        background: openMenu === index ? "#f9fafb" : "#fff",
-                        transition: "0.3s ease",
-                        gap: 15,
-                      }}
-                      className="text-xs"
-                    >
-                      {/* LEFT SIDE */}
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: 6,
-                          flex: 1,
-                        }}
-                      >
-                        {/* NAME */}
-                        <span
-                          style={{
-                            fontWeight: 600,
-                            color: "#111827",
-                            fontSize: 15,
-                          }}
-                        >
-                          {tx.name}
-                        </span>
-
-                        {/* TYPE */}
-                        <span
-                          style={{
-                            fontSize: 13,
-                            color: "#6b7280",
-                            background: "#eef2ff",
-                            width: "fit-content",
-                            padding: "4px 10px",
-                            borderRadius: 20,
-                          }}
-                        >
-                          {tx.type}
-                        </span>
-
-                        {/* AMOUNT ON MOBILE */}
-                        {isMobile && (
-                          <span
-                            style={{
-                              fontWeight: 600,
-                              marginTop: 4,
-                              color:
-                                tx.type?.toLowerCase() === "income"
-                                  ? "#16a34a"
-                                  : "#dc2626",
-                            }}
-                          >
-                            {tx.type?.toLowerCase() === "income" ? "+" : "-"}₦
-                            {tx.amount}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* RIGHT SIDE */}
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: isMobile ? 10 : 30,
-                        }}
-                      >
-                        {/* DESKTOP AMOUNT */}
-                        {!isMobile && (
-                          <div
-                            style={{
-                              fontWeight: 600,
-                              color:
-                                tx.type?.toLowerCase() === "income"
-                                  ? "#16a34a"
-                                  : "#dc2626",
-                              minWidth: 100,
-                            }}
-                          >
-                            {tx.type?.toLowerCase() === "income" ? "+" : "-"}₦
-                            {tx.amount}
-                          </div>
-                        )}
-
-                        {/* DATE */}
-                        <div
-                          style={{
-                            color: "#6b7280",
-                            fontSize: 14,
-                            minWidth: isMobile ? "auto" : 100,
-                            textAlign: "right",
-                          }}
-                        >
-                          {tx.date}
-                        </div>
-
-                        {/* ACTION MENU */}
-                        <div
-                          style={{
-                            position: "relative",
-                            display: "flex",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <BsThreeDots
-                            onClick={() =>
-                              setOpenMenu(openMenu === index ? null : index)
-                            }
-                            style={{
-                              cursor: "pointer",
-                              fontSize: 20,
-                              color: "#4b5563",
-                            }}
-                          />
-
-                          {openMenu === index && (
-                            <div
-                              style={{
-                                position: "absolute",
-                                top: 30,
-                                right: 0,
-                                width: 140,
-                                background: "#fff",
-                                borderRadius: 12,
-                                boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-                                border: "1px solid #eee",
-                                overflow: "hidden",
-                                zIndex: 100,
-                              }}
-                            >
-                              <div
-                                style={{
-                                  padding: "12px 14px",
-                                  cursor: "pointer",
-                                }}
-                              >
-                                View
-                              </div>
-
-                              <div
-                                style={{
-                                  padding: "12px 14px",
-                                  cursor: "pointer",
-                                }}
-                              >
-                                Edit
-                              </div>
-
-                              <div
-                                style={{
-                                  padding: "12px 14px",
-                                  cursor: "pointer",
-                                  color: "#dc2626",
-                                  borderTop: "1px solid #f3f4f6",
-                                }}
-                              >
-                                Delete
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <div
-                  style={{
-                    padding: 40,
-                    textAlign: "center",
-                    color: "#6b7280",
-                  }}
-                  className="text-sm"
-                >
-                  No transaction found
-                </div>
-              )}
-            </div>
-          ) : (
-            <TableSkeleton isMobile={isMobile} />
-          )}
-
-          {showFilter && (
-            <div
-              onClick={() => setShowFilter(false)}
-              style={{
-                position: "fixed",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-                background: "rgba(0,0,0,0.4)",
-                zIndex: 50,
-              }}
-            />
-          )}
-
           <div
+            className={`mt-6 ${theme === "dark" ? "bg-[#354151]" : "bg-white"}`}
             style={{
-              position: "fixed",
-              top: 0,
-              right: showFilter ? 0 : "-400px",
-              width: "380px",
-              height: "100vh",
-              background: "#fff",
-              zIndex: 60,
-              transition: "right 0.3s ease-in-out",
-              boxShadow: "-5px 0 20px rgba(0,0,0,0.1)",
-              padding: "20px",
+              width: "94%",
+              marginLeft: "3%",
+              border: theme === "dark" ? "none" : "1px solid #EBEBEB",
+              borderTopLeftRadius: "15px",
+              borderTopRightRadius: "15px",
+              minHeight: "200px",
               display: "flex",
               flexDirection: "column",
-              gap: "20px",
+              // alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: isMobile ? "85px" : "",
+              background: isMobile ? "transparent" : " ",
             }}
           >
-            {/* HEADER */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <h2 style={{ margin: 0 }}>Filter Transactions</h2>
-
-              <button
-                onClick={() => setShowFilter(false)}
-                style={{
-                  border: "none",
-                  background: "transparent",
-                  fontSize: "20px",
-                  cursor: "pointer",
-                }}
-              >
-                ✕
-              </button>
+            <div style={{ width: "96%", marginLeft: "2%" }}>
+              <div style={{ marginTop: "20px" }}>
+                <MainTransactionsTable />
+              </div>
             </div>
-
-            {/* TYPE FILTER */}
-            <div>
-              <p style={{ fontWeight: "600" }}>Transaction Type</p>
-
-              {["all", "income", "expense"].map((type) => (
-                <button
-                  key={type}
-                  onClick={() => setFilterType(type)}
-                  style={{
-                    display: "block",
-                    width: "100%",
-                    padding: "10px",
-                    marginBottom: "10px",
-                    borderRadius: "8px",
-                    border:
-                      filterType === type ? "2px solid #111" : "1px solid #ddd",
-                    background: filterType === type ? "#f5f5f5" : "#fff",
-                    cursor: "pointer",
-                    textAlign: "left",
-                  }}
-                >
-                  {type.toUpperCase()}
-                </button>
-              ))}
-            </div>
-
-            {/* DATE FILTER */}
-            <div>
-              <p style={{ fontWeight: "600" }}>Date Range</p>
-
-              <input
-                type="date"
-                value={dateFilter.from}
-                onChange={(e) =>
-                  setDateFilter({ ...dateFilter, from: e.target.value })
-                }
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  marginBottom: "10px",
-                  border: "1px solid #ddd",
-                  borderRadius: "8px",
-                }}
-              />
-
-              <input
-                type="date"
-                value={dateFilter.to}
-                onChange={(e) =>
-                  setDateFilter({ ...dateFilter, to: e.target.value })
-                }
-                style={{
-                  width: "100%",
-                  padding: "10px",
-                  border: "1px solid #ddd",
-                  borderRadius: "8px",
-                }}
-              />
-            </div>
-
-            {/* RESET BUTTON */}
-            <button
-              onClick={() => {
-                setFilterType("all");
-                setSearch("");
-                setDateFilter({ from: "", to: "" });
-              }}
-              style={{
-                marginTop: "auto",
-                padding: "12px",
-                background: "#C9A227",
-                color: "#fff",
-                border: "none",
-                borderRadius: "10px",
-                cursor: "pointer",
-              }}
-            >
-              Reset Filters
-            </button>
           </div>
 
-          {/* PAGINATION */}
           <div
             style={{
               display: "flex",

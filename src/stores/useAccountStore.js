@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { getAccount } from "../services/authService";
+import { getUserAccount } from "../services/authService";
 import { toast } from "sonner";
 
 export const useAccountStore = create((set) => ({
@@ -17,7 +17,7 @@ export const useAccountStore = create((set) => ({
     try {
       set({ isLoading: true });
 
-      const response = await getAccount(userId);
+      const response = await getUserAccount(userId);
 
       if (!response?.data) {
         throw new Error("No account data returned");

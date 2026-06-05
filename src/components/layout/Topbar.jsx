@@ -1,22 +1,36 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { useUserStore } from "../../stores/useUserStore";
 import { useLocation } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import { FiBell } from "react-icons/fi";
-import { IoMoonOutline } from "react-icons/io5";
-import { MdOutlineWbSunny } from "react-icons/md";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+// import { IoMoonOutline } from "react-icons/io5";
+// import { MdOutlineWbSunny } from "react-icons/md";
 import { LuPanelLeftOpen } from "react-icons/lu";
 import userImg from "../../assets/user.jpg";
-import { useSidebar } from "../../components/ui/sidebar";
+// import { useSidebar } from "../../components/ui/sidebar";
 import AccountNumberSkeleton from "../../skeletons/AccountNumberSkeleton";
+import TopbarUserSkeleton from "../../skeletons/TopbarUserSkeleton";
+import TopbarBalanceSkeleton from "../../skeletons/TopbarBalanceSkeleton";
+import { useAccountStore } from "../../stores/useAccountStore";
 
 export default function Topbar({ isOpen, setIsOpen, isMobile }) {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const location = useLocation();
-  const { state } = useSidebar();
+  // const { state } = useSidebar();
+  const { account, isLoading } = useAccountStore();
   const user = useUserStore((state) => state.user);
 
-  const isLoading = useUserStore((state) => state.isLoading);
+  const isLoadingUser = useUserStore((state) => state.isLoading);
+  const fetchUser = useUserStore((state) => state.fetchUser);
+  const fetchAccount = useAccountStore((state) => state.fetchAccount);
+
+  useEffect(() => {
+    fetchUser();
+    fetchAccount();
+  }, [fetchUser, fetchAccount]);
+
+  const initials = user?.fullName?.slice(0, 2).toUpperCase();
 
   const getPageTitle = () => {
     switch (location.pathname) {
@@ -28,7 +42,7 @@ export default function Topbar({ isOpen, setIsOpen, isMobile }) {
             >
               Dashboard
             </h3>
-            {isLoading ? (
+            {isLoadingUser ? (
               <AccountNumberSkeleton />
             ) : (
               <p
@@ -163,47 +177,34 @@ export default function Topbar({ isOpen, setIsOpen, isMobile }) {
         </div>
 
         <div className="flex items-center gap-3">
+          {isLoading ? (
+            <TopbarBalanceSkeleton />
+          ) : (
+            <span className="text-gray-400 text-sm">
+              Balance:{" "}
+              <span className="text-lg text-gray-700 font-bold">
+                ₦{account?.balance?.toLocaleString() || 0}
+              </span>
+            </span>
+          )}
+
           <FiBell
             style={{
               color: theme === "dark" ? "#f5f5f5" : "#0d1b2e",
               fontSize: "17px",
             }}
           />
-
           <div className="tog self-center">
-            <div
-              className=" flex items-center justify-center -mt-7.5 mobileTog"
-              style={{ marginLeft: "5px" }}
-            >
-              <button
-                style={{ paddingLeft: "5px", cursor: "pointer" }}
-                onClick={toggleTheme}
-                aria-label="toggle theme"
-                className={`w-14 h-7 flex items-center rounded-full p-1 transition-colors duration-300 
-                  ${theme === "dark" ? "text-black bg-[#121212] shadow-inner" : "bg-gray-300 "}`}
-              >
-                <div
-                  className={`w-5 h-5 bg-white rounded-full shadow-md transform transition-transform duration-300 flex items-center justify-center
-                    ${theme === "light" ? "translate-x-0 " : "translate-x-7"}`}
-                >
-                  {theme === "light" ? (
-                    <MdOutlineWbSunny size={12} />
-                  ) : (
-                    <IoMoonOutline size={12} />
-                  )}
-                </div>
-              </button>
-
-              {theme === "dark" ? (
-                <span className="themeState font-semibold dark:text-white text-xs">
-                  {isMobile ? "" : <span>&nbsp; &nbsp;Dark Mode</span>}
-                </span>
-              ) : (
-                <span className="themeState font-semibold text-xs">
-                  {isMobile ? "" : <span>&nbsp; &nbsp;Light Mode</span>}
-                </span>
-              )}
-            </div>
+            {isLoadingUser ? (
+              <TopbarUserSkeleton />
+            ) : (
+              <Avatar className="h-8 w-8 rounded-lg">
+                <AvatarImage src={user?.avatar} />
+                <AvatarFallback className="bg-gray-200">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+            )}
           </div>
         </div>
       </div>

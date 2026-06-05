@@ -3,7 +3,8 @@ import DashboardLayout from "../components/layout/Dashboard";
 import AppSidebar from "../components/layout/Sidebar";
 import Topbar from "../components/layout/Topbar";
 import BalanceCard from "../components/cards/BalanceCard";
-import TransactionCard from "../components/cards/TransactionCard";
+// import TransactionsList from "../components/cards/TransactionsList";
+import TransactionTable from "../components/cards/DashboardTransactionTable";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { ThemeContext } from ".././context/ThemeContext";
@@ -11,6 +12,9 @@ import MobileNav from "../components/layout/MobileNav";
 import ActionButtons from "../components/ui/ActionsButtons";
 import backgroundImage from "../assets/Background.png";
 import { getUser } from "../services/authService";
+import { Logs } from "lucide-react";
+
+// import TransactionsList from "../components/cards/TransactionsList";
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -111,12 +115,12 @@ export default function Dashboard() {
           <div
             className={`mt-6 ${theme === "dark" ? "bg-[#354151]" : "bg-white"}`}
             style={{
-              width: "94%",
+              width: "75%",
               marginLeft: "3%",
               border: theme === "dark" ? "none" : "1px solid #EBEBEB",
               borderTopLeftRadius: "15px",
               borderTopRightRadius: "15px",
-              height: "350px",
+              minHeight: "200px",
               display: "flex",
               flexDirection: "column",
               // alignItems: "center",
@@ -133,30 +137,17 @@ export default function Dashboard() {
                   color: theme === "dark" ? "#f5f5f5" : "",
                 }}
               >
-                Recent Transactions
+                <div
+                  style={{ display: "flex", alignItems: "center", gap: "5px" }}
+                >
+                  <Logs className="mr-2 h-4 w-4" />
+                  Recent Transactions
+                </div>
               </h3>
 
               <div style={{ marginTop: "20px" }}>
-                <TransactionCard
-                  title="Netflix Monthly"
-                  type="Subscription"
-                  amount="₦3,839.91"
-                  date="06/27"
-                />
-
-                <TransactionCard
-                  title="Spotify Premium"
-                  type="Subscription"
-                  amount="₦1,200"
-                  date="06/26"
-                />
-
-                <TransactionCard
-                  title="Spotify Premium"
-                  type="Subscription"
-                  amount="₦1,200"
-                  date="06/26"
-                />
+                {/* <TransactionsList /> */}
+                <TransactionTable />
               </div>
             </div>
             <div

@@ -16,7 +16,7 @@ import { useUserStore } from "@/stores/useUserStore";
 
 import {
   Bell,
-  ChevronsUpDown,
+  ChevronRight,
   CreditCard,
   LogOut,
   UserPen,
@@ -44,11 +44,13 @@ function AppSidebar() {
 
   const { theme } = useContext(ThemeContext);
   const user = useUserStore((state) => state.user);
-  const initials = user?.fullName?.slice(0, 2);
+  const initials = user?.fullName?.slice(0, 2).toUpperCase();
 
   const isLoading = useUserStore((state) => state.isLoading);
   const navigate = useNavigate();
   const { logout } = useAuth();
+
+  console.log(user);
 
   // if (isLoading) return <p>Loading...</p>;
 
@@ -160,14 +162,19 @@ function AppSidebar() {
                         </AvatarFallback>
                       </Avatar>
 
-                      <div className="grid flex-1 text-left text-sm leading-tight">
-                        <span className="truncate font-medium">
+                      <div className="grid flex-1 text-left text-sm leading-tight ">
+                        <span className="truncate font-medium text-[12px]">
                           {user?.fullName}
                         </span>
-                        <span className="truncate text-xs">{user?.email}</span>
+                        <span className="truncate text-[10px]">
+                          {user?.email}
+                        </span>
                       </div>
 
-                      <ChevronsUpDown className="ml-auto size-4" />
+                      <ChevronRight
+                        style={{ padding: "10px", marginRight: "10px" }}
+                        className="ml-auto size-8 bg-white rounded-full text-gray-500 shadow-lg font-extrabold"
+                      />
                     </DropdownMenuTrigger>
                   )}
 

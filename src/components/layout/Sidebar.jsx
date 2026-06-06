@@ -105,7 +105,7 @@ function AppSidebar() {
               className="my-4 text-md text-gray-500 "
             >
               <div className="flex items-center gap-2 font-semibold">
-                ⚡ IGNITEX BANK
+                <span className="logoSidebar">⚡</span> IGNITEX BANK
               </div>
             </SidebarGroupLabel>
 

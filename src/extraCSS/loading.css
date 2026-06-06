@@ -1,0 +1,177 @@
+/* container */
+.loadingWrapper {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.loadingWrapper.dark {
+  background: #0f172a;
+}
+
+/* shimmer background */
+.shimmers {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.15) 40%,
+    transparent 60%
+  );
+  animation: shimmerMove 2s infinite linear;
+  pointer-events: none;
+}
+
+@keyframes shimmerMove {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* logo */
+.logoLogin {
+  font-size: 30px;
+  margin-bottom: 20px;
+  animation: pulse 1.2s infinite ease-in-out;
+  background-color: #1a3a5c;
+  box-shadow: 0 0 30px 12px lightgrey;
+  width: 55px;
+  height: 50px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logoSidebar {
+  font-size: 15px;
+  background-color: #1a3a5c;
+  width: 40px;
+  height: 35px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+}
+
+/* text slide */
+.textBox {
+  height: 30px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.textSlide {
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-block;
+}
+
+.textSlide.in {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.textSlide.out {
+  transform: translateY(10px);
+  opacity: 0;
+}
+
+/* animated dots */
+.dots span {
+  animation: blink 1.2s infinite;
+  margin-left: 2px;
+}
+
+.dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* progress bar */
+.progressBar {
+  width: 220px;
+  height: 5px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #1a3a5c;
+  transition: width 0.4s ease;
+}
+
+.errorText {
+  color: #ef4444;
+  animation: shake 0.4s ease;
+}
+
+@keyframes shake {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-4px);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+  75% {
+    transform: translateX(-4px);
+  }
+}
+
+.retryBtn {
+  margin-top: 20px;
+  padding: 10px 16px;
+  border: none;
+  background: #ef4444;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.2s ease;
+}
+
+.retryBtn:hover {
+  background: #dc2626;
+  transform: scale(1.05);
+}

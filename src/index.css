@@ -374,3 +374,7 @@ body {
     display: none; /* Chrome/Safari */
   }
 }
+
+.loading p {
+  transition: all 0.3s ease;
+}

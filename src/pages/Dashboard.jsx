@@ -151,29 +151,31 @@ export default function Dashboard() {
                 <TransactionTable />
               </div>
             </div>
-            <div
-              style={{
-                background: theme === "dark" ? "#0a1628" : "#DFE1E7",
-                padding: "10px 0px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-              }}
-            >
-              <NavLink to="../transactions">
+            <NavLink to="../transactions">
+              <div
+                style={{
+                  background: theme === "dark" ? "#0a1628" : "#DFE1E7",
+                  padding: "5px 0px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  cursor: "pointer",
+                  marginTop: "10px",
+                }}
+              >
                 <p
                   style={{
                     display: "flex",
                     cursor: "pointer",
                     color: theme === "dark" ? "#f5f5f5" : "",
                   }}
+                  className="text-xs"
                 >
                   See All &nbsp;{" "}
                   <FaLongArrowAltRight style={{ alignSelf: "center" }} />
                 </p>
-              </NavLink>
-            </div>
+              </div>
+            </NavLink>
           </div>
         </div>
       </DashboardLayout>

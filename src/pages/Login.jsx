@@ -20,27 +20,33 @@ function Login() {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [error, setError] = useState("");
   const [shake, setShake] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("SUBMIT FIRED");
-
-    setSubmitting(true);
 
     try {
+      setLoadingStep("auth"); // 1. starting login
+
       const res = await loginUser(form);
+
+      setLoadingStep("session"); // 2. saving session
 
       login(res.data);
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userId", res.data.userId);
 
+      setLoadingStep("redirect"); // 3. preparing redirect
+
       toast.success("Login successful");
-      navigate("/dashboard");
+
+      setTimeout(() => {
+        navigate("/dashboard");
+      }, 800);
     } catch (err) {
-      console.log("LOGIN ERROR:", err?.response);
+      setLoadingStep(null);
 
       const status = err?.response?.status;
 
@@ -56,8 +62,6 @@ function Login() {
 
       setShake(true);
       setTimeout(() => setShake(false), 2000);
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -73,8 +77,8 @@ function Login() {
 
   return (
     <>
-      {submitting ? (
-        <Loading theme={theme} />
+      {loadingStep ? (
+        <Loading theme={theme} step={loadingStep} />
       ) : (
         <div
           className={`all flex min-h-screen  flex-col justify-between ${theme === "dark" ? "bodyDark" : "bg-[#f5f5f5]"}`}

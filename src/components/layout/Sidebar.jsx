@@ -217,8 +217,14 @@ function AppSidebar() {
                           cursor: "pointer",
                         }}
                       >
-                        <UserPen className="mr-2 h-4 w-4" />
-                        Profile
+                        <NavLink
+                          to="/settings"
+                          end
+                          className="flex items-center gap-2"
+                        >
+                          <UserPen className="mr-2 h-4 w-4" />
+                          Profile
+                        </NavLink>
                       </DropdownMenuItem>
 
                       <DropdownMenuItem
@@ -253,8 +259,14 @@ function AppSidebar() {
                           cursor: "pointer",
                         }}
                       >
-                        <Settings className="mr-2 h-4 w-4" />
-                        Settings
+                        <NavLink
+                          to="/settings"
+                          end
+                          className="flex items-center gap-2"
+                        >
+                          <Settings className="mr-2 h-4 w-4" />
+                          Settings
+                        </NavLink>
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator className="bg-gray-200" />

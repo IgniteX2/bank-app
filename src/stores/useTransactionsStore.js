@@ -3,12 +3,20 @@ import { toast } from "sonner";
 import { getUserAccount } from "../services/authService";
 import { getAccountTransactions } from "../services/transactionService";
 
-export const useTransactionHistoryStore = create((set) => ({
+export const useTransactionHistoryStore = create((set, get) => ({
   transactions: [],
   isLoading: false,
   error: null,
+  hasFetched: false,
 
-  fetchTransactions: async () => {
+  fetchTransactions: async (force = false) => {
+    const { hasFetched } = get();
+
+    if (hasFetched && !force) {
+      console.log("Skipping transaction fetch");
+      return;
+    }
+
     const userId = localStorage.getItem("userId");
 
     if (!userId) {
@@ -17,9 +25,11 @@ export const useTransactionHistoryStore = create((set) => ({
     }
 
     try {
-      set({ isLoading: true, error: null });
+      set({
+        isLoading: true,
+        error: null,
+      });
 
-      // 1. Get account
       const accountResponse = await getUserAccount(userId);
       const account = accountResponse.data;
 
@@ -27,15 +37,15 @@ export const useTransactionHistoryStore = create((set) => ({
         throw new Error("Account not found");
       }
 
-      // 2. Use accountID
       const accountId = account.accountID;
 
-      // 3. Fetch transactions
       const transactionResponse = await getAccountTransactions(accountId);
 
       set({
         transactions: transactionResponse.data || [],
         isLoading: false,
+        error: null,
+        hasFetched: true,
       });
     } catch (error) {
       const message =
@@ -51,4 +61,11 @@ export const useTransactionHistoryStore = create((set) => ({
       });
     }
   },
+
+  clearTransactions: () =>
+    set({
+      transactions: [],
+      error: null,
+      hasFetched: false,
+    }),
 }));

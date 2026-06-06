@@ -138,6 +138,7 @@ export default function Dashboard() {
                 }}
               >
                 <div
+                  className="text-gray-700"
                   style={{ display: "flex", alignItems: "center", gap: "5px" }}
                 >
                   <Logs className="mr-2 h-4 w-4" />

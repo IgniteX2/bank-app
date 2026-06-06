@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 import {
   Sidebar,
@@ -13,6 +13,7 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import { useUserStore } from "@/stores/useUserStore";
+import ConfirmDialog from "./logoutDialog";
 
 import {
   Bell,
@@ -38,6 +39,9 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { Home, Headset, Send, Logs } from "lucide-react";
 import { useAuth } from "@/context/useAuth";
 
+import { useAccountStore } from "@/stores/useAccountStore";
+import { useTransactionHistoryStore } from "@/stores/useTransactionsStore";
+
 function AppSidebar() {
   const { isMobile } = useSidebar();
   const { state } = useSidebar();
@@ -49,6 +53,7 @@ function AppSidebar() {
   const isLoading = useUserStore((state) => state.isLoading);
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const [open, setOpen] = useState(false);
 
   console.log(user);
 
@@ -89,6 +94,12 @@ function AppSidebar() {
 
   const handleLogout = () => {
     logout();
+
+    // reset all stores
+    useUserStore.getState().clearUser();
+    useAccountStore.getState().clearAccount();
+    useTransactionHistoryStore.getState().clearTransactions();
+
     navigate("/");
   };
 
@@ -279,7 +290,7 @@ function AppSidebar() {
                           paddingTop: "3%",
                           cursor: "pointer",
                         }}
-                        onClick={handleLogout}
+                        onClick={() => setOpen(true)}
                       >
                         <LogOut className="mr-2 h-4 w-4" />
                         Log out
@@ -290,6 +301,17 @@ function AppSidebar() {
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarFooter>
+
+          <ConfirmDialog
+            open={open}
+            title="Confirm Logout"
+            message="Are you sure you want to logout?"
+            onCancel={() => setOpen(false)}
+            onConfirm={() => {
+              setOpen(false);
+              handleLogout();
+            }}
+          />
         </div>
       </SidebarContent>
     </Sidebar>

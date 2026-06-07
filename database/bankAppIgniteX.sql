@@ -286,6 +286,7 @@ BEGIN
     INSERT INTO ACCOUNT (
         user_id,
         account_number,
+        account_name,
         balance
     )
     VALUES (

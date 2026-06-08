@@ -99,80 +99,91 @@ export default function MainTransactionsTable({ transactionData }) {
         </TableHeader>
 
         <TableBody className="text-xs text-gray-600">
-          {transactionData
-            .slice()
-            .sort(
-              (a, b) =>
-                new Date(b.transactionCreatedAt) -
-                new Date(a.transactionCreatedAt),
-            )
-            .map((tx) => (
-              <Fragment key={tx.transactionId}>
-                {/* MAIN ROW */}
-                <TableRow
-                  className="cursor-pointer hover:bg-gray-50  border-gray-200 pt-4 pb-4"
-                  onClick={() => toggleRow(tx.transactionId)}
-                >
-                  <TableCell>{tx.transactionType}</TableCell>
+          {transactionData?.length > 0 ? (
+            transactionData
+              .slice()
+              .sort(
+                (a, b) =>
+                  new Date(b.transactionCreatedAt) -
+                  new Date(a.transactionCreatedAt),
+              )
+              .map((tx) => (
+                <Fragment key={tx.transactionId}>
+                  {/* MAIN ROW */}
+                  <TableRow
+                    className="cursor-pointer hover:bg-gray-50 border-gray-200 pt-4 pb-4"
+                    onClick={() => toggleRow(tx.transactionId)}
+                  >
+                    <TableCell>{tx.transactionType}</TableCell>
 
-                  <TableCell className="text-center font-medium">
-                    ₦{Number(tx.amount).toLocaleString()}
-                  </TableCell>
+                    <TableCell className="text-center font-medium">
+                      ₦{Number(tx.amount).toLocaleString()}
+                    </TableCell>
 
-                  <TableCell className="text-center">
-                    <span
-                      style={{ padding: "5px", fontSize: "10px" }}
-                      className={`${
-                        tx.status === "SUCCESS"
-                          ? "bg-green-500"
-                          : tx.status === "PENDING"
-                            ? "bg-yellow-500"
-                            : "bg-red-500"
-                      } text-white rounded-xl text-xs shadow-sm`}
-                    >
-                      {tx.status}
-                    </span>
-                  </TableCell>
+                    <TableCell className="text-center">
+                      <span
+                        style={{ padding: "5px", fontSize: "10px" }}
+                        className={`${
+                          tx.status === "SUCCESS"
+                            ? "bg-green-500"
+                            : tx.status === "PENDING"
+                              ? "bg-yellow-500"
+                              : "bg-red-500"
+                        } text-white rounded-xl text-xs shadow-sm`}
+                      >
+                        {tx.status}
+                      </span>
+                    </TableCell>
 
-                  <TableCell className="text-right text-gray-500">
-                    {formatDate(tx.transactionCreatedAt)}
-                  </TableCell>
-                </TableRow>
-
-                {/* EXPANDED ROW */}
-                {openRow === tx.transactionId && (
-                  <TableRow className="bg-gray-50 ">
-                    <TableCell colSpan={5} className="p-6 ">
-                      <div className="grid grid-cols-2 gap-4 text-xs">
-                        <div>
-                          <p className="text-gray-500">Transaction ID</p>
-                          <p className="font-medium">{tx.transactionId}</p>
-                        </div>
-
-                        <div>
-                          <p className="text-gray-500">Sender Account</p>
-                          <p className="font-medium">
-                            {tx.senderAccountId ?? "N/A"}
-                          </p>
-                        </div>
-
-                        <div>
-                          <p className="text-gray-500">Receiver Account</p>
-                          <p className="font-medium">
-                            {tx.receiverAccountId ?? "N/A"}
-                          </p>
-                        </div>
-
-                        <div>
-                          <p className="text-gray-500">Description</p>
-                          <p className="font-medium ">{tx.description}</p>
-                        </div>
-                      </div>
+                    <TableCell className="text-right text-gray-500">
+                      {formatDate(tx.transactionCreatedAt)}
                     </TableCell>
                   </TableRow>
-                )}
-              </Fragment>
-            ))}
+
+                  {/* EXPANDED ROW */}
+                  {openRow === tx.transactionId && (
+                    <TableRow className="bg-gray-50">
+                      <TableCell colSpan={5} className="p-6">
+                        <div className="grid grid-cols-2 gap-4 text-xs">
+                          <div>
+                            <p className="text-gray-500">Transaction ID</p>
+                            <p className="font-medium">{tx.transactionId}</p>
+                          </div>
+
+                          <div>
+                            <p className="text-gray-500">Sender Account</p>
+                            <p className="font-medium">
+                              {tx.senderAccountId ?? "N/A"}
+                            </p>
+                          </div>
+
+                          <div>
+                            <p className="text-gray-500">Receiver Account</p>
+                            <p className="font-medium">
+                              {tx.receiverAccountId ?? "N/A"}
+                            </p>
+                          </div>
+
+                          <div>
+                            <p className="text-gray-500">Description</p>
+                            <p className="font-medium">{tx.description}</p>
+                          </div>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  )}
+                </Fragment>
+              ))
+          ) : (
+            <TableRow>
+              <TableCell
+                colSpan={4}
+                className="text-center py-10 text-gray-500"
+              >
+                No transactions found.
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
       </Table>
     </div>

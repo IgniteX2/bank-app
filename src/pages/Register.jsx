@@ -1,5 +1,6 @@
 import React from "react";
 import { FaRegUserCircle, FaUser } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 import {
   FaRegFlag,
   FaFlag,
@@ -26,7 +27,6 @@ import { GoDotFill } from "react-icons/go";
 import { BsBank } from "react-icons/bs";
 import { BiWorld } from "react-icons/bi";
 import { useState, useEffect, useContext } from "react";
-import axios from "axios";
 import Select from "react-select";
 import { Link } from "react-router-dom";
 import API from "../services/api";
@@ -38,7 +38,6 @@ import RegisterUserLoader from "../components/cards/RegisterUserLoader";
 
 function Register() {
   const { theme, toggleTheme } = useContext(ThemeContext);
-
   const [stepForm, setStepForm] = useState(1);
   const [piN, setPiN] = useState(["", "", "", ""]);
   const [inputValue, setInputValue] = useState({
@@ -52,6 +51,7 @@ function Register() {
     nationality: "",
     address: "",
   });
+
   const [touched, setTouched] = useState({
     firstName: false,
     lastName: false,
@@ -258,9 +258,23 @@ function Register() {
   //   }
   // };
 
-  const handleSubmit = async () => {
-    console.log("submit fired");
+  // const handleSubmit = async () => {
+  //   try {
+  //     const data = await signup(inputValue);
 
+  //     console.log(data);
+
+  //     toast.success("You have successfully created an account");
+
+  //     setStep((prev) => prev + 1);
+  //   } catch (error) {
+  //     console.log(error);
+
+  //     toast.error(error?.response?.data?.message || "Failed to create account");
+  //   }
+  // };
+
+  const handleSubmit = async () => {
     try {
 
       const hasError = Object.values(errorMsgNum).some(

@@ -54,7 +54,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain (HttpSecurity http ) throws Exception{
         http
-                .cors(Customizer.withDefaults())
+//                .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
@@ -75,6 +75,11 @@ public class SecurityConfig {
                             res.setContentType("application/json");
                             res.getWriter().write("{\"error\":\"Unauthorized\"}");
                         })
+                        .accessDeniedHandler(((request, response, accessDeniedException) -> {
+                            response.setStatus(403);
+                            response.setContentType("application/json");
+                            response.getWriter().write("{\"error\":\"Forbidden\"}");
+                        }))
                 )
 
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -100,7 +105,7 @@ public class SecurityConfig {
                 ));
 
         configuration.setAllowedHeaders(
-                List.of("Authorization", "Cache-Control","Content-Type")
+                List.of("Authorization","Content-Type")
         );
 
         configuration.setAllowCredentials(true);

@@ -3,8 +3,6 @@ import DashboardLayout from "../components/layout/Dashboard";
 import AppSidebar from "../components/layout/Sidebar";
 import Topbar from "../components/layout/Topbar";
 import BalanceCard from "../components/cards/BalanceCard";
-// import TransactionsList from "../components/cards/TransactionsList";
-import MainTransactionsTable from "../components/cards/DashboardTransactionTable";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { ThemeContext } from ".././context/ThemeContext";

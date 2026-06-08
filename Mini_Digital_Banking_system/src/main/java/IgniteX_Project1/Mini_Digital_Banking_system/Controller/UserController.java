@@ -11,10 +11,7 @@ import IgniteX_Project1.Mini_Digital_Banking_system.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -25,10 +22,10 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/users/{id}")
-    public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
-        return  ResponseEntity.ok(userService.getUserById(id));
-    }
+        @GetMapping("/users/{id}")
+        public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {
+            return  ResponseEntity.ok(userService.getUserById(id));
+        }
 
 
 }

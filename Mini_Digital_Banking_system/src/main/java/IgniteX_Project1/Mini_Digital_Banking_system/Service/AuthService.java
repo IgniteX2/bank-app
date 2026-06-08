@@ -60,9 +60,9 @@ public class AuthService {
         userInfo.setBvn(req.getBvn());
         userInfo.setUserPassword(encoder.encode(req.getUserPassword()));
         userInfo.setNInNum(req.getNInNum());
-        userInfo.setAccountType(req.getAccountType());
+//        userInfo.setAccountType(req.getAccountType());
         userInfo.setNationality(req.getNationality());
-        userInfo.setPin(req.getPin());
+//        userInfo.setPin(req.getPin());
         userInfo.setAddress(req.getAddress());
 
         repo.save(userInfo);

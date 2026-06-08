@@ -3,9 +3,11 @@ package IgniteX_Project1.Mini_Digital_Banking_system.Service;
 import IgniteX_Project1.Mini_Digital_Banking_system.DTO.AccountResponse;
 import IgniteX_Project1.Mini_Digital_Banking_system.Model.AccountInfo;
 import IgniteX_Project1.Mini_Digital_Banking_system.repository.AccountRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class AccountService {
     private final AccountRepository accountRepository;
 

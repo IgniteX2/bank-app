@@ -117,8 +117,8 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
-             filterChain.doFilter(request, response);
-              return;
+            filterChain.doFilter(request, response);
+            return;
         }
 
         String path = request.getServletPath();
@@ -131,7 +131,10 @@ public class JwtFilter extends OncePerRequestFilter {
 
             String header = request.getHeader("Authorization");
 
-            if (header != null && header.startsWith("Bearer ")) {
+            if (header == null || !header.startsWith("Bearer ")) {
+                    filterChain.doFilter(request,response);
+                    return;
+            }
                 String token = header.substring(7);
 
                 try {
@@ -144,7 +147,7 @@ public class JwtFilter extends OncePerRequestFilter {
                             if (user != null) {
                                 UsernamePasswordAuthenticationToken auth =
                                         new UsernamePasswordAuthenticationToken(
-                                                user,
+                                                user.getEmail(),
                                                 null,
                                                 Collections.emptyList()
                                         );
@@ -161,7 +164,6 @@ public class JwtFilter extends OncePerRequestFilter {
                     System.out.println("JWT Error: " + e.getMessage());
                 }
 
-            }
         filterChain.doFilter(request, response);
     }
 

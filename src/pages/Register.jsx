@@ -66,11 +66,13 @@ function Register() {
     lastName: "",
     email: "",
     phoneNumber: "",
-    bvn: "",
     userPassword: "",
-    NInNum: "",
     nationality: "",
     address: "",
+  });
+  const [errorMsgNum, setErrorMsgNum] = useState({
+    bvn: "",
+    NInNum: "",
   });
   const [isViewPassword, setIsViewPassword] = useState(false);
 
@@ -180,31 +182,31 @@ function Register() {
 
       // BVN / NIN VALIDATION
       inputValue.bvn.trim() === ""
-        ? setErrorMsg((prev) => ({
+        ? setErrorMsgNum((prev) => ({
             ...prev,
             bvn: "This field is required",
           }))
         : inputValue.bvn.trim().length !== 11
-          ? setErrorMsg((prev) => ({
+          ? setErrorMsgNum((prev) => ({
               ...prev,
               bvn: "Enter a valid BVN number",
             }))
-          : setErrorMsg((prev) => ({
+          : setErrorMsgNum((prev) => ({
               ...prev,
               bvn: "",
             }));
 
       inputValue.NInNum.trim() === ""
-        ? setErrorMsg((prev) => ({
+        ? setErrorMsgNum((prev) => ({
             ...prev,
             NInNum: "This field is required",
           }))
         : inputValue.NInNum.trim().length !== 11
-          ? setErrorMsg((prev) => ({
+          ? setErrorMsgNum((prev) => ({
               ...prev,
               NInNum: "Enter a valid NIN number",
             }))
-          : setErrorMsg((prev) => ({
+          : setErrorMsgNum((prev) => ({
               ...prev,
               NInNum: "",
             }));
@@ -219,19 +221,30 @@ function Register() {
   const hasUpperCase = /[A-Z]/;
   const hasNumber = /\d/;
 
-  const hasError = Object.values(errorMsg).some((error) => error === "");
-
   const handleSubmit = async () => {
     console.log("submit fired");
 
     try {
-      console.log(inputValue);
-      const data = await registerUser(inputValue);
 
-      console.log(data);
+      const hasError = Object.values(errorMsgNum).some(
+        (error) => error !== ""
+      );
 
-      toast.success("You have successfully created an acccout");
-      setStep((prev) => prev + 1);
+      console.log("errorMsg:", errorMsgNum);
+      console.log("hasError:", hasError);
+      // setStep((prev) => prev + 1);
+
+      if(!hasError) {
+        console.log(inputValue);
+        
+        const data = await registerUser(inputValue);
+
+        console.log(data);
+
+        toast.success("You have successfully created an acccout");
+
+        setStep(prev => prev + 1)
+      }
     } catch (error) {
       console.log("Signup error:", error);
       console.log("Status:", error.response?.status);
@@ -341,11 +354,16 @@ function Register() {
                 onSubmit={(e) => {
                   e.preventDefault();
 
-                  setStep((prev) => prev + 1);
+                  const hasError = Object.values(errorMsg).some(
+                    (error) => error !== ""
+                  );
 
-                  // if(!hasError) {
-                  //   setStep(prev => prev + 1)
-                  // }
+                  console.log("errorMsg:", errorMsg);
+                  console.log("hasError:", hasError);
+
+                  if(!hasError) {
+                    setStep(prev => prev + 1)
+                  }
                 }}
                 action=""
                 className="w-full h-60 flex flex-col"
@@ -681,10 +699,10 @@ function Register() {
                   />
                 </div>
 
-                {touched.bvn && errorMsg.bvn && (
+                {touched.bvn && errorMsgNum.bvn && (
                   <div className="text-[10px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end">
                     <MdError className="text-[16px]" />
-                    <p>{errorMsg.bvn}</p>
+                    <p>{errorMsgNum.bvn}</p>
                   </div>
                 )}
 
@@ -705,10 +723,10 @@ function Register() {
                   />
                 </div>
 
-                {touched.NInNum && errorMsg.NInNum && (
+                {touched.NInNum && errorMsgNum.NInNum && (
                   <div className="text-[10px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end">
                     <MdError className="text-[16px]" />
-                    <p>{errorMsg.NInNum}</p>
+                    <p>{errorMsgNum.NInNum}</p>
                   </div>
                 )}
 
@@ -729,6 +747,13 @@ function Register() {
                 >
                   Submit
                 </button>
+
+                <div className="text-right underline text-[12px]/[24px] font-semibold text-[#0D1B2E] cursor-pointer">
+                  <h3
+                    onClick={() => setStep(prev => prev - 1)}
+                  >Go back{" "}</h3>
+                </div>
+
               </form>
             </div>
           )}

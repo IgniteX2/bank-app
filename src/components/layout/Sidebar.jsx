@@ -1,5 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 import {
   Sidebar,
@@ -13,10 +13,11 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import { useUserStore } from "@/stores/useUserStore";
+import ConfirmDialog from "./logoutDialog";
 
 import {
   Bell,
-  ChevronsUpDown,
+  ChevronRight,
   CreditCard,
   LogOut,
   UserPen,
@@ -38,17 +39,23 @@ import { useSidebar } from "@/components/ui/sidebar";
 import { Home, Headset, Send, Logs } from "lucide-react";
 import { useAuth } from "@/context/useAuth";
 
+import { useAccountStore } from "@/stores/useAccountStore";
+import { useTransactionHistoryStore } from "@/stores/useTransactionsStore";
+
 function AppSidebar() {
   const { isMobile } = useSidebar();
   const { state } = useSidebar();
 
   const { theme } = useContext(ThemeContext);
   const user = useUserStore((state) => state.user);
-  const initials = user?.fullName?.slice(0, 2);
+  const initials = user?.fullName?.slice(0, 2).toUpperCase();
 
   const isLoading = useUserStore((state) => state.isLoading);
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const [open, setOpen] = useState(false);
+
+  console.log(user);
 
   // if (isLoading) return <p>Loading...</p>;
 
@@ -87,6 +94,12 @@ function AppSidebar() {
 
   const handleLogout = () => {
     logout();
+
+    // reset all stores
+    useUserStore.getState().clearUser();
+    useAccountStore.getState().clearAccount();
+    useTransactionHistoryStore.getState().clearTransactions();
+
     navigate("/");
   };
 
@@ -103,7 +116,7 @@ function AppSidebar() {
               className="my-4 text-md text-gray-500 "
             >
               <div className="flex items-center gap-2 font-semibold">
-                ⚡ IGNITEX BANK
+                <span className="logoSidebar">⚡</span> IGNITEX BANK
               </div>
             </SidebarGroupLabel>
 
@@ -160,14 +173,19 @@ function AppSidebar() {
                         </AvatarFallback>
                       </Avatar>
 
-                      <div className="grid flex-1 text-left text-sm leading-tight">
-                        <span className="truncate font-medium">
+                      <div className="grid flex-1 text-left text-sm leading-tight ">
+                        <span className="truncate font-medium text-[12px]">
                           {user?.fullName}
                         </span>
-                        <span className="truncate text-xs">{user?.email}</span>
+                        <span className="truncate text-[10px]">
+                          {user?.email}
+                        </span>
                       </div>
 
-                      <ChevronsUpDown className="ml-auto size-4" />
+                      <ChevronRight
+                        style={{ padding: "10px", marginRight: "10px" }}
+                        className="ml-auto size-8 bg-white rounded-full text-gray-500 shadow-lg font-extrabold"
+                      />
                     </DropdownMenuTrigger>
                   )}
 
@@ -210,8 +228,14 @@ function AppSidebar() {
                           cursor: "pointer",
                         }}
                       >
-                        <UserPen className="mr-2 h-4 w-4" />
-                        Profile
+                        <NavLink
+                          to="/settings"
+                          end
+                          className="flex items-center gap-2"
+                        >
+                          <UserPen className="mr-2 h-4 w-4" />
+                          Profile
+                        </NavLink>
                       </DropdownMenuItem>
 
                       <DropdownMenuItem
@@ -246,8 +270,14 @@ function AppSidebar() {
                           cursor: "pointer",
                         }}
                       >
-                        <Settings className="mr-2 h-4 w-4" />
-                        Settings
+                        <NavLink
+                          to="/settings"
+                          end
+                          className="flex items-center gap-2"
+                        >
+                          <Settings className="mr-2 h-4 w-4" />
+                          Settings
+                        </NavLink>
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
                     <DropdownMenuSeparator className="bg-gray-200" />
@@ -260,7 +290,7 @@ function AppSidebar() {
                           paddingTop: "3%",
                           cursor: "pointer",
                         }}
-                        onClick={handleLogout}
+                        onClick={() => setOpen(true)}
                       >
                         <LogOut className="mr-2 h-4 w-4" />
                         Log out
@@ -271,6 +301,17 @@ function AppSidebar() {
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarFooter>
+
+          <ConfirmDialog
+            open={open}
+            title="Confirm Logout"
+            message="Are you sure you want to logout?"
+            onCancel={() => setOpen(false)}
+            onConfirm={() => {
+              setOpen(false);
+              handleLogout();
+            }}
+          />
         </div>
       </SidebarContent>
     </Sidebar>

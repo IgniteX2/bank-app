@@ -8,7 +8,7 @@ export const registerUser = async (data) => {
   return await API.post("/auth/signup", data);
 };
 
-export const getAccount = async (userId) => {
+export const getUserAccount = async (userId) => {
   return await API.get(`/acc/accounts/${userId}`);
 };
 

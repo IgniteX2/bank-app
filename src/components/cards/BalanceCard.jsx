@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import { useContext } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
 import MyButton from "../ui/ActionsButtons";
@@ -12,19 +13,22 @@ export default function BalanceCard({ isMobile }) {
   const { theme } = useContext(ThemeContext);
   const { account, isLoading } = useAccountStore();
   const fetchAccount = useAccountStore((state) => state.fetchAccount);
+  const [viewBalance, setViewBalance] = useState(true);
 
   useEffect(() => {
     fetchAccount();
   }, [fetchAccount]);
-  const [viewBalance, setViewBalance] = useState(true);
 
   const handleViewBalance = () => {
     setViewBalance((prev) => !prev);
   };
 
-  useEffect(() => {
-    fetchAccount();
-  }, [fetchAccount]);
+  const data = account;
+  console.log("Account data in BalanceCard:", data);
+
+  // useEffect(() => {
+  //   fetchAccount();
+  // }, [fetchAccount]);
 
   return (
     <div

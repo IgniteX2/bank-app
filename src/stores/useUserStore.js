@@ -1,13 +1,20 @@
-// stores/useUserStore.js
 import { create } from "zustand";
 import { getUser } from "../services/authService";
 import { toast } from "sonner";
 
-export const useUserStore = create((set) => ({
+export const useUserStore = create((set, get) => ({
   user: null,
   isLoading: false,
+  hasFetched: false,
 
-  fetchUser: async () => {
+  fetchUser: async (force = false) => {
+    const { hasFetched } = get();
+
+    if (hasFetched && !force) {
+      console.log("Skipping user fetch");
+      return;
+    }
+
     const userId = localStorage.getItem("userId");
 
     if (!userId) {
@@ -27,6 +34,7 @@ export const useUserStore = create((set) => ({
       set({
         user: response.data,
         isLoading: false,
+        hasFetched: true,
       });
     } catch (error) {
       console.error("Failed to fetch user:", error);
@@ -44,5 +52,9 @@ export const useUserStore = create((set) => ({
     }
   },
 
-  clearUser: () => set({ user: null }),
+  clearUser: () =>
+    set({
+      user: null,
+      hasFetched: false,
+    }),
 }));

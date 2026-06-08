@@ -1,12 +1,20 @@
 import { create } from "zustand";
-import { getAccount } from "../services/authService";
+import { getUserAccount } from "../services/authService";
 import { toast } from "sonner";
 
-export const useAccountStore = create((set) => ({
+export const useAccountStore = create((set, get) => ({
   account: null,
   isLoading: false,
+  hasFetched: false,
 
-  fetchAccount: async () => {
+  fetchAccount: async (force = false) => {
+    const { hasFetched } = get();
+
+    if (hasFetched && !force) {
+      console.log("Skipping account fetch");
+      return;
+    }
+
     const userId = localStorage.getItem("userId");
 
     if (!userId) {
@@ -17,7 +25,7 @@ export const useAccountStore = create((set) => ({
     try {
       set({ isLoading: true });
 
-      const response = await getAccount(userId);
+      const response = await getUserAccount(userId);
 
       if (!response?.data) {
         throw new Error("No account data returned");
@@ -26,6 +34,7 @@ export const useAccountStore = create((set) => ({
       set({
         account: response.data,
         isLoading: false,
+        hasFetched: true,
       });
     } catch (error) {
       console.error(error);
@@ -36,7 +45,15 @@ export const useAccountStore = create((set) => ({
           "Failed to load account",
       );
 
-      set({ isLoading: false });
+      set({
+        isLoading: false,
+      });
     }
   },
+
+  clearAccount: () =>
+    set({
+      account: null,
+      hasFetched: false,
+    }),
 }));

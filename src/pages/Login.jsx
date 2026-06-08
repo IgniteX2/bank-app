@@ -20,31 +20,47 @@ function Login() {
   const { theme, toggleTheme } = useContext(ThemeContext);
   const [error, setError] = useState("");
   const [shake, setShake] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(null);
+  const [loadingError, setLoadingError] = useState(false);
+  const [canRetry, setCanRetry] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("SUBMIT FIRED");
 
-    setSubmitting(true);
+    setLoadingError(false);
+    setCanRetry(false);
 
     try {
+      setLoadingStep("auth");
+
       const res = await loginUser(form);
+
+      setLoadingStep("session");
 
       login(res.data);
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("userId", res.data.userId);
 
+      setLoadingStep("redirect");
+
       toast.success("Login successful");
-      navigate("/dashboard");
+
+      setTimeout(() => {
+        navigate("/dashboard");
+        setLoadingStep(null);
+      }, 800);
     } catch (err) {
-      console.log("LOGIN ERROR:", err?.response);
+      console.log("LOGIN FAILED:", err);
+
+      setLoadingError(true);
+      setCanRetry(true);
+      setLoadingStep("error"); // stop progress here
 
       const status = err?.response?.status;
 
-      let message = "Something went wrong";
+      let message = "Network error. Please try again.";
 
       if (status === 401) message = "Invalid email or password";
       else if (status === 404) message = "User not found";
@@ -53,11 +69,6 @@ function Login() {
 
       toast.error(message);
       setError(message);
-
-      setShake(true);
-      setTimeout(() => setShake(false), 2000);
-    } finally {
-      setSubmitting(false);
     }
   };
 
@@ -73,8 +84,13 @@ function Login() {
 
   return (
     <>
-      {submitting ? (
-        <Loading theme={theme} />
+      {loadingStep ? (
+        <Loading
+          theme={theme}
+          step={loadingStep}
+          error={loadingError}
+          onRetry={handleSubmit}
+        />
       ) : (
         <div
           className={`all flex min-h-screen  flex-col justify-between ${theme === "dark" ? "bodyDark" : "bg-[#f5f5f5]"}`}

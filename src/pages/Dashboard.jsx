@@ -4,7 +4,7 @@ import AppSidebar from "../components/layout/Sidebar";
 import Topbar from "../components/layout/Topbar";
 import BalanceCard from "../components/cards/BalanceCard";
 // import TransactionsList from "../components/cards/TransactionsList";
-import TransactionTable from "../components/cards/DashboardTransactionTable";
+import MainTransactionsTable from "../components/cards/DashboardTransactionTable";
 import { FaLongArrowAltRight } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { ThemeContext } from ".././context/ThemeContext";
@@ -13,6 +13,7 @@ import ActionButtons from "../components/ui/ActionsButtons";
 import backgroundImage from "../assets/Background.png";
 import { getUser } from "../services/authService";
 import { Logs } from "lucide-react";
+import TransactionsTable from "../components/cards/DashboardTransactionTable";
 
 // import TransactionsList from "../components/cards/TransactionsList";
 
@@ -147,8 +148,7 @@ export default function Dashboard() {
               </h3>
 
               <div style={{ marginTop: "20px" }}>
-                {/* <TransactionsList /> */}
-                <TransactionTable />
+                <TransactionsTable />
               </div>
             </div>
             <NavLink to="../transactions">

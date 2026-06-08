@@ -179,21 +179,33 @@ function Register() {
             }));
 
       // BVN / NIN VALIDATION
-      inputValue.bvn || inputValue.NInNum.trim() === ""
+      inputValue.bvn.trim() === ""
         ? setErrorMsg((prev) => ({
             ...prev,
             bvn: "This field is required",
-            NInNum: "This field is required",
           }))
-        : inputValue.bvn.trim().length || inputValue.NInNum.trim().length !== 11
+        : inputValue.bvn.trim().length !== 11
           ? setErrorMsg((prev) => ({
               ...prev,
               bvn: "Enter a valid BVN number",
-              NInNum: "Enter a valid NIN number",
             }))
           : setErrorMsg((prev) => ({
               ...prev,
               bvn: "",
+            }));
+
+      inputValue.NInNum.trim() === ""
+        ? setErrorMsg((prev) => ({
+            ...prev,
+            NInNum: "This field is required",
+          }))
+        : inputValue.NInNum.trim().length !== 11
+          ? setErrorMsg((prev) => ({
+              ...prev,
+              NInNum: "Enter a valid NIN number",
+            }))
+          : setErrorMsg((prev) => ({
+              ...prev,
               NInNum: "",
             }));
     }, 1000);
@@ -224,6 +236,7 @@ function Register() {
       console.log("Signup error:", error);
       console.log("Status:", error.response?.status);
       console.log("Data:", error.response?.data);
+      toast.error(error.response?.data);
     }
   };
 
@@ -658,12 +671,23 @@ function Register() {
                   <input
                     value={inputValue.bvn}
                     onChange={(e) => handleChange(e.target)}
+                    onBlur={() =>
+                      setTouched((prev) => ({ ...prev, bvn: true }))
+                    }
                     type="text"
                     name="bvn"
                     className="gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full cursor-pointer outline-none text-[#0D1B2E]"
                     style={{ padding: "10px" }}
                   />
                 </div>
+
+                {touched.bvn && errorMsg.bvn && (
+                  <div className="text-[10px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end">
+                    <MdError className="text-[16px]" />
+                    <p>{errorMsg.bvn}</p>
+                  </div>
+                )}
+
                 <div className="flex flex-col">
                   <label htmlFor="" className="text-[#0D1B2E] font-medium">
                     Enter NIN
@@ -671,6 +695,9 @@ function Register() {
                   <input
                     value={inputValue.NInNum}
                     onChange={(e) => handleChange(e.target)}
+                    onBlur={() =>
+                      setTouched((prev) => ({ ...prev, NInNum: true }))
+                    }
                     type="text"
                     name="NInNum"
                     className="gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full cursor-pointer outline-none text-[#0D1B2E]"
@@ -678,14 +705,18 @@ function Register() {
                   />
                 </div>
 
+                {touched.NInNum && errorMsg.NInNum && (
+                  <div className="text-[10px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end">
+                    <MdError className="text-[16px]" />
+                    <p>{errorMsg.NInNum}</p>
+                  </div>
+                )}
+
                 <button
                   type="button"
                   onClick={(e) => {
                     e.preventDefault();
-
-                    setStep((prev) => prev + 1);
-
-                    handleSubmit;
+                    handleSubmit();
 
                     // if(!hasError) {
                     //   setStep(prev => prev + 1);

@@ -25,6 +25,7 @@ public class AccountCreationRequest {
     private String phoneNumber;
 
     @NotNull(message = "bvn is required")
+    @Size(min = 11, max = 11)
     private String bvn;
 
     @NotBlank(message = "Password is required")
@@ -36,6 +37,7 @@ public class AccountCreationRequest {
     private String userPassword;
 
     @NotBlank(message = "NIN is required")
+    @Size(min = 11, max = 11)
     private String NInNum;
 
     @Column(name = "transaction_pin", nullable = true)

@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserInfo, Long> {
     Optional<UserInfo> findByFullName(String username);
     Optional<UserInfo> findByEmail(String email);
+    Optional<UserInfo> findByBvn(String bvn);
+    Optional<UserInfo> findByNinNUm(String NinNUm);
 
 //    ScopedValue findByPinResetToken(String resettoken);
     Optional<UserInfo> findByPinResetToken(String resettoken);

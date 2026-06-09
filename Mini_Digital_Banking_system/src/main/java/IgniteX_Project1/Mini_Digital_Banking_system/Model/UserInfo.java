@@ -58,7 +58,7 @@ public class UserInfo {
     private String nationality;
 
     @Column(name = "nin_num", unique = true, nullable = false)
-    private String NInNum;
+    private String NinNum;
 
     @Column(name = "address", nullable = false)
     private String address;

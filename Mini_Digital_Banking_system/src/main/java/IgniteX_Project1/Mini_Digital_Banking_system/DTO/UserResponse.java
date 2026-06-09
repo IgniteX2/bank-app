@@ -10,7 +10,7 @@ public class UserResponse {
     private String fullName;
     private String email;
     private String bvn;
-    private String NInNum;
+    private String NinNum;
     private LocalDateTime UserCreatedAt;
     private LocalDateTime UserModifiedAt;
     private String transactionPin;

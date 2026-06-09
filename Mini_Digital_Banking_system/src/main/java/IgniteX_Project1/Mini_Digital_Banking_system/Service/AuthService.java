@@ -59,7 +59,7 @@ public class AuthService {
         userInfo.setPhoneNumber(req.getPhoneNumber());
         userInfo.setBvn(req.getBvn());
         userInfo.setUserPassword(encoder.encode(req.getUserPassword()));
-        userInfo.setNInNum(req.getNInNum());
+        userInfo.setNinNum(req.getNinNum());
 //        userInfo.setAccountType(req.getAccountType());
         userInfo.setNationality(req.getNationality());
         userInfo.setTransactionPin(req.getTransactionPin());

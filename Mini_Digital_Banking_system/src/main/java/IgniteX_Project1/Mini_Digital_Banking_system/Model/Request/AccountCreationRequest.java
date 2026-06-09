@@ -38,7 +38,7 @@ public class AccountCreationRequest {
 
     @NotBlank(message = "NIN is required")
     @Size(min = 11, max = 11)
-    private String NInNum;
+    private String NinNum;
 
     @Column(name = "transaction_pin", nullable = true)
     private String transactionPin;

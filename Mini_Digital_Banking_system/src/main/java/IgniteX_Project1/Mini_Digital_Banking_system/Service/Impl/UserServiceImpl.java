@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
         userResponse.setFullName(userInfo.getFirstName() + " " + userInfo.getLastName());
         userResponse.setEmail(userInfo.getEmail());
         userResponse.setBvn(userInfo.getBvn());
-        userResponse.setNInNum(userInfo.getNInNum());
+        userResponse.setNinNum(userInfo.getNinNum());
         userResponse.setTransactionPin(userInfo.getTransactionPin());
         userResponse.setUserCreatedAt(userInfo.getUserCreatedAt());
         userResponse.setUserModifiedAt(userInfo.getUserModifiedAt());

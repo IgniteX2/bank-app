@@ -38,7 +38,6 @@ import RegisterUserLoader from "../components/cards/RegisterUserLoader";
 
 function Register() {
   const { theme, toggleTheme } = useContext(ThemeContext);
-  const navigate = useNavigate();
   const [stepForm, setStepForm] = useState(1);
   const [piN, setPiN] = useState(["", "", "", ""]);
   const [inputValue, setInputValue] = useState({
@@ -69,11 +68,13 @@ function Register() {
     lastName: "",
     email: "",
     phoneNumber: "",
-    bvn: "",
     userPassword: "",
-    NInNum: "",
     nationality: "",
     address: "",
+  });
+  const [errorMsgNum, setErrorMsgNum] = useState({
+    bvn: "",
+    NInNum: "",
   });
   const [isViewPassword, setIsViewPassword] = useState(false);
   const { signup, loading } = useAuthStore();
@@ -185,21 +186,33 @@ function Register() {
             }));
 
       // BVN / NIN VALIDATION
-      inputValue.bvn || inputValue.NInNum.trim() === ""
-        ? setErrorMsg((prev) => ({
+      inputValue.bvn.trim() === ""
+        ? setErrorMsgNum((prev) => ({
             ...prev,
             bvn: "This field is required",
-            NInNum: "This field is required",
           }))
-        : inputValue.bvn.trim().length || inputValue.NInNum.trim().length !== 11
-          ? setErrorMsg((prev) => ({
+        : inputValue.bvn.trim().length !== 11
+          ? setErrorMsgNum((prev) => ({
               ...prev,
               bvn: "Enter a valid BVN number",
-              NInNum: "Enter a valid NIN number",
             }))
-          : setErrorMsg((prev) => ({
+          : setErrorMsgNum((prev) => ({
               ...prev,
               bvn: "",
+            }));
+
+      inputValue.NInNum.trim() === ""
+        ? setErrorMsgNum((prev) => ({
+            ...prev,
+            NInNum: "This field is required",
+          }))
+        : inputValue.NInNum.trim().length !== 11
+          ? setErrorMsgNum((prev) => ({
+              ...prev,
+              NInNum: "Enter a valid NIN number",
+            }))
+          : setErrorMsgNum((prev) => ({
+              ...prev,
               NInNum: "",
             }));
     }, 1000);
@@ -213,7 +226,37 @@ function Register() {
   const hasUpperCase = /[A-Z]/;
   const hasNumber = /\d/;
 
-  const hasError = Object.values(errorMsg).some((error) => error === "");
+  // const handleSubmit = async () => {
+  //   console.log("submit fired");
+
+  //   try {
+
+  //     const hasError = Object.values(errorMsgNum).some(
+  //       (error) => error !== ""
+  //     );
+
+  //     console.log("errorMsg:", errorMsgNum);
+  //     console.log("hasError:", hasError);
+  //     // setStep((prev) => prev + 1);
+
+  //     if(!hasError) {
+  //       console.log(inputValue);
+        
+  //       const data = await registerUser(inputValue);
+
+  //       console.log(data);
+
+  //       toast.success("You have successfully created an acccout");
+
+  //       setStep(prev => prev + 1)
+  //     }
+  //   } catch (error) {
+  //     console.log("Signup error:", error);
+  //     console.log("Status:", error.response?.status);
+  //     console.log("Data:", error.response?.data);
+  //     toast.error(error.response?.data);
+  //   }
+  // };
 
   // const handleSubmit = async () => {
   //   try {
@@ -233,48 +276,74 @@ function Register() {
 
   const handleSubmit = async () => {
     try {
-      setStep("validate");
 
-      await new Promise((r) => setTimeout(r, 800));
+      const hasError = Object.values(errorMsgNum).some(
+        (error) => error !== ""
+      );
 
-      setStep("create");
+      console.log("errorMsg:", errorMsgNum);
+      console.log("hasError:", hasError);
 
-      const data = await signup(inputValue);
+      if(!hasError) {
 
-      setStep("verify");
+        console.log(inputValue);
 
-      await new Promise((r) => setTimeout(r, 800));
+        setStep("validate");
 
-      setStep("complete");
+        await new Promise((r) => setTimeout(r, 800));
 
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 1000);
+        setStep("create");
+
+        const data = await signup(inputValue);
+
+        console.log(data);
+
+        setStep("verify");
+
+        await new Promise((r) => setTimeout(r, 800));
+
+        setStep("complete");
+
+        setTimeout(() => {
+          // navigate("/dashboard");
+          setStepForm(prev => prev + 1);
+        }, 1000);
+
+        toast.success("You have successfully created an acccout");
+
+      }
     } catch (err) {
       setError(true);
+
+      console.log("Signup error:", err);
+      console.log("Status:", err.response?.status);
+      console.log("Data:", err.response?.data);
+      toast.error(err.response?.data);
     }
   };
 
   return (
     <>
-      {loading ? (
-        <RegisterUserLoader
+    {
+      loading ? (
+        <RegisterUserLoader 
           theme="light"
           step={step}
           error={error}
           onRetry={handleSubmit}
         />
       ) : (
-        <div className="min-h-screen w-full flex items-start justify-center bg-[#f5f5f5]">
-          <div className="w-full min-h-screen flex flex-col justify-between">
-            <header
-              className="flex items-center justify-between w-full bg-[#ffffff]"
-              style={{ padding: "14px 50px" }}
-            >
-              <div
-                className="bg-[#1A3A5C] rounded-md flex items-center justify-center"
-                style={{ padding: "8px 14px" }}
-              >
+        <div 
+          className='min-h-screen w-full flex items-start justify-center bg-[#f5f5f5]' 
+          >
+          <div 
+            className='w-full min-h-screen flex flex-col justify-between'>
+            <header 
+              className='flex items-center justify-between w-full bg-[#ffffff]'
+              style={{padding: "14px 50px"}}>
+              <div 
+                className='bg-[#1A3A5C] rounded-md flex items-center justify-center'
+                style={{padding: "8px 14px"}}>
                 <p>⚡</p>
               </div>
 
@@ -298,7 +367,7 @@ function Register() {
 
                 <div
                   className={`rounded-full bg-[#FFFFFF] border 
-              ${stepForm >= 2 ? "border-[#0D1B2E]" : "border-[#E7E8EA]"}`}
+                  ${stepForm >= 2 ? "border-[#0D1B2E]" : "border-[#E7E8EA]"}`}
                   style={{ padding: "6px" }}
                 >
                   <div className="flex items-center justify-center gap-1  ">
@@ -364,11 +433,16 @@ function Register() {
                     onSubmit={(e) => {
                       e.preventDefault();
 
-                      setStepForm((prev) => prev + 1);
+                      const hasError = Object.values(errorMsg).some(
+                        (error) => error !== ""
+                      );
 
-                      // if(!hasError) {
-                      //   setStepForm(prev => prev + 1)
-                      // }
+                      console.log("errorMsg:", errorMsg);
+                      console.log("hasError:", hasError);
+
+                      if(!hasError) {
+                        setStepForm(prev => prev + 1)
+                      }
                     }}
                     action=""
                     className="w-full h-60 flex flex-col"
@@ -386,10 +460,7 @@ function Register() {
                             value={inputValue.firstName}
                             onChange={(e) => handleChange(e.target)}
                             onBlur={() =>
-                              setTouched((prev) => ({
-                                ...prev,
-                                firstName: true,
-                              }))
+                              setTouched((prev) => ({ ...prev, firstName: true }))
                             }
                             type="text"
                             name="firstName"
@@ -416,10 +487,7 @@ function Register() {
                             value={inputValue.lastName}
                             onChange={(e) => handleChange(e.target)}
                             onBlur={() =>
-                              setTouched((prev) => ({
-                                ...prev,
-                                lastName: true,
-                              }))
+                              setTouched((prev) => ({ ...prev, lastName: true }))
                             }
                             type="text"
                             name="lastName"
@@ -475,10 +543,7 @@ function Register() {
                             value={inputValue.phoneNumber}
                             onChange={(e) => handleChange(e.target)}
                             onBlur={() =>
-                              setTouched((prev) => ({
-                                ...prev,
-                                phoneNumber: true,
-                              }))
+                              setTouched((prev) => ({ ...prev, phoneNumber: true }))
                             }
                             type="tel"
                             name="phoneNumber"
@@ -534,10 +599,7 @@ function Register() {
                             value={inputValue.nationality}
                             onChange={(e) => handleChange(e.target)}
                             onBlur={() =>
-                              setTouched((prev) => ({
-                                ...prev,
-                                nationality: true,
-                              }))
+                              setTouched((prev) => ({ ...prev, nationality: true }))
                             }
                             type="text"
                             name="nationality"
@@ -663,8 +725,8 @@ function Register() {
                     className="text-[10px]/[20px] text-[#0D1B2E] text-center"
                     style={{ marginTop: "4px" }}
                   >
-                    By clicking Register, you agree to accept IGNITE X'S Terms
-                    and Condition
+                    By clicking Register, you agree to accept IGNITE X'S Terms and
+                    Condition
                   </p>
                 </div>
               )}
@@ -706,12 +768,23 @@ function Register() {
                       <input
                         value={inputValue.bvn}
                         onChange={(e) => handleChange(e.target)}
+                        onBlur={() =>
+                          setTouched((prev) => ({ ...prev, bvn: true }))
+                        }
                         type="text"
                         name="bvn"
                         className="gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full cursor-pointer outline-none text-[#0D1B2E]"
                         style={{ padding: "10px" }}
                       />
                     </div>
+
+                    {touched.bvn && errorMsgNum.bvn && (
+                      <div className="text-[10px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end">
+                        <MdError className="text-[16px]" />
+                        <p>{errorMsgNum.bvn}</p>
+                      </div>
+                    )}
+
                     <div className="flex flex-col">
                       <label htmlFor="" className="text-[#0D1B2E] font-medium">
                         Enter NIN
@@ -719,6 +792,9 @@ function Register() {
                       <input
                         value={inputValue.NInNum}
                         onChange={(e) => handleChange(e.target)}
+                        onBlur={() =>
+                          setTouched((prev) => ({ ...prev, NInNum: true }))
+                        }
                         type="text"
                         name="NInNum"
                         className="gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full cursor-pointer outline-none text-[#0D1B2E]"
@@ -726,17 +802,21 @@ function Register() {
                       />
                     </div>
 
-                    {/* <button
+                    {touched.NInNum && errorMsgNum.NInNum && (
+                      <div className="text-[10px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end">
+                        <MdError className="text-[16px]" />
+                        <p>{errorMsgNum.NInNum}</p>
+                      </div>
+                    )}
+
+                    <button
                       type="button"
                       onClick={(e) => {
                         e.preventDefault();
-
-                        setStepForm((prev) => prev + 1);
-
-                        handleSubmit;
+                        handleSubmit();
 
                         // if(!hasError) {
-                        //   setStepForm(prev => prev + 1);
+                        //   setStep(prev => prev + 1);
 
                         //   handleSubmit
                         // }
@@ -745,18 +825,14 @@ function Register() {
                       style={{ padding: "6px 0", marginTop: "18px" }}
                     >
                       Submit
-                    </button> */}
-
-                    <button
-                      type="button"
-                      onClick={handleSubmit}
-                      className="rounded-lg text-[12px]/[24px] font-bold text-[#FFFFFF] bg-[#a78620] cursor-pointer"
-                      style={{ padding: "6px 0", marginTop: "18px" }}
-                    >
-                      Submit
                     </button>
 
-                    
+                    <div className="text-right underline text-[12px]/[24px] font-semibold text-[#0D1B2E] cursor-pointer">
+                      <h3
+                        onClick={() => setStepForm(prev => prev - 1)}
+                      >Go back{" "}</h3>
+                    </div>
+
                   </form>
                 </div>
               )}
@@ -814,7 +890,8 @@ function Register() {
             </footer>
           </div>
         </div>
-      )}
+      )
+    }
     </>
   );
 }

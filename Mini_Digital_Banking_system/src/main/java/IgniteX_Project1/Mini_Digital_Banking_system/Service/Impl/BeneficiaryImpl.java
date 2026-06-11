@@ -2,9 +2,11 @@ package IgniteX_Project1.Mini_Digital_Banking_system.Service.Impl;
 
 import IgniteX_Project1.Mini_Digital_Banking_system.DTO.Beneficiary.BeneficiaryRequest;
 import IgniteX_Project1.Mini_Digital_Banking_system.DTO.Beneficiary.BeneficiaryResponse;
+import IgniteX_Project1.Mini_Digital_Banking_system.Model.AccountInfo;
 import IgniteX_Project1.Mini_Digital_Banking_system.Model.BeneficiaryInfo;
 import IgniteX_Project1.Mini_Digital_Banking_system.Model.UserInfo;
 import IgniteX_Project1.Mini_Digital_Banking_system.Service.BeneficiaryService;
+import IgniteX_Project1.Mini_Digital_Banking_system.repository.AccountRepository;
 import IgniteX_Project1.Mini_Digital_Banking_system.repository.BeneficiaryRepository;
 import IgniteX_Project1.Mini_Digital_Banking_system.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +26,19 @@ public class BeneficiaryImpl implements BeneficiaryService{
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private AccountRepository accountRepository;
+
     @Override
     public BeneficiaryResponse addBeneficiary(BeneficiaryRequest request) {
         UserInfo user = getAuthenticatedUser();
+        // Find beneficiary account
+        AccountInfo account =
+                accountRepository
+                        .findByUserId(user.getUserId())
+                        .orElseThrow(() ->
+                                new RuntimeException(
+                                        "Account not found"));
 
         BeneficiaryInfo beneficiary = new BeneficiaryInfo();
 
@@ -39,6 +51,10 @@ public class BeneficiaryImpl implements BeneficiaryService{
         beneficiary.setFavorite(false);
 
         beneficiary.setUser(user);
+
+        // Automatically sets accountId FK
+        beneficiary.setAccount(account);
+//        beneficiary.setAccount(account);
 
         BeneficiaryInfo savedBeneficiary =
                 beneficiaryRepository.save(beneficiary);
@@ -71,19 +87,19 @@ public class BeneficiaryImpl implements BeneficiaryService{
                         .getContext()
                         .getAuthentication();
 
-//        if (authentication == null ||
-//                !authentication.isAuthenticated()) {
-//
-//            throw new RuntimeException("User not authenticated");
-//        }
-        System.out.println("Auth = " + authentication);
-        if (authentication == null) {
-            throw new RuntimeException("Authentication is null");
-        }
+        if (authentication == null ||
+                !authentication.isAuthenticated()) {
 
-        System.out.println("Principal = " + authentication.getPrincipal());
-        System.out.println("Name = " + authentication.getName());
-        System.out.println("Authenticated = " + authentication.isAuthenticated());
+            throw new RuntimeException("User not authenticated");
+        }
+//        System.out.println("Auth = " + authentication);
+//        if (authentication == null) {
+//            throw new RuntimeException("Authentication is null");
+//        }
+//
+//        System.out.println("Principal = " + authentication.getPrincipal());
+//        System.out.println("Name = " + authentication.getName());
+//        System.out.println("Authenticated = " + authentication.isAuthenticated());
 
         String email = authentication.getName();
 

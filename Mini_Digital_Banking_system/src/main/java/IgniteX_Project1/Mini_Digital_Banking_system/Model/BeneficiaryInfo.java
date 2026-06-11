@@ -14,13 +14,13 @@ public class BeneficiaryInfo {
     @Column(name = "beneficiaries_id", nullable = false)
     private Long beneficiaryId;
 
-    @Column(name = "beneficiary_name", insertable = false, updatable = false, length = 101)
+    @Column(name = "beneficiary_name", updatable = false)
     private String beneficiaryName;
 
     @Column(name = "account_number", nullable = false, updatable = false)
     private Long accountNumber;
 
-    @Column(name = "favorite")
+    @Column(name = "isfavorite")
     private boolean favorite;
 
     @ManyToOne

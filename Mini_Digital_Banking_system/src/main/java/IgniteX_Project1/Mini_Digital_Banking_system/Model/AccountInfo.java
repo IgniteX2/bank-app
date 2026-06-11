@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Entity
@@ -34,5 +35,7 @@ public class AccountInfo {
     @Column(name = "account_created_at")
     private LocalDateTime accountCreatedAt;
 
+    @OneToMany(mappedBy = "account")
+    private List<BeneficiaryInfo> beneficiaries;
 
 }

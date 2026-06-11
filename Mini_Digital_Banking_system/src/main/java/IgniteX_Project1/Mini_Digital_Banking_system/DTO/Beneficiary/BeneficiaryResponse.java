@@ -8,7 +8,7 @@ public class BeneficiaryResponse {
 
     private String beneficiaryName;
 
-    private String accountNumber;
+    private Long accountNumber;
 
     private boolean favorite;
 }

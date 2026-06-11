@@ -6,5 +6,5 @@ import lombok.Data;
 public class BeneficiaryRequest {
     private String beneficiaryName;
 
-    private String accountNumber;
+    private Long accountNumber;
 }

@@ -71,11 +71,19 @@ public class BeneficiaryImpl implements BeneficiaryService{
                         .getContext()
                         .getAuthentication();
 
-        if (authentication == null ||
-                !authentication.isAuthenticated()) {
-
-            throw new RuntimeException("User not authenticated");
+//        if (authentication == null ||
+//                !authentication.isAuthenticated()) {
+//
+//            throw new RuntimeException("User not authenticated");
+//        }
+        System.out.println("Auth = " + authentication);
+        if (authentication == null) {
+            throw new RuntimeException("Authentication is null");
         }
+
+        System.out.println("Principal = " + authentication.getPrincipal());
+        System.out.println("Name = " + authentication.getName());
+        System.out.println("Authenticated = " + authentication.isAuthenticated());
 
         String email = authentication.getName();
 

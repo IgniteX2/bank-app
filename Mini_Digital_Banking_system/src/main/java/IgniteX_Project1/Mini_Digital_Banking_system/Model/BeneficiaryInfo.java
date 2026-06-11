@@ -18,7 +18,7 @@ public class BeneficiaryInfo {
     private String beneficiaryName;
 
     @Column(name = "account_number", nullable = false, updatable = false)
-    private String accountNumber;
+    private Long accountNumber;
 
     @Column(name = "favorite")
     private boolean favorite;

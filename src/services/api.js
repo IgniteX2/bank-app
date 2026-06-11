@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -22,8 +23,9 @@ API.interceptors.response.use(
     console.log("Interceptor error:", err.response?.status);
 
     if (err.response?.status === 401) {
+      toast.error("Not Authorized");
       localStorage.removeItem("token");
-      window.location.href = "/login";
+      // window.location.href = "/login";
     }
 
     return Promise.reject(err);

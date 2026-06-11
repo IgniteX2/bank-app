@@ -226,66 +226,14 @@ function Register() {
   const hasUpperCase = /[A-Z]/;
   const hasNumber = /\d/;
 
-  // const handleSubmit = async () => {
-  //   console.log("submit fired");
-
-  //   try {
-
-  //     const hasError = Object.values(errorMsgNum).some(
-  //       (error) => error !== ""
-  //     );
-
-  //     console.log("errorMsg:", errorMsgNum);
-  //     console.log("hasError:", hasError);
-  //     // setStep((prev) => prev + 1);
-
-  //     if(!hasError) {
-  //       console.log(inputValue);
-        
-  //       const data = await registerUser(inputValue);
-
-  //       console.log(data);
-
-  //       toast.success("You have successfully created an acccout");
-
-  //       setStep(prev => prev + 1)
-  //     }
-  //   } catch (error) {
-  //     console.log("Signup error:", error);
-  //     console.log("Status:", error.response?.status);
-  //     console.log("Data:", error.response?.data);
-  //     toast.error(error.response?.data);
-  //   }
-  // };
-
-  // const handleSubmit = async () => {
-  //   try {
-  //     const data = await signup(inputValue);
-
-  //     console.log(data);
-
-  //     toast.success("You have successfully created an account");
-
-  //     setStep((prev) => prev + 1);
-  //   } catch (error) {
-  //     console.log(error);
-
-  //     toast.error(error?.response?.data?.message || "Failed to create account");
-  //   }
-  // };
-
   const handleSubmit = async () => {
     try {
-
-      const hasError = Object.values(errorMsgNum).some(
-        (error) => error !== ""
-      );
+      const hasError = Object.values(errorMsgNum).some((error) => error !== "");
 
       console.log("errorMsg:", errorMsgNum);
       console.log("hasError:", hasError);
 
-      if(!hasError) {
-
+      if (!hasError) {
         console.log(inputValue);
 
         setStep("validate");
@@ -306,11 +254,10 @@ function Register() {
 
         setTimeout(() => {
           // navigate("/dashboard");
-          setStepForm(prev => prev + 1);
+          setStepForm((prev) => prev + 1);
         }, 1000);
 
         toast.success("You have successfully created an acccout");
-
       }
     } catch (err) {
       setError(true);
@@ -324,26 +271,24 @@ function Register() {
 
   return (
     <>
-    {
-      loading ? (
-        <RegisterUserLoader 
+      {loading ? (
+        <RegisterUserLoader
           theme="light"
           step={step}
           error={error}
           onRetry={handleSubmit}
         />
       ) : (
-        <div 
-          className='min-h-screen w-full flex items-start justify-center bg-[#f5f5f5]' 
-          >
-          <div 
-            className='w-full min-h-screen flex flex-col justify-between'>
-            <header 
-              className='flex items-center justify-between w-full bg-[#ffffff]'
-              style={{padding: "14px 50px"}}>
-              <div 
-                className='bg-[#1A3A5C] rounded-md flex items-center justify-center'
-                style={{padding: "8px 14px"}}>
+        <div className="min-h-screen w-full flex items-start justify-center bg-[#f5f5f5]">
+          <div className="w-full min-h-screen flex flex-col justify-between">
+            <header
+              className="flex items-center justify-between w-full bg-[#ffffff]"
+              style={{ padding: "14px 50px" }}
+            >
+              <div
+                className="bg-[#1A3A5C] rounded-md flex items-center justify-center"
+                style={{ padding: "8px 14px" }}
+              >
                 <p>⚡</p>
               </div>
 
@@ -434,14 +379,14 @@ function Register() {
                       e.preventDefault();
 
                       const hasError = Object.values(errorMsg).some(
-                        (error) => error !== ""
+                        (error) => error !== "",
                       );
 
                       console.log("errorMsg:", errorMsg);
                       console.log("hasError:", hasError);
 
-                      if(!hasError) {
-                        setStepForm(prev => prev + 1)
+                      if (!hasError) {
+                        setStepForm((prev) => prev + 1);
                       }
                     }}
                     action=""
@@ -460,7 +405,10 @@ function Register() {
                             value={inputValue.firstName}
                             onChange={(e) => handleChange(e.target)}
                             onBlur={() =>
-                              setTouched((prev) => ({ ...prev, firstName: true }))
+                              setTouched((prev) => ({
+                                ...prev,
+                                firstName: true,
+                              }))
                             }
                             type="text"
                             name="firstName"
@@ -487,7 +435,10 @@ function Register() {
                             value={inputValue.lastName}
                             onChange={(e) => handleChange(e.target)}
                             onBlur={() =>
-                              setTouched((prev) => ({ ...prev, lastName: true }))
+                              setTouched((prev) => ({
+                                ...prev,
+                                lastName: true,
+                              }))
                             }
                             type="text"
                             name="lastName"
@@ -543,7 +494,10 @@ function Register() {
                             value={inputValue.phoneNumber}
                             onChange={(e) => handleChange(e.target)}
                             onBlur={() =>
-                              setTouched((prev) => ({ ...prev, phoneNumber: true }))
+                              setTouched((prev) => ({
+                                ...prev,
+                                phoneNumber: true,
+                              }))
                             }
                             type="tel"
                             name="phoneNumber"
@@ -599,7 +553,10 @@ function Register() {
                             value={inputValue.nationality}
                             onChange={(e) => handleChange(e.target)}
                             onBlur={() =>
-                              setTouched((prev) => ({ ...prev, nationality: true }))
+                              setTouched((prev) => ({
+                                ...prev,
+                                nationality: true,
+                              }))
                             }
                             type="text"
                             name="nationality"
@@ -725,8 +682,8 @@ function Register() {
                     className="text-[10px]/[20px] text-[#0D1B2E] text-center"
                     style={{ marginTop: "4px" }}
                   >
-                    By clicking Register, you agree to accept IGNITE X'S Terms and
-                    Condition
+                    By clicking Register, you agree to accept IGNITE X'S Terms
+                    and Condition
                   </p>
                 </div>
               )}
@@ -828,11 +785,10 @@ function Register() {
                     </button>
 
                     <div className="text-right underline text-[12px]/[24px] font-semibold text-[#0D1B2E] cursor-pointer">
-                      <h3
-                        onClick={() => setStepForm(prev => prev - 1)}
-                      >Go back{" "}</h3>
+                      <h3 onClick={() => setStepForm((prev) => prev - 1)}>
+                        Go back{" "}
+                      </h3>
                     </div>
-
                   </form>
                 </div>
               )}
@@ -890,8 +846,7 @@ function Register() {
             </footer>
           </div>
         </div>
-      )
-    }
+      )}
     </>
   );
 }

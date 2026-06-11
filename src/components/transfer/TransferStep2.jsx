@@ -1,18 +1,16 @@
 import React from "react";
 
-export default function TransferStep2({ onContinue, onBack, data }) {
-  const {
-    accountNumber,
-    amount,
-    bank,
-    fees,
-    beneficiaryName,
-    narration = "Payment for website design",
-  } = data;
+export default function TransferStep2({
+  onContinue,
+  onBack,
+  data,
+  beneficiary,
+}) {
+  const { accountNumber, amount, bank, fees, beneficiaryName, narration } =
+    data;
 
   return (
     <div className="transfer-page">
-
       {/* Header */}
       <div className="transfer-header">
         <div>
@@ -25,17 +23,22 @@ export default function TransferStep2({ onContinue, onBack, data }) {
 
       {/* Main Card */}
       <div className="transfer-card">
-
         {/* Beneficiary */}
         <div className="review-section">
           <div className="review-left">
             <span className="label">Beneficiary</span>
-            <h2 className="value-lg">{beneficiaryName}</h2>
+            <h2 className="value-lg">{beneficiary}</h2>
 
             <div className="meta">
-              <p><span>Account:</span> {accountNumber}</p>
-              <p><span>Bank:</span> {bank}</p>
-              <p><span>Type:</span> NUBAN / NIP</p>
+              <p>
+                <span>Account:</span> {accountNumber}
+              </p>
+              <p>
+                <span>Bank:</span> {bank}
+              </p>
+              <p>
+                <span>Type:</span> NUBAN / NIP
+              </p>
             </div>
           </div>
 
@@ -52,7 +55,8 @@ export default function TransferStep2({ onContinue, onBack, data }) {
           <div className="row">
             <span>Amount</span>
             <b className="big">
-              ₦{parseFloat(amount || 0).toLocaleString(undefined, {
+              ₦
+              {parseFloat(amount || 0).toLocaleString(undefined, {
                 minimumFractionDigits: 2,
               })}
             </b>
@@ -95,10 +99,7 @@ export default function TransferStep2({ onContinue, onBack, data }) {
           Go Back
         </button>
 
-        <button
-          onClick={() => onContinue({})}
-          className="primary-btn"
-        >
+        <button onClick={() => onContinue({})} className="primary-btn">
           Continue
         </button>
       </div>

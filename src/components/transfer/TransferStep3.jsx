@@ -1,7 +1,7 @@
 import React from "react";
 import { Check, FileText } from "lucide-react";
 
-export default function TransferStep3({ data }) {
+export default function TransferStep3({ data, beneficiary }) {
   const {
     accountNumber,
     amount,
@@ -37,7 +37,8 @@ export default function TransferStep3({ data }) {
         <h1 className="transfer-title mt-4">Transfer successful</h1>
 
         <p className="transfer-subtitle">
-          ₦{Number(fees?.total || 0).toLocaleString(undefined, {
+          ₦
+          {Number(fees?.total || 0).toLocaleString(undefined, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           })}{" "}
@@ -50,7 +51,7 @@ export default function TransferStep3({ data }) {
         <div className="receipt-grid">
           <div className="receipt-row">
             <span className="label">Beneficiary</span>
-            <span className="value">{beneficiaryName}</span>
+            <span className="value">{beneficiary}</span>
           </div>
 
           <div className="receipt-row">
@@ -69,16 +70,12 @@ export default function TransferStep3({ data }) {
 
           <div className="receipt-row">
             <span className="label">Transfer fee</span>
-            <span className="value">
-              ₦{fees?.ourFee?.toFixed(2) || "0.00"}
-            </span>
+            <span className="value">₦{fees?.ourFee?.toFixed(2) || "0.00"}</span>
           </div>
 
           <div className="receipt-row">
             <span className="label">VAT</span>
-            <span className="value">
-              ₦{fees?.vatFee?.toFixed(2) || "0.00"}
-            </span>
+            <span className="value">₦{fees?.vatFee?.toFixed(2) || "0.00"}</span>
           </div>
 
           <div className="divider" />

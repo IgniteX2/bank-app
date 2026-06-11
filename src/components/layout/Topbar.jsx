@@ -76,7 +76,22 @@ export default function Topbar({ isOpen, setIsOpen, isMobile }) {
         );
 
       case "/transfer":
-        return "Transfer Money";
+        return (
+          <div>
+            <h3
+              className={`text-sm font-bold ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0d1b2e]]"}`}
+            >
+              Transfer
+            </h3>
+            <p
+              style={{ display: isMobile ? "none" : "block" }}
+              className={`text-xs ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#666D80]]"}`}
+            >
+              Efficiently transfer funds and monitor outgoing payments for
+              hassle-free financial management.
+            </p>
+          </div>
+        );
 
       case "/profile":
         return (

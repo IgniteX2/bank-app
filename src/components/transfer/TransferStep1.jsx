@@ -1,58 +1,82 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { ChevronDown, X } from 'lucide-react';
-import { getSenderAccount } from '../../services/transactionService';
+import { useState, useEffect } from "react";
+import { ChevronDown, X } from "lucide-react";
+// import { getSenderAccount } from "../../services/transactionService";
 
-export default function TransferStep1({ onContinue, data }) {
-  const senderAccount = data?.senderAccount || getSenderAccount() || "";
+export default function TransferStep1({
+  onContinue,
+  transferData,
+  accountDetails,
+  beneficiary,
+  resolving,
+  setBeneficiary,
+  handleBeneficiaryConfirmation,
+  errorBeneficiary,
+  setErrorBeneficiary,
+}) {
+  const senderAccount = accountDetails || "";
 
   const [accountNumber, setAccountNumber] = useState(
-    () => data?.accountNumber || ''
+    transferData?.accountNumber || "",
   );
 
-  const [amount, setAmount] = useState(() => data?.amount || '');
+  const [amount, setAmount] = useState(() => transferData?.amount || "");
 
-  const [bank, setBank] = useState(() => data?.bank || 'Signature X');
+  const [bank, setBank] = useState(() => transferData?.bank || "Signature X");
 
   const [narration, setNarration] = useState(
-    () => data?.narration || ''
+    () => transferData?.narration || "",
   );
 
-  const [errors, setErrors] = useState({});  
+  const [errors, setErrors] = useState({});
+  const [beneficiaryError, setBeneficiaryError] = useState("");
 
   const ourFee = 10;
   // VAT is 7.5% of our fee (not a fixed value)
   const vatFee = ourFee * 0.075;
 
-  const total = parseFloat(amount || '0') + ourFee + vatFee;
-
+  const total = parseFloat(amount || "0") + ourFee + vatFee;
 
   const validate = () => {
     const newErrors = {};
 
     if (!senderAccount.trim()) {
-      newErrors.senderAccount = 'Sender account number is required';
+      newErrors.senderAccount = "Sender account number is required";
     }
 
     if (!accountNumber.trim()) {
-      newErrors.accountNumber = 'Recipient account number is required';
+      newErrors.accountNumber = "Recipient account number is required";
     }
 
-    if (!amount.trim() || isNaN(parseFloat(amount)) || parseFloat(amount) <= 0) {
-      newErrors.amount = 'Enter a valid amount';
+    if (
+      !amount.trim() ||
+      isNaN(parseFloat(amount)) ||
+      parseFloat(amount) <= 0
+    ) {
+      newErrors.amount = "Enter a valid amount";
     }
 
     if (!narration.trim()) {
-      newErrors.narration = 'Narration is required';
+      newErrors.narration = "Narration is required";
     }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  useEffect(() => {
+    setBeneficiary("");
+    setBeneficiaryError("");
+    setErrorBeneficiary("");
+  }, [accountNumber, setBeneficiary, setBeneficiaryError, setErrorBeneficiary]);
+
   const handleContinue = () => {
     if (!validate()) return;
+    if (!beneficiary) {
+      setBeneficiaryError("Verify beneficiary again!");
+      return;
+    }
 
     onContinue({
       senderAccount,
@@ -65,7 +89,7 @@ export default function TransferStep1({ onContinue, data }) {
         vatFee,
         total,
       },
-      beneficiaryName: 'Adebayo O. Lawal',
+      beneficiaryName: "Adebayo O. Lawal",
     });
   };
 
@@ -74,8 +98,10 @@ export default function TransferStep1({ onContinue, data }) {
       {/* Header */}
       <div className="transfer-header">
         <div>
-          <h1 className="transfer-title">Send Money</h1>
-          <p className="transfer-subtitle">
+          <h1 className="transfer-title" style={{ color: "#818898" }}>
+            Send Money
+          </h1>
+          <p className="transfer-subtitle" style={{ color: "#818898" }}>
             Enter transfer details to continue
           </p>
         </div>
@@ -89,44 +115,54 @@ export default function TransferStep1({ onContinue, data }) {
       <div className="transfer-card">
         {/* Sender */}
         <div className="field">
-          <label>Sender Account</label>
+          <label style={{ color: "#818898" }}>Sender Account</label>
           <input
             type="text"
-            value={senderAccount}
+            value={accountDetails}
             readOnly
             disabled
             className="w-full h-12 px-4 border border-[#EBEBEB] rounded-xl bg-[#F9FAFB] text-sm text-[#141414] cursor-not-allowed"
-        />
-          {errors.senderAccount && <span className="error-text">{errors.senderAccount}</span>}
+          />
+          {errors.senderAccount && (
+            <span className="error-text">{errors.senderAccount}</span>
+          )}
         </div>
-
-        
 
         {/* Recipient */}
         <div className="field">
-          <label>Recipient Account</label>
+          <label style={{ color: "#818898" }}>Recipient Account</label>
           <input
             value={accountNumber}
             onChange={(e) => setAccountNumber(e.target.value)}
-            className={errors.accountNumber ? 'error' : ''}
+            onBlur={() => handleBeneficiaryConfirmation(accountNumber)}
+            className={errors.accountNumber ? "error" : ""}
           />
-          {errors.accountNumber && <span className="error-text">{errors.accountNumber}</span>}
+          {errors.accountNumber && (
+            <span className="error-text">{errors.accountNumber}</span>
+          )}
+          <span
+            className={`text-xs text-gray-700 ${beneficiary ? "text-green-700" : "text-red-600"}`}
+          >
+            {resolving ? "Checking..." : beneficiary || errorBeneficiary}
+          </span>
+
+          <span className="text-xs text-red-600">{beneficiaryError}</span>
         </div>
 
         {/* Amount */}
         <div className="field">
-          <label>Amount</label>
+          <label style={{ color: "#818898" }}>Amount</label>
           <input
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className={errors.amount ? 'error' : ''}
+            className={errors.amount ? "error" : ""}
           />
           {errors.amount && <span className="error-text">{errors.amount}</span>}
         </div>
 
         {/* Bank */}
         <div className="field">
-          <label>Bank</label>
+          <label style={{ color: "#818898" }}>Bank</label>
           <div className="select-box">
             <input value={bank} readOnly />
             <ChevronDown className="icon" />
@@ -135,34 +171,36 @@ export default function TransferStep1({ onContinue, data }) {
 
         {/* Narration */}
         <div className="field">
-          <label>Narration</label>
+          <label style={{ color: "#818898" }}>Narration</label>
           <input
             value={narration}
             onChange={(e) => setNarration(e.target.value)}
-            className={errors.narration ? 'error' : ''}
+            className={errors.narration ? "error" : ""}
           />
-          {errors.narration && <span className="error-text">{errors.narration}</span>}
+          {errors.narration && (
+            <span className="error-text">{errors.narration}</span>
+          )}
         </div>
 
         {/* Fees */}
         <div className="fees">
           <div>
-            <span>Fee</span>
+            <span style={{ color: "#818898" }}>Fee</span>
             <b>{ourFee.toFixed(2)} NGN</b>
           </div>
           <div>
-            <span>VAT</span>
+            <span style={{ color: "#818898" }}>VAT</span>
             <b>{vatFee.toFixed(2)} NGN</b>
           </div>
         </div>
 
         {/* Total */}
         <div className="summary">
-          <span>You Send</span>
+          <span style={{ color: "#818898" }}>You Send</span>
           <h2>
-            NGN{' '}
+            NGN{" "}
             {isNaN(total)
-              ? '0.00'
+              ? "0.00"
               : total.toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                 })}

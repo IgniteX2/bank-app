@@ -11,8 +11,8 @@ import { ThemeContext } from "../context/ThemeContext";
 import { FiSearch } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
 
-import TransactionsTableSkeleton from "../skeletons/transactionTableSkeleton";
-import TransactionsTable from "../components/cards/DashboardTransactionTable";
+// import TransactionsTableSkeleton from "../skeletons/transactionTableSkeleton";
+// import TransactionsTable from "../components/cards/DashboardTransactionTable";
 import MainTransactionsTable from "../components/cards/TransactionTable";
 
 function TransactionHistory() {

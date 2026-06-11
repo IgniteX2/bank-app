@@ -26,10 +26,6 @@ export default function BalanceCard({ isMobile }) {
   const data = account;
   console.log("Account data in BalanceCard:", data);
 
-  // useEffect(() => {
-  //   fetchAccount();
-  // }, [fetchAccount]);
-
   return (
     <div
       style={{

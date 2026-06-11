@@ -396,8 +396,8 @@ body {
 }
 
 .field label {
-  font-size: 11px;
-  font-weight: 700;
+  font-size: 13px;
+  font-weight: 500;
   margin-bottom: 6px;
   color: #141414;
 }
@@ -618,14 +618,14 @@ body {
 /*PROGRESS SIDEBAR SYSTEM*/
 
 .progress-sidebar {
-  width: 320px;
+  width: 100%;
   background: #f9fafb;
   border-right: 1px solid #ebebeb;
   padding: 32px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  min-height: 600px;
+  min-height: 100px;
 }
 
 /* Title */
@@ -641,7 +641,8 @@ body {
 /* Steps container */
 .progress-steps {
   display: flex;
-  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   gap: 24px;
 }
 
@@ -668,7 +669,7 @@ body {
 
 /* Active step */
 .progress-circle.active {
-  border: 2px solid #141414;
+  border: 2px solid green;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
@@ -907,4 +908,8 @@ body {
   color: #818898;
   opacity: 0.5;
   text-transform: uppercase;
+}
+
+.pinInput {
+  -webkit-text-security: disc; /* fallback behavior */
 }

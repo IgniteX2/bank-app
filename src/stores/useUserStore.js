@@ -52,6 +52,16 @@ export const useUserStore = create((set, get) => ({
     }
   },
 
+  updateTransactionPin: (pin) =>
+    set((state) => ({
+      user: state.user
+        ? {
+            ...state.user,
+            transactionPin: pin,
+          }
+        : null,
+    })),
+
   clearUser: () =>
     set({
       user: null,

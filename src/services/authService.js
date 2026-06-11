@@ -12,6 +12,10 @@ export const getUserAccount = async (userId) => {
   return await API.get(`/acc/accounts/${userId}`);
 };
 
+export const getAllUsersAccount = async () => {
+  return await API.get("/acc");
+};
+
 export const getUser = async (id) => {
   return await API.get(`/api/users/${id}`);
 };

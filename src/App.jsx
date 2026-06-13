@@ -1,4 +1,10 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  HashRouter,
+} from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Transfer from "./pages/Transfer";
@@ -17,7 +23,7 @@ function App() {
     <>
       {/* <BrowserRouter> */}
       {/* <Sidebar /> */}
-      <BrowserRouter basename="/bank-app">
+      <HashRouter basename="/bank-app">
         <ToastContainer position="top-right" />
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />
@@ -61,7 +67,7 @@ function App() {
             }
           />
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
       {/* <Register /> */}
     </>
   );

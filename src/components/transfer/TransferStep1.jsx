@@ -74,11 +74,11 @@ export default function TransferStep1({
   const validate = () => {
     const newErrors = {};
 
-    if (!senderAccount.trim()) {
+    if (!String(senderAccount).trim()) {
       newErrors.senderAccount = "Sender account number is required";
     }
 
-    if (!accountNumber.trim()) {
+    if (!String(accountNumber).trim()) {
       newErrors.accountNumber = "Recipient account number is required";
     }
 

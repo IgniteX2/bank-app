@@ -1,10 +1,4 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-  HashRouter,
-} from "react-router-dom";
+import { Routes, Route, Navigate, HashRouter } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Transfer from "./pages/Transfer";
@@ -16,13 +10,9 @@ import TransactionHistory from "./pages/TransactionHistory";
 import ResetPassword from "./pages/ResetPassword";
 import Settings from "./pages/Settings";
 
-// import Sidebar from "./components/layout/Sidebar";
-
 function App() {
   return (
     <>
-      {/* <BrowserRouter> */}
-      {/* <Sidebar /> */}
       <HashRouter>
         <ToastContainer position="top-right" />
         <Routes>
@@ -68,7 +58,6 @@ function App() {
           />
         </Routes>
       </HashRouter>
-      {/* <Register /> */}
     </>
   );
 }

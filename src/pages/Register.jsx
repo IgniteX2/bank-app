@@ -80,6 +80,7 @@ function Register() {
   const { signup, loading } = useAuthStore();
   const [step, setStep] = useState("validate");
   const [error, setError] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (input) => {
     setInputValue((prev) => ({
@@ -253,12 +254,13 @@ function Register() {
         setStep("complete");
 
         setTimeout(() => {
-          // navigate("/dashboard");
           setStepForm((prev) => prev + 1);
         }, 1000);
 
         toast.success("You have successfully created an acccout");
       }
+
+      navigate("/login");
     } catch (err) {
       setError(true);
 

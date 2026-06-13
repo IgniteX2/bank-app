@@ -15,6 +15,10 @@ import { useUserStore } from "../stores/useUserStore";
 import { useAllAccountsStore } from "../stores/useAllAccountsStore";
 import PinCreationDialog from "../components/transfer/CreatePinDialog";
 import PinModal from "../components/transfer/TransferPin";
+import { useBeneficiaryStore } from "../stores/useAddBeneficiary";
+import { useGetBeneficiaryStore } from "../stores/useGetBeneficiary";
+import { toast } from "react-toastify";
+import { useAddFavouriteBeneficiaryStore } from "../stores/useAddFavoriteBeneficiaryStore";
 
 export default function Transfer() {
   const [step, setStep] = useState(1);
@@ -45,10 +49,21 @@ export default function Transfer() {
   const [showCreatePinDialog, setShowCreatePinDialog] = useState(false);
   const [beneficiary, setBeneficiary] = useState("");
   const [resolving, setResolving] = useState(false);
+  const [showBeneficiaryDialog, setShowBeneficiaryDialog] = useState(false);
+  const { addBeneficiaryAction } = useBeneficiaryStore();
+  const [addFavBeneficiary, setAddFavBeneficiary] = useState(false);
+  const { beneficiaryTransferData, getBeneficiariesAction } =
+    useGetBeneficiaryStore();
+
+  const { addFavouriteBeneficiaryAction } = useAddFavouriteBeneficiaryStore();
 
   useEffect(() => {
     fetchAccounts();
   }, [fetchAccounts]);
+
+  useEffect(() => {
+    getBeneficiariesAction();
+  }, []);
 
   const accountDetails = account?.accountNumber
     ? `${account.accountNumber}`
@@ -131,6 +146,29 @@ export default function Transfer() {
           .toUpperCase()}`,
     }));
 
+    try {
+      const beneficiaryExists = Array.isArray(beneficiaryTransferData)
+        ? beneficiaryTransferData.some(
+            (b) => b.accountNumber === transferData.accountNumber,
+          )
+        : false;
+
+      if (!beneficiaryExists) {
+        const beneficiaryResponse = await addBeneficiaryAction({
+          beneficiaryName: beneficiary,
+          accountNumber: transferData.accountNumber,
+        });
+
+        console.log(beneficiaryResponse);
+
+        if (addFavBeneficiary) {
+          await addFavouriteBeneficiaryAction(beneficiaryResponse.id);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to add beneficiary:", error);
+    }
+
     setShowPinModal(false);
     setStep(3);
   };
@@ -193,6 +231,12 @@ export default function Transfer() {
                     setBeneficiary={setBeneficiary}
                     errorBeneficiary={errorBeneficiary}
                     setErrorBeneficiary={setErrorBeneficiary}
+                    showBeneficiaryDialog={showBeneficiaryDialog}
+                    setShowBeneficiaryDialog={setShowBeneficiaryDialog}
+                    setTransferData={setTransferData}
+                    addFavBeneficiary={addFavBeneficiary}
+                    setAddFavBeneficiary={setAddFavBeneficiary}
+                    beneficiaryTransferData={beneficiaryTransferData}
                   />
                 )}
 

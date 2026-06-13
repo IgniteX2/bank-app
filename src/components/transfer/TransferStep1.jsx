@@ -2,7 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { ChevronDown, X } from "lucide-react";
-// import { getSenderAccount } from "../../services/transactionService";
+// import { toast } from "react-toastify";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "../../components/ui/dialog";
+
+import { Input } from "../../components/ui/input";
+
+import { Checkbox } from "../../components/ui/checkbox";
+import { useGetBeneficiaryStore } from "../../stores/useGetBeneficiary";
+import { useFavouriteBeneficiaryStore } from "../../stores/useFavouriteBeneficiaryStore";
 
 export default function TransferStep1({
   onContinue,
@@ -14,6 +26,12 @@ export default function TransferStep1({
   handleBeneficiaryConfirmation,
   errorBeneficiary,
   setErrorBeneficiary,
+  showBeneficiaryDialog,
+  setShowBeneficiaryDialog,
+  addFavBeneficiary,
+  setAddFavBeneficiary,
+  beneficiaryTransferData,
+  setTransferData,
 }) {
   const senderAccount = accountDetails || "";
 
@@ -31,6 +49,21 @@ export default function TransferStep1({
 
   const [errors, setErrors] = useState({});
   const [beneficiaryError, setBeneficiaryError] = useState("");
+  const [searchBeneficiary, setSearchBeneficiary] = useState("");
+
+  const { beneficiariesTransferData, getBeneficiariesAction } =
+    useGetBeneficiaryStore();
+
+  const { favouriteBeneficiaries, getFavouriteBeneficiariesAction } =
+    useFavouriteBeneficiaryStore();
+
+  useEffect(() => {
+    getFavouriteBeneficiariesAction();
+  }, []);
+
+  useEffect(() => {
+    getBeneficiariesAction();
+  }, []);
 
   const ourFee = 10;
   // VAT is 7.5% of our fee (not a fixed value)
@@ -93,6 +126,22 @@ export default function TransferStep1({
     });
   };
 
+  const beneficiaryExists = Array.isArray(beneficiaryTransferData)
+    ? beneficiariesTransferData?.some(
+        (b) => b.accountNumber === transferData.accountNumber,
+      )
+    : false;
+
+  console.log(beneficiaryExists);
+
+  const filtered = Array.isArray(beneficiaryTransferData)
+    ? beneficiaryTransferData?.filter((b) =>
+        b.beneficiaryName
+          .toLowerCase()
+          .includes(searchBeneficiary.toLowerCase()),
+      )
+    : [];
+
   return (
     <div className="transfer-page">
       {/* Header */}
@@ -129,24 +178,43 @@ export default function TransferStep1({
         </div>
 
         {/* Recipient */}
-        <div className="field">
-          <label style={{ color: "#818898" }}>Recipient Account</label>
-          <input
-            value={accountNumber}
-            onChange={(e) => setAccountNumber(e.target.value)}
-            onBlur={() => handleBeneficiaryConfirmation(accountNumber)}
-            className={errors.accountNumber ? "error" : ""}
-          />
-          {errors.accountNumber && (
-            <span className="error-text">{errors.accountNumber}</span>
-          )}
-          <span
-            className={`text-xs text-gray-700 ${beneficiary ? "text-green-700" : "text-red-600"}`}
-          >
-            {resolving ? "Checking..." : beneficiary || errorBeneficiary}
-          </span>
+        <div className="flex flex-col">
+          <div style={{ float: "right" }}>
+            <p
+              className="text-[#c69c2c] text-xs cursor-pointer hover:underline float-right"
+              onClick={() => setShowBeneficiaryDialog(true)}
+            >
+              Select Beneficiary
+            </p>
+          </div>
+          <div className="field">
+            <label style={{ color: "#818898" }}>Recipient Account</label>
+            <input
+              maxLength={10}
+              value={accountNumber || beneficiaryTransferData.accountNumber}
+              // onChange={(e) => setAccountNumber(e.target.value)}
+              // onBlur={() => handleBeneficiaryConfirmation(accountNumber)}
+              onChange={(e) => {
+                const value = e.target.value;
+                setAccountNumber(String(value));
 
-          <span className="text-xs text-red-600">{beneficiaryError}</span>
+                if (/^\d{10}$/.test(value)) {
+                  handleBeneficiaryConfirmation(value);
+                }
+              }}
+              className={errors.accountNumber ? "error" : ""}
+            />
+            {errors.accountNumber && (
+              <span className="error-text">{errors.accountNumber}</span>
+            )}
+            <span
+              className={`text-xs text-gray-700 ${beneficiary ? "text-green-700" : "text-red-600"}`}
+            >
+              {resolving ? "Checking..." : beneficiary || errorBeneficiary}
+            </span>
+
+            <span className="text-xs text-red-600">{beneficiaryError}</span>
+          </div>
         </div>
 
         {/* Amount */}
@@ -182,6 +250,26 @@ export default function TransferStep1({
           )}
         </div>
 
+        <div
+          className={`${beneficiaryExists ? "block" : "hidden"} flex items-center space-x-2`}
+        >
+          <Checkbox
+            id="add-beneficiary"
+            checked={addFavBeneficiary}
+            onCheckedChange={(checked) =>
+              setAddFavBeneficiary(checked === true)
+            }
+          />
+
+          <label
+            htmlFor="add-beneficiary"
+            className="font-medium cursor-pointer text-xs"
+            style={{ marginLeft: "5px" }}
+          >
+            Remove from favourites
+          </label>
+        </div>
+
         {/* Fees */}
         <div className="fees">
           <div>
@@ -214,6 +302,74 @@ export default function TransferStep1({
           Continue
         </button>
       </div>
+
+      <Dialog
+        open={showBeneficiaryDialog}
+        onOpenChange={setShowBeneficiaryDialog}
+      >
+        <div style={{ height: "350px", width: "90%" }} className="bg-white">
+          <DialogContent className="bg-white w-[70%]">
+            <DialogHeader style={{ marginTop: "20px" }}>
+              <DialogTitle style={{ marginLeft: "5%" }}>
+                Select Beneficiary
+              </DialogTitle>
+            </DialogHeader>
+
+            <div className="">
+              <Input
+                placeholder="Search beneficiary..."
+                value={searchBeneficiary}
+                onChange={(e) => setSearchBeneficiary(e.target.value)}
+              />
+            </div>
+
+            {filtered ? (
+              <div
+                style={{ marginLeft: "5%", width: "90%", marginBottom: "20px" }}
+              >
+                {filtered?.map((benefi) => (
+                  <div
+                    key={benefi.id}
+                    style={{
+                      padding: "10px 10px 10px 10px",
+                      marginTop: "15px",
+                    }}
+                    className="cursor-pointer rounded-lg p-3 hover:bg-muted bg-gray-100 flex gap-3 hover:bg-gray-200"
+                    onClick={() => {
+                      setAccountNumber(benefi.accountNumber);
+
+                      if (/^\d{10}$/.test(benefi.accountNumber)) {
+                        handleBeneficiaryConfirmation(benefi.accountNumber);
+                      }
+                      setShowBeneficiaryDialog(false);
+                    }}
+                  >
+                    <div className="h-10 w-10 rounded-full bg-gray-200 border-2 border-gray-400 flex justify-center items-center">
+                      {benefi.beneficiaryName.slice(0, 2).toUpperCase()}
+                    </div>
+                    <div className="flex flex-col self-center">
+                      <h4 className="font-medium text-gray-700 text-xs">
+                        {benefi.beneficiaryName.toUpperCase()}
+                      </h4>
+
+                      <p className="text-xs text-muted-foreground text-gray-400 ">
+                        {`# ${benefi.accountNumber}`}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <span
+                style={{ marginBottom: "10px" }}
+                className="text-center text-gray-400 text-xs"
+              >
+                No beneficiary found
+              </span>
+            )}
+          </DialogContent>
+        </div>
+      </Dialog>
     </div>
   );
 }

@@ -25,7 +25,7 @@ API.interceptors.response.use(
     if (err.response?.status === 401) {
       toast.error("Not Authorized");
       localStorage.removeItem("token");
-      // window.location.href = "/login";
+      window.location.href = "/login";
     }
 
     return Promise.reject(err);

@@ -23,7 +23,7 @@ function App() {
     <>
       {/* <BrowserRouter> */}
       {/* <Sidebar /> */}
-      <HashRouter basename="/bank-app">
+      <HashRouter>
         <ToastContainer position="top-right" />
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />

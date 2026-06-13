@@ -247,9 +247,9 @@ function Register() {
 
         setStep("create");
 
-        // const data = await signup(inputValue);
+        const data = await signup(inputValue);
 
-        // console.log(data);
+        console.log(data);
 
         setStep("verify");
 
@@ -366,7 +366,7 @@ function Register() {
               className="flex flex-col items-center justify-center"
               style={{ margin: "24px 0" }}
             >
-              
+
               {/* ========== SIGN UP FORM ========== */}
               {stepForm === 1 && (
                 <div

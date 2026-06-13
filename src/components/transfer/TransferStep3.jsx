@@ -2,7 +2,7 @@ import React from "react";
 import { Check, FileText } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-export default function TransferStep3({ data, beneficiary }) {
+export default function TransferStep3({ data, beneficiary, onBack }) {
   const navigate = useNavigate();
   const {
     accountNumber,
@@ -112,7 +112,7 @@ export default function TransferStep3({ data, beneficiary }) {
 
       {/* Actions */}
       <div className="transfer-actions">
-        <button className="primary-btn" onClick={() => navigate("/transfer")}>
+        <button className="primary-btn" onClick={onBack}>
           Continue
         </button>
 

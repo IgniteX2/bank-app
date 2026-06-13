@@ -253,6 +253,7 @@ export default function Transfer() {
                   <TransferStep3
                     data={transferData}
                     beneficiary={beneficiary}
+                    onBack={() => setStep(1)}
                   />
                 )}
               </motion.div>

@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import ProgressSidebar from "../components/transfer/ProgressSidebar";
 import TransferStep1 from "../components/transfer/TransferStep1";
 import TransferStep2 from "../components/transfer/TransferStep2";
@@ -21,6 +22,7 @@ import { toast } from "react-toastify";
 import { useAddFavouriteBeneficiaryStore } from "../stores/useAddFavoriteBeneficiaryStore";
 
 export default function Transfer() {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const { theme } = useContext(ThemeContext);
   const [isOpen, setIsOpen] = useState(true);
@@ -74,6 +76,21 @@ export default function Transfer() {
   const handleStep1Continue = (data) => {
     setTransferData({ ...transferData, ...data });
     setStep(2);
+  };
+
+  const finishTransfer = () => {
+    setTransferData({
+      senderAccount: "",
+      accountNumber: "",
+      amount: "",
+      bank: "",
+      narration: "",
+      fees: { ourFee: 0, vatFee: 0, total: 0 },
+      beneficiaryName: "",
+      transactionRef: "",
+    });
+    setStep(1);
+    navigate("/transfer");
   };
 
   const handleBeneficiaryConfirmation = (accountNumber) => {
@@ -253,7 +270,7 @@ export default function Transfer() {
                   <TransferStep3
                     data={transferData}
                     beneficiary={beneficiary}
-                    onBack={() => setStep(1)}
+                    finishTransfer={finishTransfer}
                   />
                 )}
               </motion.div>

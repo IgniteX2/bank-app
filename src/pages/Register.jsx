@@ -47,7 +47,7 @@ function Register() {
     phoneNumber: "",
     bvn: "",
     userPassword: "",
-    NInNum: "",
+    ninNum: "",
     nationality: "",
     address: "",
   });
@@ -59,7 +59,7 @@ function Register() {
     phoneNumber: false,
     bvn: false,
     userPassword: false,
-    NInNum: false,
+    ninNum: false,
     nationality: false,
     address: false,
   });
@@ -74,7 +74,7 @@ function Register() {
   });
   const [errorMsgNum, setErrorMsgNum] = useState({
     bvn: "",
-    NInNum: "",
+    ninNum: "",
   });
   const [isViewPassword, setIsViewPassword] = useState(false);
   const { signup, loading } = useAuthStore();
@@ -185,7 +185,7 @@ function Register() {
               phoneNumber: "",
             }));
 
-      // BVN / NIN VALIDATION
+      // BVN / ninNum VALIDATION
       inputValue.bvn.trim() === ""
         ? setErrorMsgNum((prev) => ({
             ...prev,
@@ -201,19 +201,19 @@ function Register() {
               bvn: "",
             }));
 
-      inputValue.NInNum.trim() === ""
+      inputValue.ninNum.trim() === ""
         ? setErrorMsgNum((prev) => ({
             ...prev,
-            NInNum: "This field is required",
+            ninNum: "This field is required",
           }))
-        : inputValue.NInNum.trim().length !== 11
+        : inputValue.ninNum.trim().length !== 11
           ? setErrorMsgNum((prev) => ({
               ...prev,
-              NInNum: "Enter a valid NIN number",
+              ninNum: "Enter a valid ninNum number",
             }))
           : setErrorMsgNum((prev) => ({
               ...prev,
-              NInNum: "",
+              ninNum: "",
             }));
     }, 1000);
 
@@ -330,7 +330,7 @@ function Register() {
                     <p
                     // className='hidden lg:block'
                     >
-                      2. BVN / NIN
+                      2. BVN / ninNum
                     </p>
                   </div>
                 </div>
@@ -688,7 +688,7 @@ function Register() {
                 </div>
               )}
 
-              {/* ========== ENTER BVN / NIN UI ========== */}
+              {/* ========== ENTER BVN / ninNum UI ========== */}
               {stepForm === 2 && (
                 <div
                   className="w-88 bg-transparent border border-[#E7E8EA] flex flex-col items-center justify-center rounded-xl"
@@ -707,10 +707,10 @@ function Register() {
                     className="text-[#0D1B2E] text-[1rem]/[30px] font-bold text-center"
                     style={{ marginBottom: "3px" }}
                   >
-                    Please provide your BVN / NIN
+                    Please provide your BVN / ninNum
                   </h2>
                   <p className="text-[#6B7280] text-[0.7rem]/[20px]">
-                    Enter BVN & NIN for verification
+                    Enter BVN & ninNum for verification
                   </p>
 
                   <form
@@ -744,25 +744,25 @@ function Register() {
 
                     <div className="flex flex-col">
                       <label htmlFor="" className="text-[#0D1B2E] font-medium">
-                        Enter NIN
+                        Enter ninNum
                       </label>
                       <input
-                        value={inputValue.NInNum}
+                        value={inputValue.ninNum}
                         onChange={(e) => handleChange(e.target)}
                         onBlur={() =>
-                          setTouched((prev) => ({ ...prev, NInNum: true }))
+                          setTouched((prev) => ({ ...prev, ninNum: true }))
                         }
                         type="text"
-                        name="NInNum"
+                        name="ninNum"
                         className="gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full cursor-pointer outline-none text-[#0D1B2E]"
                         style={{ padding: "10px" }}
                       />
                     </div>
 
-                    {touched.NInNum && errorMsgNum.NInNum && (
+                    {touched.ninNum && errorMsgNum.ninNum && (
                       <div className="text-[10px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end">
                         <MdError className="text-[16px]" />
-                        <p>{errorMsgNum.NInNum}</p>
+                        <p>{errorMsgNum.ninNum}</p>
                       </div>
                     )}
 

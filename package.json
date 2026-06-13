@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://ignitex2.github.io/bank-ap",
+  "homepage": "https://ignitex2.github.io/bank-app",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

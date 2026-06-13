@@ -17,7 +17,7 @@ function App() {
     <>
       {/* <BrowserRouter> */}
       {/* <Sidebar /> */}
-      <BrowserRouter>
+      <BrowserRouter basename="/bank-app">
         <ToastContainer position="top-right" />
         <Routes>
           <Route path="/" element={<Navigate to="/login" />} />

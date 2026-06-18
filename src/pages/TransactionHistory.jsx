@@ -1,4 +1,5 @@
 import { useContext, useEffect, useMemo, useState } from "react";
+import { useTransactionHistoryStore } from "../stores/useTransactionsStore";
 import DashboardLayout from "../components/layout/Dashboard";
 import Sidebar from "../components/layout/Sidebar";
 import Topbar from "../components/layout/Topbar";
@@ -6,18 +7,16 @@ import MobileNav from "../components/layout/MobileNav";
 import backgroundImage from "../assets/Background.png";
 
 import { ThemeContext } from "../context/ThemeContext";
-import { getTransactions } from "../services/transactionService";
 
 import { FiSearch } from "react-icons/fi";
 import { BsThreeDots } from "react-icons/bs";
-import TableSkeleton from "../components/layout/TableSkeleton";
+
+import TransactionsTableSkeleton from "../skeletons/transactionTableSkeleton";
+import TransactionsTable from "../components/cards/DashboardTransactionTable";
+import MainTransactionsTable from "../components/cards/TransactionTable";
 
 function TransactionHistory() {
   const { theme } = useContext(ThemeContext);
-
-  // raw data from API
-  const [transactions, setTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   // UI states
   const [isOpen, setIsOpen] = useState(true);
@@ -31,10 +30,13 @@ function TransactionHistory() {
 
   // pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5;
+  const [itemsPerPage, setItemsPerPage] = useState(5);
 
   // dropdown actions
-  const [openMenu, setOpenMenu] = useState(null);
+  // const [openMenu, setOpenMenu] = useState(null);
+  const transactions = useTransactionHistoryStore(
+    (state) => state.transactions,
+  );
 
   const handleSidebarToggle = () => setIsOpen((prev) => !prev);
 
@@ -44,53 +46,67 @@ function TransactionHistory() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // fetch data
-  useEffect(() => {
-    const fetchTransactions = async () => {
-      try {
-        const res = await getTransactions();
-        setTransactions(res.data || []);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const matchesSearch = useMemo(() => {
+    const q = search.toLowerCase().trim();
 
-    fetchTransactions();
-  }, []);
+    return (tx) => {
+      if (!q) return true;
+
+      return (
+        tx.transactionType?.toLowerCase().includes(q) ||
+        tx.description?.toLowerCase().includes(q) ||
+        tx.status?.toLowerCase().includes(q) ||
+        String(tx.amount)?.includes(q) ||
+        String(tx.transactionId)?.includes(q) ||
+        String(tx.senderAccountId)?.includes(q) ||
+        String(tx.receiverAccountId)?.includes(q) ||
+        new Date(tx.transactionCreatedAt)
+          ?.toLocaleString()
+          .toLowerCase()
+          .includes(q)
+      );
+    };
+  }, [search]);
 
   // FILTER LOGIC (source of truth)
   const filteredTransactions = useMemo(() => {
     return transactions.filter((tx) => {
-      const matchesSearch =
-        tx.name.toLowerCase().includes(search.toLowerCase()) ||
-        tx.type.toLowerCase().includes(search.toLowerCase());
+      const matchSearch = matchesSearch(tx);
 
       const matchesType =
         filterType === "all"
           ? true
           : filterType === "income"
-            ? tx.amount.startsWith("+")
-            : tx.amount.startsWith("-");
+            ? tx.transactionType === "DEPOSIT"
+            : tx.transactionType !== "DEPOSIT";
 
-      const txDate = new Date(tx.date);
+      const txDate = new Date(tx.transactionCreatedAt);
 
       const matchesDate =
-        (!dateFilter.from || new Date(dateFilter.from) <= txDate) &&
-        (!dateFilter.to || new Date(dateFilter.to) >= txDate);
+        (!dateFilter.from || txDate >= new Date(dateFilter.from)) &&
+        (!dateFilter.to || txDate <= new Date(dateFilter.to));
 
-      return matchesSearch && matchesType && matchesDate;
+      return matchSearch && matchesType && matchesDate;
     });
-  }, [transactions, search, filterType, dateFilter]);
+  }, [transactions, matchesSearch, filterType, dateFilter]);
+
+  const sortedTransactions = useMemo(() => {
+    return [...filteredTransactions].sort(
+      (a, b) =>
+        new Date(b.transactionCreatedAt) - new Date(a.transactionCreatedAt),
+    );
+  }, [filteredTransactions]);
 
   // pagination logic
-  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredTransactions.length / itemsPerPage),
+  );
 
   const paginatedTransactions = useMemo(() => {
     const start = (currentPage - 1) * itemsPerPage;
-    return filteredTransactions.slice(start, start + itemsPerPage);
-  }, [filteredTransactions, currentPage]);
+    return sortedTransactions.slice(start, start + itemsPerPage);
+  }, [sortedTransactions, currentPage, itemsPerPage]);
 
   return (
     <div
@@ -138,8 +154,9 @@ function TransactionHistory() {
               justifyContent: "space-between",
               flexDirection: isMobile ? "column" : "row",
               marginBottom: 10,
-              width: "100%",
+              width: "92%",
               height: isMobile ? "40px" : "50px",
+              marginLeft: "4%",
             }}
           >
             {/* FILTER BUTTONS */}
@@ -225,274 +242,69 @@ function TransactionHistory() {
           </div>
 
           {/* TABLE */}
-          {!loading ? (
+          <div
+            className={`mt-6 ${theme === "dark" ? "bg-[#354151]" : "bg-white"}`}
+            style={{
+              width: "94%",
+              marginLeft: "3%",
+              border: theme === "dark" ? "none" : "1px solid #EBEBEB",
+              borderTopLeftRadius: "15px",
+              borderTopRightRadius: "15px",
+              minHeight: "150px",
+              display: "flex",
+              flexDirection: "column",
+              // alignItems: "center",
+              justifyContent: "space-between",
+              marginBottom: isMobile ? "85px" : "",
+              background: isMobile ? "transparent" : " ",
+            }}
+          >
+            <div style={{ width: "96%", marginLeft: "2%" }}>
+              <div style={{ marginTop: "20px" }}>
+                <MainTransactionsTable
+                  transactionData={paginatedTransactions}
+                />
+              </div>
+            </div>
+
             <div
               style={{
-                background: "#fff",
-                borderRadius: "16px",
-                overflow: "hidden",
-                boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
-                marginTop: isMobile ? "80px" : "20px",
+                display: "flex",
+                justifyContent: "space-between",
+                marginTop: 20,
+                marginBottom: 20,
+                width: "98%",
+                marginLeft: "1%",
+                paddingTop: 10,
+                paddingBottom: 10,
+                paddingLeft: 10,
+                paddingRight: 10,
               }}
+              className="bg-gray-50"
             >
-              {/* TABLE HEADER */}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "18px 20px",
-                  background: "#f8fafc",
-                  fontWeight: 600,
-                  color: "#555",
-                  borderBottom: "1px solid #e5e7eb",
-                }}
-                className="text-sm"
-              >
-                {/* LEFT */}
-                <div
-                  style={{
-                    flex: 1,
-                  }}
+              <p className="text-sm">
+                Page {currentPage} of {totalPages}
+              </p>
+
+              <div style={{ display: "flex", gap: 10 }} className="text-sm">
+                <button
+                  onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}
+                  className="cursor-pointer"
                 >
-                  Transaction
-                </div>
+                  Prev
+                </button>
 
-                {/* RIGHT */}
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: isMobile ? 15 : 30,
-                  }}
+                <button
+                  onClick={() =>
+                    setCurrentPage((p) => Math.min(p + 1, totalPages))
+                  }
+                  className="cursor-pointer"
                 >
-                  {/* AMOUNT */}
-                  {!isMobile && (
-                    <div
-                      style={{
-                        minWidth: 100,
-                      }}
-                    >
-                      Amount
-                    </div>
-                  )}
-
-                  {/* DATE */}
-                  <div
-                    style={{
-                      minWidth: isMobile ? "auto" : 100,
-                      textAlign: "right",
-                    }}
-                  >
-                    Date
-                  </div>
-
-                  {/* ACTION */}
-                  {!isMobile && (
-                    <div
-                      style={{
-                        width: 50,
-                        textAlign: "center",
-                      }}
-                    >
-                      Action
-                    </div>
-                  )}
-                </div>
+                  Next
+                </button>
               </div>
-
-              {/* TABLE BODY */}
-              {paginatedTransactions.length > 0 ? (
-                paginatedTransactions.map((tx, index) => {
-                  return (
-                    <div
-                      key={index}
-                      style={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        padding: "18px 20px",
-                        borderBottom: "1px solid #f1f5f9",
-                        background: openMenu === index ? "#f9fafb" : "#fff",
-                        transition: "0.3s ease",
-                        gap: 15,
-                      }}
-                      className="text-xs"
-                    >
-                      {/* LEFT SIDE */}
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          gap: 6,
-                          flex: 1,
-                        }}
-                      >
-                        {/* NAME */}
-                        <span
-                          style={{
-                            fontWeight: 600,
-                            color: "#111827",
-                            fontSize: 15,
-                          }}
-                        >
-                          {tx.name}
-                        </span>
-
-                        {/* TYPE */}
-                        <span
-                          style={{
-                            fontSize: 13,
-                            color: "#6b7280",
-                            background: "#eef2ff",
-                            width: "fit-content",
-                            padding: "4px 10px",
-                            borderRadius: 20,
-                          }}
-                        >
-                          {tx.type}
-                        </span>
-
-                        {/* AMOUNT ON MOBILE */}
-                        {isMobile && (
-                          <span
-                            style={{
-                              fontWeight: 600,
-                              marginTop: 4,
-                              color:
-                                tx.type?.toLowerCase() === "income"
-                                  ? "#16a34a"
-                                  : "#dc2626",
-                            }}
-                          >
-                            {tx.type?.toLowerCase() === "income" ? "+" : "-"}₦
-                            {tx.amount}
-                          </span>
-                        )}
-                      </div>
-
-                      {/* RIGHT SIDE */}
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: isMobile ? 10 : 30,
-                        }}
-                      >
-                        {/* DESKTOP AMOUNT */}
-                        {!isMobile && (
-                          <div
-                            style={{
-                              fontWeight: 600,
-                              color:
-                                tx.type?.toLowerCase() === "income"
-                                  ? "#16a34a"
-                                  : "#dc2626",
-                              minWidth: 100,
-                            }}
-                          >
-                            {tx.type?.toLowerCase() === "income" ? "+" : "-"}₦
-                            {tx.amount}
-                          </div>
-                        )}
-
-                        {/* DATE */}
-                        <div
-                          style={{
-                            color: "#6b7280",
-                            fontSize: 14,
-                            minWidth: isMobile ? "auto" : 100,
-                            textAlign: "right",
-                          }}
-                        >
-                          {tx.date}
-                        </div>
-
-                        {/* ACTION MENU */}
-                        <div
-                          style={{
-                            position: "relative",
-                            display: "flex",
-                            justifyContent: "center",
-                          }}
-                        >
-                          <BsThreeDots
-                            onClick={() =>
-                              setOpenMenu(openMenu === index ? null : index)
-                            }
-                            style={{
-                              cursor: "pointer",
-                              fontSize: 20,
-                              color: "#4b5563",
-                            }}
-                          />
-
-                          {openMenu === index && (
-                            <div
-                              style={{
-                                position: "absolute",
-                                top: 30,
-                                right: 0,
-                                width: 140,
-                                background: "#fff",
-                                borderRadius: 12,
-                                boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
-                                border: "1px solid #eee",
-                                overflow: "hidden",
-                                zIndex: 100,
-                              }}
-                            >
-                              <div
-                                style={{
-                                  padding: "12px 14px",
-                                  cursor: "pointer",
-                                }}
-                              >
-                                View
-                              </div>
-
-                              <div
-                                style={{
-                                  padding: "12px 14px",
-                                  cursor: "pointer",
-                                }}
-                              >
-                                Edit
-                              </div>
-
-                              <div
-                                style={{
-                                  padding: "12px 14px",
-                                  cursor: "pointer",
-                                  color: "#dc2626",
-                                  borderTop: "1px solid #f3f4f6",
-                                }}
-                              >
-                                Delete
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })
-              ) : (
-                <div
-                  style={{
-                    padding: 40,
-                    textAlign: "center",
-                    color: "#6b7280",
-                  }}
-                  className="text-sm"
-                >
-                  No transaction found
-                </div>
-              )}
             </div>
-          ) : (
-            <TableSkeleton isMobile={isMobile} />
-          )}
+          </div>
 
           {showFilter && (
             <div
@@ -628,33 +440,6 @@ function TransactionHistory() {
             >
               Reset Filters
             </button>
-          </div>
-
-          {/* PAGINATION */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              marginTop: 20,
-            }}
-          >
-            <p className="text-sm">
-              Page {currentPage} of {totalPages}
-            </p>
-
-            <div style={{ display: "flex", gap: 10 }} className="text-sm">
-              <button onClick={() => setCurrentPage((p) => Math.max(p - 1, 1))}>
-                Prev
-              </button>
-
-              <button
-                onClick={() =>
-                  setCurrentPage((p) => Math.min(p + 1, totalPages))
-                }
-              >
-                Next
-              </button>
-            </div>
           </div>
         </div>
       </DashboardLayout>

@@ -164,11 +164,16 @@ export default function Transfer() {
     }));
 
     try {
-      const beneficiaryExists = Array.isArray(beneficiaryTransferData)
-        ? beneficiaryTransferData.some(
-            (b) => b.accountNumber === transferData.accountNumber,
-          )
-        : false;
+      // const beneficiaryExists = Array.isArray(beneficiaryTransferData)
+      //   ? beneficiaryTransferData.some(
+      //       (b) => b.accountNumber === transferData.accountNumber,
+      //     )
+      //   : false;
+
+      const beneficiaryExists =
+        beneficiaryTransferData?.some(
+          (b) => String(b.accountNumber) === String(transferData.accountNumber),
+        ) ?? false;
 
       if (!beneficiaryExists) {
         const beneficiaryResponse = await addBeneficiaryAction({
@@ -176,10 +181,18 @@ export default function Transfer() {
           accountNumber: transferData.accountNumber,
         });
 
-        console.log(beneficiaryResponse);
+        console.log("Beneficiary Response:", beneficiaryResponse);
 
-        if (addFavBeneficiary) {
-          await addFavouriteBeneficiaryAction(beneficiaryResponse.id);
+        const newBeneficiary = beneficiaryResponse?.data ?? beneficiaryResponse;
+
+        const id = newBeneficiary?.beneficiaryId;
+
+        console.log("Favourite ID:", id);
+
+        if (addFavBeneficiary && id) {
+          await addFavouriteBeneficiaryAction(id);
+
+          await getBeneficiariesAction();
         }
       }
     } catch (error) {

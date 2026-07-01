@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ChevronDown, X } from "lucide-react";
+import { FaStar } from "react-icons/fa6";
 // import { toast } from "react-toastify";
 import {
   Dialog,
@@ -51,8 +52,7 @@ export default function TransferStep1({
   const [beneficiaryError, setBeneficiaryError] = useState("");
   const [searchBeneficiary, setSearchBeneficiary] = useState("");
 
-  const { beneficiariesTransferData, getBeneficiariesAction } =
-    useGetBeneficiaryStore();
+  const { getBeneficiariesAction } = useGetBeneficiaryStore();
 
   const { favouriteBeneficiaries, getFavouriteBeneficiariesAction } =
     useFavouriteBeneficiaryStore();
@@ -127,12 +127,19 @@ export default function TransferStep1({
   };
 
   const beneficiaryExists = Array.isArray(beneficiaryTransferData)
-    ? beneficiariesTransferData?.some(
-        (b) => b.accountNumber === transferData.accountNumber,
+    ? beneficiaryTransferData.some(
+        (b) => String(b.accountNumber) === String(accountNumber),
       )
     : false;
 
-  console.log(beneficiaryExists);
+  console.log("beneficiariesTransferData", beneficiaryTransferData);
+  console.log("accountNumber", accountNumber);
+  console.log(
+    "match",
+    beneficiaryTransferData?.some(
+      (b) => String(b.accountNumber) === String(accountNumber),
+    ),
+  );
 
   const filtered = Array.isArray(beneficiaryTransferData)
     ? beneficiaryTransferData?.filter((b) =>
@@ -141,6 +148,12 @@ export default function TransferStep1({
           .includes(searchBeneficiary.toLowerCase()),
       )
     : [];
+
+  const filteredFav = Array.isArray(beneficiaryTransferData)
+    ? beneficiaryTransferData?.filter((b) => b.favorite === true)
+    : [];
+
+  console.log("favoriteBeneficiaries", favouriteBeneficiaries);
 
   return (
     <div className="transfer-page">
@@ -266,7 +279,7 @@ export default function TransferStep1({
             className="font-medium cursor-pointer text-xs"
             style={{ marginLeft: "5px" }}
           >
-            Remove from favourites
+            Add to Favorites
           </label>
         </div>
 
@@ -308,7 +321,7 @@ export default function TransferStep1({
         onOpenChange={setShowBeneficiaryDialog}
       >
         <div style={{ height: "350px", width: "90%" }} className="bg-white">
-          <DialogContent className="bg-white w-[70%]">
+          <DialogContent className="bg-white w-[70%] h-[500px] overflow-y-scroll">
             <DialogHeader style={{ marginTop: "20px" }}>
               <DialogTitle style={{ marginLeft: "5%" }}>
                 Select Beneficiary
@@ -322,6 +335,59 @@ export default function TransferStep1({
                 onChange={(e) => setSearchBeneficiary(e.target.value)}
               />
             </div>
+
+            {filteredFav ? (
+              <div
+                style={{ marginLeft: "5%", width: "90%", marginBottom: "20px" }}
+              >
+                {filteredFav?.map((fav) => (
+                  <div
+                    key={fav.id}
+                    style={{
+                      padding: "10px 10px 10px 10px",
+                      marginTop: "15px",
+                      width: "100%",
+                    }}
+                    className="flex justify-between bg-gray-100 hover:bg-gray-200 rounded-lg hover:bg-muted"
+                  >
+                    <div
+                      className="cursor-pointer p-3 flex gap-3 "
+                      onClick={() => {
+                        setAccountNumber(fav.accountNumber);
+
+                        if (/^\d{10}$/.test(fav.accountNumber)) {
+                          handleBeneficiaryConfirmation(fav.accountNumber);
+                        }
+                        setShowBeneficiaryDialog(false);
+                      }}
+                    >
+                      <div className="h-10 w-10 rounded-full bg-gray-200 border-2 border-gray-400 flex justify-center items-center">
+                        {fav.beneficiaryName.slice(0, 2).toUpperCase()}
+                      </div>
+                      <div className="flex flex-col self-center">
+                        <h4 className="font-medium text-gray-700 text-xs">
+                          {fav.beneficiaryName.toUpperCase()}
+                        </h4>
+
+                        <p className="text-xs text-muted-foreground text-gray-400 ">
+                          {`# ${fav.accountNumber}`}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="justify-self-end float-right self-center">
+                      <FaStar className="text-yellow-300 text-xl" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <span
+                style={{ marginBottom: "10px" }}
+                className="text-center text-gray-400 text-xs"
+              >
+                No favorite found
+              </span>
+            )}
 
             {filtered ? (
               <div

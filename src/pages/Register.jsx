@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { FaRegUserCircle, FaUser } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import {
@@ -132,7 +132,7 @@ function Register() {
       inputValue.nationality.trim() === ""
         ? setErrorMsg((prev) => ({
             ...prev,
-            nationality: "This field is re]quired",
+            nationality: "This field is required",
           }))
         : setErrorMsg((prev) => ({
             ...prev,
@@ -221,12 +221,16 @@ function Register() {
     return () => clearTimeout(timer);
   }, [inputValue]);
 
-  // SELECT ACCOUNT TYPE FUNCTION
 
   // PASSWORD STRENGTH CHECK
   const hasUpperCase = /[A-Z]/;
   const hasNumber = /\d/;
 
+<<<<<<< HEAD
+=======
+  const fieldRefs = useRef({});
+
+>>>>>>> 03979ef8184b4eb3fd196adb280f033c32ec4a38
   const handleSubmit = async () => {
     try {
       const hasError = Object.values(errorMsgNum).some((error) => error !== "");
@@ -254,10 +258,22 @@ function Register() {
         setStep("complete");
 
         setTimeout(() => {
-          setStepForm((prev) => prev + 1);
+          setStepForm(prev => prev + 1);
         }, 1000);
 
         toast.success("You have successfully created an acccout");
+
+      } else {
+
+        console.log("errorMsg:", errorMsgNum);
+        console.log("hasError:", hasError);
+
+        setTouched((prev) => ({
+            bvn: !!errorMsgNum.bvn,
+            ninNum: !!errorMsgNum.ninNum,
+          })
+        )
+        
       }
 
       navigate("/login");
@@ -281,6 +297,7 @@ function Register() {
           onRetry={handleSubmit}
         />
       ) : (
+<<<<<<< HEAD
         <div className="min-h-screen w-full flex items-start justify-center bg-[#f5f5f5]">
           <div className="w-full min-h-screen flex flex-col justify-between">
             <header
@@ -291,6 +308,21 @@ function Register() {
                 className="bg-[#1A3A5C] rounded-md flex items-center justify-center"
                 style={{ padding: "8px 14px" }}
               >
+=======
+        <div 
+          className='min-h-screen w-full flex items-start justify-center bg-[#f5f5f5]' 
+          >
+          <div 
+            className='w-full min-h-screen flex flex-col justify-between'>
+            <header 
+              className='flex items-center justify-between max-md:gap-8 w-full bg-[#ffffff]'
+              style={{padding: "14px 50px" }}>
+              <div 
+                className='bg-[#1A3A5C] rounded-md flex items-center justify-center'
+                style={{
+                  padding: "8px 14px",
+                }}>
+>>>>>>> 03979ef8184b4eb3fd196adb280f033c32ec4a38
                 <p>⚡</p>
               </div>
 
@@ -305,7 +337,7 @@ function Register() {
                       style={{ padding: "1px" }}
                     />
                     <p
-                    // className='hidden lg:block'
+                      // className='max-md:hidden'
                     >
                       1. Email
                     </p>
@@ -330,9 +362,9 @@ function Register() {
                       />
                     )}
                     <p
-                    // className='hidden lg:block'
+                      // className='max-md:hidden'
                     >
-                      2. BVN / ninNum
+                      2. BVN / NIN
                     </p>
                   </div>
                 </div>
@@ -340,18 +372,15 @@ function Register() {
 
               <div
                 className="flex items-center bg-[#FFFFFF] rounded-md shadow-xs text-[#0D1B2E] gap-2 cursor-pointer"
-                style={{ padding: "8px 16px" }}
-              >
-                <TbWorld />
-                <p>ENG</p>
-                <IoIosArrowDown />
-              </div>
+              ></div>
+
             </header>
 
             <section
               className="flex flex-col items-center justify-center"
               style={{ margin: "24px 0" }}
             >
+
               {/* ========== SIGN UP FORM ========== */}
               {stepForm === 1 && (
                 <div
@@ -384,11 +413,40 @@ function Register() {
                         (error) => error !== "",
                       );
 
+                      const firstErrorField = Object.keys(errorMsg).find(
+                        (key) => errorMsg[key]
+                      )
+
                       console.log("errorMsg:", errorMsg);
                       console.log("hasError:", hasError);
 
+<<<<<<< HEAD
                       if (!hasError) {
                         setStepForm((prev) => prev + 1);
+=======
+                      if(!hasError) {
+                        setStepForm(prev => prev + 1)
+                      } else {
+                          setTouched({
+                            firstName: !!errorMsg.firstName,
+                            lastName: !!errorMsg.lastName,
+                            email: !!errorMsg.email,
+                            phoneNumber: !!errorMsg.phoneNumber,
+                            userPassword: !!errorMsg.userPassword,
+                            nationality: !!errorMsg.nationality,
+                            address: !!errorMsg.address,
+                          }
+                        )
+
+                        if(firstErrorField) {
+                          fieldRefs.current[firstErrorField]?.scrollIntoView({
+                            behavior: "smooth",
+                            block: "center",
+                          })
+
+                          fieldRefs.current[firstErrorField]?.focus();
+                        }
+>>>>>>> 03979ef8184b4eb3fd196adb280f033c32ec4a38
                       }
                     }}
                     action=""
@@ -396,13 +454,16 @@ function Register() {
                     style={{ marginTop: "8px" }}
                   >
                     <div className="flex flex-col min-h-0 overflow-y-auto no-scrollbar text-[12px]">
+
                       {/* ========== NAME FIELD ========== */}
                       <div style={{ margin: "10px 0" }}>
+
                         <div
                           className="flex items-center gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full"
                           style={{ padding: "10px" }}
                         >
                           <FaUser className="text-[#6B7280]" />
+                          
                           <input
                             value={inputValue.firstName}
                             onChange={(e) => handleChange(e.target)}
@@ -414,9 +475,11 @@ function Register() {
                             }
                             type="text"
                             name="firstName"
+                            ref={(el) => (fieldRefs.current.firstName = el)}
                             placeholder="First name"
                             className="w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]"
                           />
+
                         </div>
 
                         {touched.firstName && errorMsg.firstName && (
@@ -425,14 +488,18 @@ function Register() {
                             <p>{errorMsg.firstName}</p>
                           </div>
                         )}
+
                       </div>
 
                       <div style={{ margin: "10px 0" }}>
+
                         <div
                           className="flex items-center gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full"
                           style={{ padding: "10px" }}
                         >
+
                           <FaUser className="text-[#6B7280]" />
+
                           <input
                             value={inputValue.lastName}
                             onChange={(e) => handleChange(e.target)}
@@ -444,9 +511,11 @@ function Register() {
                             }
                             type="text"
                             name="lastName"
+                            ref={(el) => (fieldRefs.current.lastName = el)}
                             placeholder="Last name"
                             className="w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]"
                           />
+
                         </div>
 
                         {touched.lastName && errorMsg.lastName && (
@@ -455,15 +524,19 @@ function Register() {
                             <p>{errorMsg.lastName}</p>
                           </div>
                         )}
+
                       </div>
 
                       {/* ========== EMAIL FIELD ========== */}
                       <div style={{ margin: "10px 0" }}>
+
                         <div
                           className="flex items-center gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full"
                           style={{ padding: "10px" }}
                         >
+
                           <FaEnvelope className="text-[#6B7280]" />
+
                           <input
                             value={inputValue.email}
                             onChange={(e) => handleChange(e.target)}
@@ -472,10 +545,13 @@ function Register() {
                             }
                             type="email"
                             name="email"
+                            ref={(el) => (fieldRefs.current.email = el)}
                             placeholder="johndoe@gmail.com"
                             className="w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]"
                           />
+
                         </div>
+
 
                         {touched.email && errorMsg.email && (
                           <div className="text-[10px]/[24px] text-[#DC2626] flex items-center gap-1 justify-end">
@@ -483,15 +559,19 @@ function Register() {
                             <p>{errorMsg.email}</p>
                           </div>
                         )}
+
                       </div>
 
                       {/* ========== PHONE FIELD ========== */}
                       <div style={{ margin: "10px 0" }}>
+
                         <div
                           className="flex items-center gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full"
                           style={{ padding: "10px" }}
                         >
+
                           <FaPhone className="text-[#6B7280]" />
+
                           <input
                             value={inputValue.phoneNumber}
                             onChange={(e) => handleChange(e.target)}
@@ -503,9 +583,11 @@ function Register() {
                             }
                             type="tel"
                             name="phoneNumber"
+                            ref={(el) => (fieldRefs.current.phoneNumber = el)}
                             placeholder="+1 000000000"
                             className="w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]"
                           />
+
                         </div>
 
                         {touched.phoneNumber && errorMsg.phoneNumber && (
@@ -514,15 +596,19 @@ function Register() {
                             <p>{errorMsg.phoneNumber}</p>
                           </div>
                         )}
+
                       </div>
 
                       {/* ========== ADDRESS FIELD ========== */}
                       <div style={{ margin: "10px 0" }}>
+
                         <div
                           className="flex items-center gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full"
                           style={{ padding: "10px" }}
                         >
+
                           <FaMapLocationDot className="text-[#6B7280]" />
+
                           <input
                             value={inputValue.address}
                             onChange={(e) => handleChange(e.target)}
@@ -531,9 +617,11 @@ function Register() {
                             }
                             type="text"
                             name="address"
+                            ref={(el) => (fieldRefs.current.address = el)}
                             placeholder="53, Raymond Njoku Str, Ikoyi"
                             className="w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]"
                           />
+
                         </div>
 
                         {touched.address && errorMsg.address && (
@@ -542,15 +630,19 @@ function Register() {
                             <p>{errorMsg.address}</p>
                           </div>
                         )}
+
                       </div>
 
                       {/* ========== NATIONALITY FIELD ========== */}
                       <div style={{ margin: "10px 0" }}>
+
                         <div
                           className="flex items-center gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full"
                           style={{ padding: "10px" }}
                         >
+
                           <BiWorld className="text-[#6B7280] text-xl" />
+
                           <input
                             value={inputValue.nationality}
                             onChange={(e) => handleChange(e.target)}
@@ -562,9 +654,11 @@ function Register() {
                             }
                             type="text"
                             name="nationality"
+                            ref={(el) => (fieldRefs.current.nationality = el)}
                             placeholder="Nigerian"
                             className="w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]"
                           />
+
                         </div>
 
                         {touched.nationality && errorMsg.nationality && (
@@ -573,15 +667,19 @@ function Register() {
                             <p>{errorMsg.nationality}</p>
                           </div>
                         )}
+
                       </div>
 
                       {/* ========== PASSWORD FIELD ========== */}
                       <div style={{ margin: "10px 0" }}>
+
                         <div
                           className="flex items-center gap-3 bg-[#FFFFFF] border border-[#E5E7EB] rounded-sm w-full"
                           style={{ padding: "10px" }}
                         >
+
                           <FaLock className="text-[#6B7280]" />
+
                           <input
                             value={inputValue.userPassword}
                             onChange={(e) => handleChange(e.target)}
@@ -593,6 +691,7 @@ function Register() {
                             }
                             type={isViewPassword ? "text" : "password"}
                             name="userPassword"
+                            ref={(el) => (fieldRefs.current.userPassword = el)}
                             placeholder="Enter your password"
                             className="w-full bg-[#FFFFFF] outline-none text-[#0D1B2E]"
                           />
@@ -604,6 +703,7 @@ function Register() {
                               <FaEye className="togPass" />
                             )}
                           </div>
+
                         </div>
 
                         {touched.userPassword && errorMsg.userPassword && (
@@ -669,6 +769,7 @@ function Register() {
                     >
                       Next
                     </button>
+                    
                   </form>
 
                   <div className="">
@@ -709,7 +810,7 @@ function Register() {
                     className="text-[#0D1B2E] text-[1rem]/[30px] font-bold text-center"
                     style={{ marginBottom: "3px" }}
                   >
-                    Please provide your BVN / ninNum
+                    Please provide your BVN / NIN
                   </h2>
                   <p className="text-[#6B7280] text-[0.7rem]/[20px]">
                     Enter BVN & ninNum for verification
@@ -746,7 +847,7 @@ function Register() {
 
                     <div className="flex flex-col">
                       <label htmlFor="" className="text-[#0D1B2E] font-medium">
-                        Enter ninNum
+                        Enter NIN
                       </label>
                       <input
                         value={inputValue.ninNum}
@@ -773,12 +874,6 @@ function Register() {
                       onClick={(e) => {
                         e.preventDefault();
                         handleSubmit();
-
-                        // if(!hasError) {
-                        //   setStep(prev => prev + 1);
-
-                        //   handleSubmit
-                        // }
                       }}
                       className="rounded-lg text-[12px]/[24px] font-bold text-[#FFFFFF] bg-[#a78620] cursor-pointer"
                       style={{ padding: "6px 0", marginTop: "18px" }}

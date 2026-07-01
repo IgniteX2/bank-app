@@ -55,7 +55,7 @@ function AppSidebar() {
   const { logout } = useAuth();
   const [open, setOpen] = useState(false);
 
-  console.log(user);
+  // console.log(user);
 
   // if (isLoading) return <p>Loading...</p>;
 

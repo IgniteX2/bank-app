@@ -1,13 +1,14 @@
-package IgniteX_Project1.Mini_Digital_Banking_system.Service;
+package IgniteX_Project1.Mini_Digital_Banking_system.Service.Impl;
 
 import IgniteX_Project1.Mini_Digital_Banking_system.DTO.UserResponse;
 import IgniteX_Project1.Mini_Digital_Banking_system.Exceptions.UserNotFound;
 import IgniteX_Project1.Mini_Digital_Banking_system.Model.UserInfo;
+import IgniteX_Project1.Mini_Digital_Banking_system.Service.UserService;
 import IgniteX_Project1.Mini_Digital_Banking_system.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private  final UserRepository userRepository;
 
@@ -28,7 +29,8 @@ public class UserServiceImpl implements UserService{
         userResponse.setFullName(userInfo.getFirstName() + " " + userInfo.getLastName());
         userResponse.setEmail(userInfo.getEmail());
         userResponse.setBvn(userInfo.getBvn());
-        userResponse.setNInNum(userInfo.getNInNum());
+        userResponse.setNinNum(userInfo.getNinNum());
+        userResponse.setTransactionPin(userInfo.getTransactionPin());
         userResponse.setUserCreatedAt(userInfo.getUserCreatedAt());
         userResponse.setUserModifiedAt(userInfo.getUserModifiedAt());
 

@@ -1,293 +1,321 @@
-import { useContext } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
 import { ThemeContext } from "../../context/ThemeContext";
-import { NavLink } from "react-router-dom";
-import userImg from "../../assets/user.jpg";
-import { FiHome, FiHelpCircle, FiLogOut, FiX } from "react-icons/fi";
-import { LiaHeadsetSolid } from "react-icons/lia";
-import { LuPanelRightOpen, LuSettings } from "react-icons/lu";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarFooter,
+} from "@/components/ui/sidebar";
+import { useUserStore } from "@/stores/useUserStore";
+import ConfirmDialog from "./logoutDialog";
 
-import { RiExchangeLine } from "react-icons/ri";
+import {
+  Bell,
+  ChevronRight,
+  CreditCard,
+  LogOut,
+  UserPen,
+  Settings,
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import UserDetailsSkeleton from "../../skeletons/userDetailsSkeleton";
 
-const navItems = [
-  { label: "Dashboard", icon: <FiHome />, href: "/dashboard" },
-  {
-    label: "Transactions",
-    icon: <RiExchangeLine />,
-    href: "/transactions",
-  },
-];
+import { useSidebar } from "@/components/ui/sidebar";
 
-const otherItems = [
-  { label: "Settings", icon: <LuSettings />, href: "/settings" },
-  { label: "Get Help", icon: <FiHelpCircle />, href: "/help" },
-  { label: "Logout", icon: <FiLogOut />, href: "/logout" },
-];
+import { Home, Headset, Send, Logs } from "lucide-react";
+import { useAuth } from "@/context/useAuth";
 
-export default function Sidebar({
-  isOpen,
-  setIsOpen,
-  isMobile,
-  userName,
-  userEmail,
-}) {
+import { useAccountStore } from "@/stores/useAccountStore";
+import { useTransactionHistoryStore } from "@/stores/useTransactionsStore";
+
+function AppSidebar() {
+  const { isMobile } = useSidebar();
+  const { state } = useSidebar();
+
   const { theme } = useContext(ThemeContext);
+  const user = useUserStore((state) => state.user);
+  const initials = user?.fullName?.slice(0, 2).toUpperCase();
+
+  const isLoading = useUserStore((state) => state.isLoading);
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+  const [open, setOpen] = useState(false);
+
+  console.log(user);
+
+  // if (isLoading) return <p>Loading...</p>;
+
+  const menuItems = [
+    {
+      label: "Dashboard",
+      path: "/dashboard",
+      icon: Home,
+      tooltip: "Dashboard",
+    },
+    {
+      label: "Transfer",
+      path: "/transfer",
+      icon: Send,
+      tooltip: "Transfer",
+    },
+    {
+      label: "Transactions",
+      path: "/transactions",
+      icon: Logs,
+      tooltip: "Transations",
+    },
+    {
+      label: "Settings",
+      path: "/settings",
+      icon: Settings,
+      tooltip: "Settings",
+    },
+    {
+      label: "Get Help",
+      path: "/help",
+      icon: Headset,
+      tooltip: "Help",
+    },
+  ];
+
+  const handleLogout = () => {
+    logout();
+
+    // reset all stores
+    useUserStore.getState().clearUser();
+    useAccountStore.getState().clearAccount();
+    useTransactionHistoryStore.getState().clearTransactions();
+
+    navigate("/");
+  };
 
   return (
-    <>
-      <div style={{ display: isMobile ? "none" : "block" }}>
-        {isOpen ? (
-          <aside
-            className={`sidebar w-70 h-screen ${theme === "light" ? "bg-[#F6F8FA]" : "bg-[#0a1628]"} shadow-md flex flex-col justify-between`}
-          >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                height: "100vh",
-                justifyContent: "space-between",
-              }}
+    <Sidebar collapsible="icon" className=" border-r border-gray-200 shadow-sm">
+      <SidebarContent
+        style={{ paddingLeft: "5%", paddingTop: "10%" }}
+        className="flex flex-col justify-between bg-gray-50  px-5 py-6"
+      >
+        <div>
+          <SidebarGroup className="pt-2">
+            <SidebarGroupLabel
+              style={{ marginBottom: "10%" }}
+              className="my-4 text-md text-gray-500 "
             >
-              <div
-                style={{
-                  marginLeft: "5%",
-                  width: "90%",
-                  border: "1px solid transparent",
-                }}
-              >
-                <div
-                  style={{ marginTop: "30px" }}
-                  className="flex items-center justify-between "
-                >
-                  <div
-                    className="withLogo"
-                    style={{ width: "70%", background: "transparent" }}
-                  >
-                    <span
-                      className={`headerLogo ${theme === "dark" ? "logoDark" : ""}`}
-                    >
-                      ⚡
-                    </span>
-                    <h3
-                      style={{
-                        alignSelf: "center",
-                        fontSize: "14px",
-                        marginLeft: "-10px",
+              <div className="flex items-center gap-2 font-semibold">
+                <span className="logoSidebar">⚡</span> IGNITEX BANK
+              </div>
+            </SidebarGroupLabel>
 
-                        // color: "rgba(10, 22, 40, 0.8)",
-                      }}
-                      className={`${theme === "dark" ? "text-white" : "text-[rgba(10,22,40,0.8)]"}`}
-                    >
-                      IGNITEX BANK
-                    </h3>
-                  </div>
-                  <button
-                    style={{
-                      width: "40px",
-                      height: "40px",
-                      borderRadius: "50px",
-                      background: "#ffffff",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => setIsOpen(!isOpen)}
-                  >
-                    <LuPanelRightOpen style={{ fontSize: "25px" }} />
-                  </button>
-                </div>
+            <SidebarGroupContent>
+              <SidebarMenu className="flex flex-col gap-2">
+                {menuItems.map((item) => {
+                  const Icon = item.icon;
 
-                <div className="p-4" style={{ marginTop: "40px" }}>
-                  <p className="text-sm text-gray-400 mb-2">MAIN</p>
-                  {navItems.map((item, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center  font-normal p-2 text-sm text-[#818898]"
-                      style={{
-                        minHeight: "30px",
-                        marginTop: "5px",
-                        marginLeft: "15px",
-                      }}
-                    >
-                      <NavLink
-                        to={item.href}
-                        className={({ isActive }) =>
-                          `flex items-center gap-x-3 p-2 text-xs rounded-lg transition font-normal ${
-                            isActive
-                              ? "bg-[#ffffff] text-[#0D0D12] font-semibold"
-                              : "text-[#818898]"
-                          }`
-                        }
-                        style={({ isActive }) => ({
-                          width: "100%",
-                          padding: "10px 0px",
-                          paddingLeft: "15px",
-                          border: isActive
-                            ? "1px solid lightgrey"
-                            : "1px solid transparent",
-                        })}
-                      >
-                        {item.icon}
-                        <span>{item.label}</span>
+                  return (
+                    <SidebarMenuItem key={item.path}>
+                      <NavLink to={item.path} end>
+                        {({ isActive }) => (
+                          <SidebarMenuButton
+                            tooltip={item.tooltip}
+                            style={{ paddingLeft: "10px" }}
+                            className={`w-[90%] cursor-pointer transition-colors  ${
+                              isActive
+                                ? "bg-gray-100 text-gray-700 rounded-none "
+                                : "text-gray-900 hover:bg-gray-100"
+                            }`}
+                          >
+                            <Icon className="h-5 w-5 shrink-0" />
+
+                            <span className="text-[14px]/[24px] group-data-[collapsible=icon]:hidden">
+                              {item.label}
+                            </span>
+                          </SidebarMenuButton>
+                        )}
                       </NavLink>
-                    </div>
-                  ))}
-                </div>
+                    </SidebarMenuItem>
+                  );
+                })}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        </div>
 
-                <div
-                  className={`p-4 ${theme === "light" ? "bg-[#F6F8FA]" : "bg-[#0a1628]"} `}
-                  style={{ marginTop: "20px" }}
-                >
-                  <p className="text-sm text-gray-400 mb-2">OTHER</p>
-                  {otherItems.map((item, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-x-3 p-2 text-sm text-[#818898]"
-                      style={{
-                        minHeight: "30px",
-                        marginTop: "5px",
-                        marginLeft: "15px",
-                      }}
+        <div className="p-2">
+          <SidebarFooter>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <DropdownMenu>
+                  {isLoading ? (
+                    <UserDetailsSkeleton />
+                  ) : (
+                    <DropdownMenuTrigger
+                      style={{ marginBottom: "10%" }}
+                      className="flex w-full items-center gap-2 rounded-md px-2 py-2 hover:bg-gray-100 "
                     >
-                      <NavLink
-                        to={item.href}
-                        className={({ isActive }) =>
-                          `flex items-center gap-x-3 p-2 text-xs rounded-lg transition font-normal ${
-                            isActive
-                              ? "bg-[#ffffff] text-[#0D0D12] font-semibold"
-                              : "text-[#818898]"
-                          }`
-                        }
-                        style={({ isActive }) => ({
-                          width: "100%",
-                          padding: "10px 0px",
-                          paddingLeft: "15px",
-                          border: isActive
-                            ? "1px solid lightgrey"
-                            : "1px solid transparent",
-                        })}
+                      <Avatar className="h-8 w-8 rounded-lg">
+                        <AvatarImage src={user?.avatar} />
+                        <AvatarFallback className="bg-gray-200">
+                          {initials}
+                        </AvatarFallback>
+                      </Avatar>
+
+                      <div className="grid flex-1 text-left text-sm leading-tight ">
+                        <span className="truncate font-medium text-[12px]">
+                          {user?.fullName}
+                        </span>
+                        <span className="truncate text-[10px]">
+                          {user?.email}
+                        </span>
+                      </div>
+
+                      <ChevronRight
+                        style={{ padding: "10px", marginRight: "10px" }}
+                        className="ml-auto size-8 bg-white rounded-full text-gray-500 shadow-lg font-extrabold"
+                      />
+                    </DropdownMenuTrigger>
+                  )}
+
+                  <DropdownMenuContent
+                    className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-sm border-none ring-0 shadow-2xl bg-white"
+                    side={isMobile ? "bottom" : "right"}
+                    align="end"
+                    sideOffset={4}
+                  >
+                    {/* USER HEADER */}
+                    <DropdownMenuGroup>
+                      <div
+                        style={{
+                          paddingLeft: "5%",
+                          paddingBottom: "3%",
+                          paddingTop: "3%",
+                        }}
+                        className="flex items-center gap-2 px-2 py-2 text-sm"
                       >
-                        {item.icon}
-                        <span>{item.label}</span>
-                      </NavLink>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
+                        <Avatar className="h-8 w-8 rounded-lg">
+                          <AvatarImage src={user?.avatar} />
+                          <AvatarFallback className="bg-gray-100">
+                            {initials}
+                          </AvatarFallback>
+                        </Avatar>
 
-            {/* FOOTER */}
-            <div
-              style={{
-                width: "90%",
-                height: "480px",
-                marginLeft: "5%",
-                border: "1px solid transparent",
-                marginBottom: "50px",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "space-between",
-              }}
-            >
-              <div
-                style={{
-                  width: "100%",
-                  height: "180px",
-                  background: theme === "dark" ? "#354151" : "#ffffff",
-                  boxShadow:
-                    theme === "dark"
-                      ? "none"
-                      : "0 0px 2px 4px rgba(230, 230, 230, 0.1)",
-                  borderRadius: "10px",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "space-around",
-                  padding: "20px",
-                  marginTop: "10px",
-                }}
-              >
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-2">
-                    <LiaHeadsetSolid
-                      className={`text-[25px] ${theme === "dark" ? "text-white" : "text-[#0D0D12]"}`}
-                    />
+                        <div className="grid flex-1 text-left">
+                          <span className="font-medium">{user?.fullName}</span>
+                        </div>
+                      </div>
+                    </DropdownMenuGroup>
 
-                    <h2
-                      className={`text-sm leading-none font-semibold ${theme === "dark" ? "text-[#ffffff]" : "text-[#0D0D12]"} `}
-                    >
-                      Need Support?
-                    </h2>
-                  </div>
+                    <DropdownMenuSeparator className="bg-gray-200" />
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem
+                        style={{
+                          paddingLeft: "5%",
+                          paddingBottom: "3%",
+                          paddingTop: "3%",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <NavLink
+                          to="/settings"
+                          end
+                          className="flex items-center gap-2"
+                        >
+                          <UserPen className="mr-2 h-4 w-4" />
+                          Profile
+                        </NavLink>
+                      </DropdownMenuItem>
 
-                  <button
-                    className={`${theme === "dark" ? "text-white" : "text-[#0D0D12]"} hover:opacity-70 transition`}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <FiX className="text-[20px]" />
-                  </button>
-                </div>
+                      <DropdownMenuItem
+                        style={{
+                          paddingLeft: "5%",
+                          paddingBottom: "3%",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <Bell className="mr-2 h-4 w-4" />
+                        Notifications
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator className="bg-gray-200" />
+                    <DropdownMenuGroup>
+                      <DropdownMenuItem
+                        style={{
+                          paddingLeft: "5%",
+                          paddingBottom: "3%",
+                          paddingTop: "3%",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <CreditCard className="mr-2 h-4 w-4" />
+                        Card Services
+                      </DropdownMenuItem>
 
-                <p
-                  className={`mt-10 max-w-4xl text-xs leading-[1.2] font-normal ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#818898]"}`}
-                >
-                  Connect with one of our experts to get support.
-                </p>
+                      <DropdownMenuItem
+                        style={{
+                          paddingLeft: "5%",
+                          paddingBottom: "3%",
+                          cursor: "pointer",
+                        }}
+                      >
+                        <NavLink
+                          to="/settings"
+                          end
+                          className="flex items-center gap-2"
+                        >
+                          <Settings className="mr-2 h-4 w-4" />
+                          Settings
+                        </NavLink>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                    <DropdownMenuSeparator className="bg-gray-200" />
+                    <DropdownMenuGroup className="bg-red-600 text-white">
+                      <DropdownMenuItem
+                        className="text-white"
+                        style={{
+                          paddingLeft: "5%",
+                          paddingBottom: "3%",
+                          paddingTop: "3%",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => setOpen(true)}
+                      >
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Log out
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarFooter>
 
-                <button
-                  style={{
-                    backgroundColor: theme === "dark" ? "#354151" : "#ffffff",
-                    color: theme === "dark" ? "#ffffff" : "#0D0D12",
-                    boxShadow:
-                      theme === "dark"
-                        ? "0 0px 8px 4px inset rgba(230, 230, 230, 0.2)"
-                        : "0 0px 2px 4px rgba(230, 230, 230, 0.2)",
-                    padding: "10px 20px",
-                    border: "2px solid #f5f5f5",
-                    borderRadius: "10px",
-                    cursor: "pointer",
-                  }}
-                  className="text-xs"
-                >
-                  Contact Us
-                </button>
-              </div>
-
-              <div
-                className="p-4 "
-                style={{
-                  width: "100%",
-                  height: "60px",
-                  background: "transparent",
-                  display: "flex",
-                  columnGap: "15px",
-                }}
-              >
-                <div
-                  style={{
-                    width: "50px",
-                    height: "50px",
-                    borderRadius: "50%",
-                    background: "transparent",
-                    backgroundImage: `url(${userImg})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                  }}
-                  className="text-sm font-semibold"
-                ></div>
-                <div className="text-xs  self-center">
-                  <p
-                    className={`text-sm font-medium ${theme === "dark" ? "text-[#f5f5f5]" : "text-[#0D0D12]"}`}
-                  >
-                    {userName}
-                  </p>
-                  <p className="text-xs text-gray-500">{userEmail}</p>
-                </div>
-              </div>
-            </div>
-          </aside>
-        ) : null}
-      </div>
-    </>
+          <ConfirmDialog
+            open={open}
+            title="Confirm Logout"
+            message="Are you sure you want to logout?"
+            onCancel={() => setOpen(false)}
+            onConfirm={() => {
+              setOpen(false);
+              handleLogout();
+            }}
+          />
+        </div>
+      </SidebarContent>
+    </Sidebar>
   );
 }
+
+export default AppSidebar;

@@ -34,10 +34,22 @@ public class UserInfo {
     private String PhoneNumber;
 
     @Column(name = "bvn", unique = true, nullable = false, length = 50)
-    private Long bvn;
+    private String bvn;
 
     @Column(name = "user_password", nullable = false)
     private String userPassword;
+
+    @Column(name = "transaction_pin", nullable = true)
+    private String transactionPin;
+
+    @Column(name = "pin_attempts", nullable = true)
+    private Integer pinAttempts = 0;
+
+    @Column(name = "pin_locked_until", nullable = true)
+    private LocalDateTime pinLockedUntil;
+
+    @Column(name = "pin_reset_token", nullable = true)
+    private String pinResetToken;
 
 //    @Column(name = "account_type", nullable = false)
 //    private String accountType;
@@ -46,7 +58,7 @@ public class UserInfo {
     private String nationality;
 
     @Column(name = "nin_num", unique = true, nullable = false)
-    private String NInNum;
+    private String ninNum;
 
     @Column(name = "address", nullable = false)
     private String address;

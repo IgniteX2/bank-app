@@ -35,7 +35,7 @@ public class AuthService {
     @Transactional
     public String signup(AccountCreationRequest req) {
 
-        if (repo.findByEmail(req.getEmail()).isPresent()) {
+        if (repo.findByEmail(req.getEmail()).isPresent() || repo.findByBvn(req.getBvn()).isPresent() || repo.findByNinNum(req.getNinNum()).isPresent()) {
             throw new UserAlreadyExistsException("user already exist");
         }
 
@@ -59,10 +59,10 @@ public class AuthService {
         userInfo.setPhoneNumber(req.getPhoneNumber());
         userInfo.setBvn(req.getBvn());
         userInfo.setUserPassword(encoder.encode(req.getUserPassword()));
-        userInfo.setNInNum(req.getNInNum());
+        userInfo.setNinNum(req.getNinNum());
 //        userInfo.setAccountType(req.getAccountType());
         userInfo.setNationality(req.getNationality());
-//        userInfo.setPin(req.getPin());
+        userInfo.setTransactionPin(req.getTransactionPin());
         userInfo.setAddress(req.getAddress());
 
         repo.save(userInfo);

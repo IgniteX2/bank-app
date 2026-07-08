@@ -8,6 +8,7 @@ import IgniteX_Project1.Mini_Digital_Banking_system.Model.UserInfo;
 import IgniteX_Project1.Mini_Digital_Banking_system.Service.UserService;
 //import IgniteX_Project1.Mini_Digital_Banking_system.repository.UserRepository;
 import IgniteX_Project1.Mini_Digital_Banking_system.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.Authentication;
@@ -15,12 +16,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
-
-    public  UserController(UserService userService) {
-        this.userService = userService;
-    }
 
         @GetMapping("/users/{id}")
         public ResponseEntity<UserResponse> getUserById(@PathVariable Long id) {

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://schedule-tall-throwback.ngrok-free.dev",
+  baseURL: import.meta.env.VITE_API_URL,
 });
 
 // Attach token to every request
@@ -19,10 +19,12 @@ API.interceptors.request.use((config) => {
 API.interceptors.response.use(
   (res) => res,
   (err) => {
-    if (err.response?.status === 401) {
-      localStorage.removeItem("token");
-      window.location.href = "/login";
-    }
+    console.log("Interceptor error:", err.response?.status);
+
+    // if (err.response?.status === 401) {
+    //   localStorage.removeItem("token");
+    //   window.location.href = "/login";
+    // }
 
     return Promise.reject(err);
   },

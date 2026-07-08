@@ -19,6 +19,16 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
 
+    @ExceptionHandler(InvalidPinException.class)
+    public ResponseEntity<String> handleInvalidPin(InvalidPinException ex){
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(PinLockedException.class)
+    public ResponseEntity<String> handlePinLocked(PinLockedException ex) {
+        return ResponseEntity.status(HttpStatus.LOCKED).body(ex.getMessage());
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<String> handleRunTime(RuntimeException ex) {
         return  ResponseEntity
